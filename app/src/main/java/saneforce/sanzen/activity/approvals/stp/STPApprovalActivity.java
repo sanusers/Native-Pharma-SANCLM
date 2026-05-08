@@ -134,7 +134,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                     stpModelLists.clear();
                     CallSTPListApi();
                 }else{
-                    commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network), true);
 
                 }
             }
@@ -236,7 +236,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                             stpApprovalBinding.rvStpList.setAdapter(stpApprovalAdapter);
                         } else {
                             stpApprovalBinding.constraintSelectedDetails.setVisibility(View.GONE);
-                            commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_data_found));
+                            commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_data_found), true);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -244,7 +244,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                 } else {
                     stpApprovalBinding.constraintSelectedDetails.setVisibility(View.GONE);
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network), true);
                 }
             }
 
@@ -253,7 +253,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                 t.printStackTrace();
                 stpApprovalBinding.constraintSelectedDetails.setVisibility(View.GONE);
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network), true);
             }
         });
     }
@@ -327,21 +327,21 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                             stpApprovalBinding.rvStpContentList.setLayoutManager(mLayoutManager);
                             stpApprovalBinding.rvStpContentList.setAdapter(stpApprovalDetailedAdapter);
                         } else {
-                            commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_data_found));
+                            commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_data_found), true);
                         }
                     } catch (Exception e) {
                         Log.v("tpDetailedList", "---" + e);
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network), true);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network), true);
             }
         });
     }
@@ -379,7 +379,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.approved_successfully));
+                            commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.approved_successfully), true);
                             removeSelectedData();
                             STPCount--;
                         }
@@ -388,14 +388,14 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network), true);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network), true);
             }
         });
     }
@@ -433,7 +433,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                 if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
                     stpReject(ed_reason.getText().toString());
                 } else {
-                    commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.toast_enter_reason_for_reject));
+                    commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.toast_enter_reason_for_reject), true);
                 }
             }
         });
@@ -472,7 +472,7 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.rejected_successfully));
+                            commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.rejected_successfully), true);
                             dialogReject.dismiss();
                             removeSelectedData();
                             STPCount--;
@@ -483,14 +483,14 @@ public class STPApprovalActivity extends AppCompatActivity implements OnItemClic
                 } else {
                     progressDialog.dismiss();
                     dialogReject.dismiss();
-                    commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network), true);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(STPApprovalActivity.this, getString(R.string.no_network), true);
                 dialogReject.dismiss();
             }
         });

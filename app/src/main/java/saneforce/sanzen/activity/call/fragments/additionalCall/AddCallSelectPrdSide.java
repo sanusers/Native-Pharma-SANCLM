@@ -200,7 +200,7 @@ public class AddCallSelectPrdSide extends Fragment {
                                 SelectContent(callSampleListAdapter.get(position).getCode(), holder.tv_name, holder.checkBox, holder.getBindingAdapterPosition());
                             } else {
                                 holder.checkBox.setChecked(false);
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_qty_prd));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_qty_prd), true);
                             }
                         }
                     } else {
@@ -224,7 +224,7 @@ public class AddCallSelectPrdSide extends Fragment {
                             checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
                             callSampleListAdapter.get(adapterPos).setCheckedItem(false);
                             checkBox.setChecked(false);
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_available));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_available), true);
                             break;
                         }
                     }

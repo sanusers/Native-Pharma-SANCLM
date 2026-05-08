@@ -320,7 +320,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
                                 @Override
                                 public void onFailure(int pos) {
                                     Log.d("bitmap image", "image: " + "bitmap image is null");
-                                    commonUtilsMethods.showToastMessage(context, getString(R.string.image_not_found));
+                                    commonUtilsMethods.showToastMessage(context, getString(R.string.image_not_found), true);
                                     fullScreenImage.setVisibility(View.GONE);
                                     progressBar.setVisibility(View.GONE);
                                     dialog_fullScreen.dismiss();
@@ -329,7 +329,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
                             closeButton.setOnClickListener(view -> dialog_fullScreen.dismiss());
                         }
                     } else {
-                        commonUtilsMethods.showToastMessage(MyResource_mapview.this, getString(R.string.no_network));
+                        commonUtilsMethods.showToastMessage(MyResource_mapview.this, getString(R.string.no_network), true);
                     }
                 }
             });

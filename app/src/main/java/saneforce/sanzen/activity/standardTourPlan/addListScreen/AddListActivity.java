@@ -135,7 +135,7 @@ public class AddListActivity extends AppCompatActivity {
 
         activityAddListBinding.btnSave.setOnClickListener(view -> {
             if (strClusterName.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap, true);
             }
             /*else if(selectedDCRMap.get(Constants.DOCTOR) != null && selectedDCRMap.get(Constants.DOCTOR).isEmpty()
                     && selectedDCRMap.get(Constants.CHEMIST) != null && selectedDCRMap.get(Constants.CHEMIST).isEmpty()) {
@@ -143,17 +143,17 @@ public class AddListActivity extends AppCompatActivity {
             }*/
             else if (selectedDCRMap.get(Constants.DOCTOR_MAS) == null || selectedDCRMap.get(Constants.DOCTOR_MAS).isEmpty()) {
 //                    && selectedDCRMap.get(Constants.CHEMIST_MAS) != null && selectedDCRMap.get(Constants.CHEMIST_MAS).isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_any) + " " + drCap);
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_any) + " " + drCap, true);
 //                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_any) + drCap + " or " + chmCap);
 //                String message = getString(R.string.please_select_any) + " " + drCap + " "
 //                        + getString(R.string.or_text) + " " + chmCap;
 //                commonUtilsMethods.showToastMessage(this, message);
             } else if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.approved))) {
                 // commonUtilsMethods.showToastMessage(this, "Cannot Save, Already Approved");
-                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_save_already_approved));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_save_already_approved), true);
             } else if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.waiting_for_approval))) {
 //                commonUtilsMethods.showToastMessage(this, "Cannot Save, Waiting For Approval");
-                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_save_waiting_for_approval));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_save_waiting_for_approval), true);
             } else {
                 saveSelectedDCR();
             }
@@ -163,10 +163,10 @@ public class AddListActivity extends AppCompatActivity {
             isRouteSelected = true;
             if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.approved))) {
 //                commonUtilsMethods.showToastMessage(this, "Cannot Clear, Already Approved");
-                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_clear_already_approved));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_clear_already_approved), true);
             } else if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.waiting_for_approval))) {
 //                commonUtilsMethods.showToastMessage(this, "Cannot Clear, Waiting For Approval");
-                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_clear_waiting_for_approval));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_clear_waiting_for_approval), true);
             } else {
                 showMultiCluster();
             }
@@ -174,7 +174,7 @@ public class AddListActivity extends AppCompatActivity {
 
         activityAddListBinding.tagTvDoctor.setOnClickListener(view -> {
             if (strClusterName.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap, true);
             } else {
 //                selectedDCR = Constants.DOCTOR;
                 selectedDCR = Constants.DOCTOR_MAS;
@@ -187,7 +187,7 @@ public class AddListActivity extends AppCompatActivity {
 
         activityAddListBinding.tagTvChemist.setOnClickListener(view -> {
             if (strClusterName.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap, true);
             } else {
 //                selectedDCR = Constants.CHEMIST;
                 selectedDCR = Constants.CHEMIST_MAS;
@@ -200,7 +200,7 @@ public class AddListActivity extends AppCompatActivity {
 
         activityAddListBinding.tagTvStockist.setOnClickListener(view -> {
             if (strClusterName.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap, true);
             } else {
                 selectedDCR = Constants.STOCKIEST_MAS;
                 selectedDCRCap = stkCap;
@@ -212,7 +212,7 @@ public class AddListActivity extends AppCompatActivity {
 
         activityAddListBinding.tagTvUndr.setOnClickListener(view -> {
             if (strClusterName.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap, true);
             } else {
                 selectedDCR = Constants.UNLISTED_DOCTOR_MAS;
                 selectedDCRCap = unDrCap;
@@ -224,7 +224,7 @@ public class AddListActivity extends AppCompatActivity {
 
         activityAddListBinding.tagTvCip.setOnClickListener(view -> {
             if (strClusterName.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap, true);
             } else {
                 selectedDCR = cipCap;
                 activityAddListBinding.etSearch.setText("");
@@ -235,7 +235,7 @@ public class AddListActivity extends AppCompatActivity {
 
         activityAddListBinding.tagTvHospital.setOnClickListener(view -> {
             if (strClusterName.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap);
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select) + " " + clusterCap, true);
             } else {
                 selectedDCR = Constants.HOSPITAL;
                 selectedDCRCap = hosCap;
@@ -248,17 +248,17 @@ public class AddListActivity extends AppCompatActivity {
         activityAddListBinding.btnClear.setOnClickListener(view -> {
             if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.approved))) {
                 //  commonUtilsMethods.showToastMessage(this, "Cannot Clear, Already Approved");
-                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_clear_already_approved));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_clear_already_approved), true);
             } else if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.waiting_for_approval))) {
                 //commonUtilsMethods.showToastMessage(this, "Cannot Clear, Waiting For Approval");
-                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_clear_waiting_for_approval));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_clear_waiting_for_approval), true);
             } else {
                 List<DCRModel> dcrModels = selectedDCRMap.get(selectedDCR);
                 if (dcrModels != null && !dcrModels.isEmpty()) {
                     clearSelection(selectedDCR, false);
                 } else {
 //                    commonUtilsMethods.showToastMessage(this, "Nothing selected to clear");
-                    commonUtilsMethods.showToastMessage(this, getString(R.string.nothing_selected_to_clear));
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.nothing_selected_to_clear), true);
                 }
             }
         });
@@ -278,7 +278,7 @@ public class AddListActivity extends AppCompatActivity {
                 } else if (strClusterID.isEmpty()) {
                     UtilityClass.hideKeyboard(AddListActivity.this);
                     if (!isRouteSelected) {
-                        commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.please_select) + " " + clusterCap);
+                        commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.please_select) + " " + clusterCap, true);
                         isRouteSelected = false;
                     }
                 }
@@ -750,10 +750,10 @@ public class AddListActivity extends AppCompatActivity {
     private final SelectedDCRAdapter.DeleteClickListener deleteClickListener = (dcrModel, selectedDCR) -> {
         if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.approved))) {
             //  commonUtilsMethods.showToastMessage(this, "Cannot Delete, Already Approved");
-            commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_delete_already_approved));
+            commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_delete_already_approved), true);
         } else if (SharedPref.getStpStatus(this).equalsIgnoreCase(getString(R.string.waiting_for_approval))) {
             //commonUtilsMethods.showToastMessage(this, "Cannot Delete, Waiting For Approval");
-            commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_delete_waiting_for_approval));
+            commonUtilsMethods.showToastMessage(this, getString(R.string.cannot_delete_waiting_for_approval), true);
         } else {
             List<DCRModel> dcrModelList = StandardTourPlanActivity.selectedDcrMap.get(selectedDCR);
             if (dcrModelList != null && !dcrModelList.isEmpty()) {
@@ -1265,7 +1265,7 @@ public class AddListActivity extends AppCompatActivity {
             if (UtilityClass.isNetworkAvailable(this)) {
                 APICallSaveSTP();
             } else {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.stp_saved_locally));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.stp_saved_locally), true);
             }
         }
         setResult(RESULT_OK);
@@ -1286,30 +1286,30 @@ public class AddListActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             JSONObject jsonObject1 = new JSONObject(response.body().toString());
                             if (jsonObject1.optString("success").equals("true")) {
-                                commonUtilsMethods.showToastMessage(AddListActivity.this, dayCaption + " " + getString(R.string.saved_successfully));
+                                commonUtilsMethods.showToastMessage(AddListActivity.this, dayCaption + " " + getString(R.string.saved_successfully), true);
                                 if (SharedPref.getOneBuild(AddListActivity.this).equalsIgnoreCase("0")) {
                                     stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, SharedPref.getSfCode(AddListActivity.this), dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), selectedDocSpeciality.toString(), selectedDocCategory.toString(), selectedDocClass.toString(), selectedDocCategoryCode.toString(), jsonObject.toString(), 3, "0"));
                                 } else {
                                     stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, SharedPref.getSfCode(AddListActivity.this), dayCaption, strClusterID, strClusterName, selectedDoctorCode.toString(), selectedDoctorName.toString(), selectedChemistCode.toString(), selectedChemistName.toString(), jsonObject.toString(), 3, "0"));
                                 }
                             } else {
-                                commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.stp_saved_locally));
+                                commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.stp_saved_locally), true);
                             }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.stp_saved_locally));
+                        commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.stp_saved_locally), true);
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                     t.printStackTrace();
-                    commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.stp_saved_locally));
+                    commonUtilsMethods.showToastMessage(AddListActivity.this, getString(R.string.stp_saved_locally), true);
                 }
             });
         } else {
-            commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(this, getString(R.string.no_network), true);
         }
     }
 

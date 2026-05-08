@@ -224,7 +224,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                                 WorkPlanEntriesNeeded.addedDatesNeeded.clear();
                                 WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
                             } else {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + context.getString(R.string.weekly_off_auto_post_is_enabled));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + context.getString(R.string.weekly_off_auto_post_is_enabled), true);
                                 return;
                             }
                         } else if (list.getWorkTypeFlag().equalsIgnoreCase("H") && SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
@@ -233,7 +233,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                                 WorkPlanEntriesNeeded.addedDatesNeeded.clear();
                                 WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
                             } else {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) +context.getString(R.string.holiday_auto_post_is_enabled));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) +context.getString(R.string.holiday_auto_post_is_enabled), true);
                                 return;
                             }
                         }
@@ -267,11 +267,11 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                         }
 
                         if (SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.sequential_entry_cannot_change_date));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.sequential_entry_cannot_change_date), true);
                         } else if (!SharedPref.getDayPlanStartedDate(context).isEmpty() && WorkPlanEntriesNeeded.datesNeeded.contains(SharedPref.getDayPlanStartedDate(context))) {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.complete_day));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.complete_day), true);
                         } else if (WorkPlanEntriesNeeded.datesNeeded.isEmpty() && SharedPref.getSelectedDateCal(context).isEmpty()) {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_pending_dates_to_select));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_pending_dates_to_select), true);
                         } else if (isApplicableDate) {
                             SharedPref.setSelectedDateCal(context, String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear()));
                             HomeDashBoard.binding.textDate.setText(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));
@@ -283,7 +283,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                             HomeDashBoard.checkAndSetEntryDate(context, true);
                         } else {
                             Log.e("call status", "onBindViewHolder: ");
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date), true);
                         }
 //                }
 
@@ -347,7 +347,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                                 WorkPlanEntriesNeeded.addedDatesNeeded.clear();
                                 WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
                             } else {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + context.getString(R.string.weekly_off_auto_post_is_enabled));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) + context.getString(R.string.weekly_off_auto_post_is_enabled), true);
                                 return;
                             }
                         } else if (list.getWorkTypeFlag().equalsIgnoreCase("H") && SharedPref.getHolidayAutoPostNeed(context).equalsIgnoreCase("1")) {
@@ -356,7 +356,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                                 WorkPlanEntriesNeeded.addedDatesNeeded.clear();
                                 WorkPlanEntriesNeeded.addedDatesNeeded.add(chosenDate);
                             } else {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) +context.getString(R.string.holiday_auto_post_is_enabled));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date) +context.getString(R.string.holiday_auto_post_is_enabled), true);
                                 return;
                             }
                         }
@@ -390,11 +390,11 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                         }
 
                         if (SharedPref.getDcrSequential(context).equalsIgnoreCase("0")) {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.sequential_entry_cannot_change_date));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.sequential_entry_cannot_change_date), true);
                         } else if (!SharedPref.getDayPlanStartedDate(context).isEmpty() && WorkPlanEntriesNeeded.datesNeeded.contains(SharedPref.getDayPlanStartedDate(context))) {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.complete_day));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.complete_day), true);
                         } else if (WorkPlanEntriesNeeded.datesNeeded.isEmpty() && SharedPref.getSelectedDateCal(context).isEmpty()) {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_pending_dates_to_select));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_pending_dates_to_select), true);
                         } else if (isApplicableDate) {
                             SharedPref.setSelectedDateCal(context, String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear()));
                             HomeDashBoard.binding.textDate.setText(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));
@@ -406,7 +406,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                             HomeDashBoard.checkAndSetEntryDate(context, true);
                         } else {
                             Log.e("call status", "onBindViewHolder: ");
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date), true);
                         }
 //                }
 

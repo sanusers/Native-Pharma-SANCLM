@@ -148,7 +148,7 @@ public class WelcomeSlideAdapter extends RecyclerView.Adapter<WelcomeSlideAdapte
                         WorkManager workManager = WorkManager.getInstance(activity);
                         workManager.enqueue(fileDownloadRequest);
                     } else {
-                        commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network));
+                        commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network), true);
                     }
                 }
             });

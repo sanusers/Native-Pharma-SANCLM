@@ -41,17 +41,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -69,7 +64,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import id.zelory.compressor.Compressor;
 import okhttp3.MultipartBody;
@@ -260,7 +254,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
         unlistedadditionbinding.btnUnlstsave.setOnClickListener(v -> {
             unlistedadditionbinding.btnUnlstsave.setEnabled(false);
             if (unlistedadditionbinding.edtDctr.getText().toString().isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.name));
+                commonUtilsMethods.showToastMessage(this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.name), true);
                 unlistedadditionbinding.btnUnlstsave.setEnabled(true);
             } else if (unlistedadditionbinding.edtDctr.getText().toString().contains("'")) {
                 unlistedadditionbinding.edtDctr.setError("Invalid Character");
@@ -300,7 +294,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         }
 
                     if (isDuplicate) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, SharedPref.getUNLcap(UnlistedDoctorAddition.this)+""+R.string.already_exist);
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, SharedPref.getUNLcap(UnlistedDoctorAddition.this)+""+R.string.already_exist, true);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                         return;
                     }
@@ -311,26 +305,26 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         return;
                     }
                     if (unlistedadditionbinding.txtSelectHq.getText().toString().isEmpty()) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.headquarter));
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.headquarter), true);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                     } else if (unlistedadditionbinding.txtSelectTerritory.getText().toString().isEmpty()) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.territory));
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.territory), true);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                     } else if (unlistedadditionbinding.txtSelectSpec.getText().toString().isEmpty()) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.speciality));
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.speciality), true);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                     } else if (unlistedadditionbinding.txtSelectCategory.getText().toString().isEmpty()) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.category));
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.category), true);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                     } else if (unlistedadditionbinding.txtSelectClass.getText().toString().isEmpty()) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.clases));
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.clases), true);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                     } else if (unlistedadditionbinding.txtSelectQua.getText().toString().isEmpty()) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.qualifications));
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.qualifications), true);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                     } else if (!unlistedadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("") &&
                             TagImgNd.equalsIgnoreCase("0") && destinationFilePath.equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.Photo_mand));
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.Photo_mand), true);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
 
                     } /*else if (unlistedadditionbinding.edtMob.getText().toString().equalsIgnoreCase("") && unlistedMobNeed.equalsIgnoreCase("0")) {
@@ -449,7 +443,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         }
 
                     if (isDuplicate) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, SharedPref.getUNLcap(UnlistedDoctorAddition.this)+" "+UnlistedDoctorAddition.this.getString(R.string.already_exist));
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, SharedPref.getUNLcap(UnlistedDoctorAddition.this)+" "+UnlistedDoctorAddition.this.getString(R.string.already_exist), true);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                         return; // stop saving further
                     }
@@ -462,27 +456,27 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
 
                     if (unlistedadditionbinding.txtSelectTerritory.getText().toString().isEmpty()) {
                         if (SharedPref.getClusterCap(UnlistedDoctorAddition.this).isEmpty() || SharedPref.getClusterCap(UnlistedDoctorAddition.this) == null) {
-                            commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.cluster));
+                            commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.cluster), true);
                             unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                         } else {
-                            commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + SharedPref.getClusterCap(UnlistedDoctorAddition.this));
+                            commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + SharedPref.getClusterCap(UnlistedDoctorAddition.this), true);
                             unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                         }
                     } else if (unlistedadditionbinding.txtSelectSpec.getText().toString().isEmpty()) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.speciality));
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.speciality), true);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                     } else if (unlistedadditionbinding.txtSelectCategory.getText().toString().isEmpty()) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.category));
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.category), true);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                     } else if (unlistedadditionbinding.txtSelectClass.getText().toString().isEmpty()) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.clases));
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.clases), true);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                     } else if (unlistedadditionbinding.txtSelectQua.getText().toString().isEmpty()) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.qualifications));
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.qualifications), true);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                     } else if (!unlistedadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("") &&
                             TagImgNd.equalsIgnoreCase("0") && destinationFilePath.equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.Photo_mand));
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.Photo_mand), true);
                         unlistedadditionbinding.btnUnlstsave.setEnabled(true);
 
 //                    } else if (unlistedadditionbinding.edtMob.getText().toString().equalsIgnoreCase("") && unlistedMobNeed.equalsIgnoreCase("0")) {
@@ -678,7 +672,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                     UnlistedDoctorAddition.this.startActivity(intent);
 
                 } else {
-                    commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, UnlistedDoctorAddition.this.getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, UnlistedDoctorAddition.this.getString(R.string.no_network), true);
                 }
             }
 
@@ -742,7 +736,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                 }
                 if (SfType.equalsIgnoreCase("2")) {
                     if (unlistedadditionbinding.txtSelectHq.getText().toString().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.select_headquater));
+                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.select_headquater), true);
                     } else {
                         unlistedadditionbinding.fragmentSelectCluster.setVisibility(View.VISIBLE);
                     }
@@ -868,14 +862,14 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                                                 }
                                             }
                                         }
-                                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.saved_successfully));
+                                        commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.saved_successfully), true);
                                     }
                                 } catch (Exception e) {
                                 }
                             } else {
                                 unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                                 progressDialog.dismiss();
-                                commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.something_wrong));
+                                commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.something_wrong), true);
                             }
                         }
 
@@ -883,14 +877,14 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                             progressDialog.dismiss();
-                            commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.no_network));
+                            commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.no_network), true);
                         }
                     });
                 }
             } else {
                 unlistedadditionbinding.btnUnlstsave.setEnabled(true);
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getResources().getString(R.string.no_network), true);
             }
 
         } catch (Exception e) {
@@ -1227,7 +1221,7 @@ public class UnlistedDoctorAddition extends AppCompatActivity {
             Log.d("fileToUpload", "CallImageAPIS3: " + fileToUpload.getAbsolutePath());
             if (!fileToUpload.exists()) {
                 Log.e("S3Upload", "File does not exist: " + destinationFilePath);
-                commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getString(R.string.file_does_not_exist));
+                commonUtilsMethods.showToastMessage(UnlistedDoctorAddition.this, getString(R.string.file_does_not_exist), true);
                 return;
             }
 

@@ -122,7 +122,7 @@ public class OutBoxActivityAdapter extends RecyclerView.Adapter<OutBoxActivityAd
                             ActivityModelClass activityModelClass = activityModelClassList.get(position);
                             CallAPI(holder.getAbsoluteAdapterPosition(), activityModelClass);
                         } else {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                         }
                     } else if (menuItem.getItemId() == R.id.menuDelete) {
 
@@ -178,12 +178,12 @@ public class OutBoxActivityAdapter extends RecyclerView.Adapter<OutBoxActivityAd
                             if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                                 activityOfflineDataDao.deleteOfflineActivity(activityModelClass.getId());
                                 removeAt(pos);
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.activity_saved_successfully));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.activity_saved_successfully), true);
                             } else {
                                 outboxUtil.updateStatusActivity(activityModelClass.getId(), 5, Constants.FAILED);
                                 activityModelClass.setSyncStatus(Constants.FAILED);
                                 activityModelClass.setSyncCount(5);
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_failed));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_failed), true);
                             }
                             progressDialog.dismiss();
                         } catch (Exception e) {
@@ -202,7 +202,7 @@ public class OutBoxActivityAdapter extends RecyclerView.Adapter<OutBoxActivityAd
                     outboxUtil.updateStatusActivity(activityModelClass.getId(), activityModelClass.getSyncCount() + 1, Constants.FAILED);
                     activityModelClass.setSyncStatus(Constants.FAILED);
                     activityModelClass.setSyncCount(activityModelClass.getSyncCount() + 1);
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_failed));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_failed), true);
                     progressDialog.dismiss();
                 }
             });

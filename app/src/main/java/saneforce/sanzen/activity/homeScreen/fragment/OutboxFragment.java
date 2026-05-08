@@ -179,7 +179,7 @@ public class OutboxFragment extends Fragment {
             public void onSafeClick(View view) {
                 if (offlineDaySubmitDao.isNonSyncAvailableDaySubmit()) {
                     //CommonUtilsMethods.showToastMessage(requireActivity(), "Cannot clear when day submitted");
-                    CommonUtilsMethods.showToastMessage(requireActivity(),getString(R.string.cannot_clear_when_day_submitted));
+                    CommonUtilsMethods.showToastMessage(requireActivity(),getString(R.string.cannot_clear_when_day_submitted), true);
                 } else {
                     if (!listDates.isEmpty()) {
                         Set<String> dates = outboxUtil.getOutboxDates();

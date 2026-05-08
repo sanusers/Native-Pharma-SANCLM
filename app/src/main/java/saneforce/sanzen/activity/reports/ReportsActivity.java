@@ -340,7 +340,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -452,7 +451,7 @@ public class ReportsActivity extends AppCompatActivity {
                         startActivity(intent);
                     } else {
                       //  commonUtilsMethods.showToastMessage(this, "Dynamic Report URL not found.");
-                        commonUtilsMethods.showToastMessage(this, getString(R.string.dynamic_report_url_not_found));
+                        commonUtilsMethods.showToastMessage(this, getString(R.string.dynamic_report_url_not_found), true);
                     }
                 }
             }
@@ -554,14 +553,14 @@ public class ReportsActivity extends AppCompatActivity {
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.poor_connection));
+                    commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.poor_connection), true);
                 }
 
             });
             networkStatusTask.execute();
         } else {
             progressDialog.dismiss();
-            commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.no_network), true);
         }
     }
 
@@ -643,7 +642,7 @@ public class ReportsActivity extends AppCompatActivity {
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 binding.progressBar.setVisibility(View.GONE);
-                                commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.poor_connection) + " " + getString(R.string.please_try_again));
+                                commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.poor_connection) + " " + getString(R.string.please_try_again), true);
                             }
                         });
                     } catch (JSONException e) {
@@ -651,14 +650,14 @@ public class ReportsActivity extends AppCompatActivity {
                     }
                 } else {
                     binding.progressBar.setVisibility(View.GONE);
-                    commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.poor_connection));
+                    commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.poor_connection), true);
                 }
             });
             networkStatusTask.execute();
 
         } else {
             binding.progressBar.setVisibility(View.GONE);
-            commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(ReportsActivity.this, getString(R.string.no_network), true);
         }
     }
 

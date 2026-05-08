@@ -135,9 +135,9 @@ public class PreCallAnalysisFragment extends Fragment {
                                 prdDetails = prdDetails.replace("$", "-");
                                 prdDetails = prdDetails.replace("^", "-");
                                 preCallAnalysisBinding.tvPrdPromoted.setText(prdDetails);*/
-
                             }
-                            if (dcrLastVstDetails.get(0).getInputs().equalsIgnoreCase("( 0 ),")) {
+
+                            if (dcrLastVstDetails.get(0).getInputs().equalsIgnoreCase("( 0 ),") || dcrLastVstDetails.get(0).getInputs().isEmpty()) {
                                 preCallAnalysisBinding.tvInputs.setText(context.getString(R.string.no) + " " + InpCap);
                             } else {
                                 preCallAnalysisBinding.tvInputs.setText(dcrLastVstDetails.get(0).getInputs());

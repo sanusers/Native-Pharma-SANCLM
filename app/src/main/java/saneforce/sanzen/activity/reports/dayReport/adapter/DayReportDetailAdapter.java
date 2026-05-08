@@ -733,7 +733,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                                 setEventCaptureData(EventCaptureData);
                                             }else {
                                                 progressDialog.dismiss();
-                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.event_capture_not_available));
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.event_capture_not_available), true);
                                             }
                                         }
                                     }
@@ -744,7 +744,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                                 progressDialog.dismiss();
                             }
                         });
@@ -753,13 +753,13 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                     }
                 }else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection), true);
                 }
             });
             networkStatusTask.execute();
         }else {
             progressDialog.dismiss();
-            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
         }
     }
 
@@ -813,7 +813,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                                 setSignatureData(SignatureData);
                                             }else {
                                                 progressDialog.dismiss();
-                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.signature_not_available));
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.signature_not_available), true);
                                             }
 
                                         }
@@ -825,7 +825,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                                 progressDialog.dismiss();
                             }
                         });
@@ -834,13 +834,13 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection), true);
                 }
             });
             networkStatusTask.execute();
         } else {
             progressDialog.dismiss();
-            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
         }
 
     }
@@ -898,7 +898,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                                 layout.setVisibility(View.VISIBLE);
                                                 rcpadataid = arrayList.get(position).getTrans_Detail_Slno();
                                             }else {
-                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.rcpa_details_not_available));
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.rcpa_details_not_available), true);
                                             }
 
                                         }
@@ -910,7 +910,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                                 progressDialog.dismiss();
                             }
                         });
@@ -919,13 +919,13 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                     }
                 }else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection), true);
                 }
             });
             networkStatusTask.execute();
         }else {
             progressDialog.dismiss();
-            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
         }
     }
 
@@ -998,7 +998,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                                 Slededataid = arrayList.get(position).getTrans_Detail_Slno();
                                             }else {
                                                 holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.click_logo));
-                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.slides_details_not_available));
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.slides_details_not_available), true);
                                             }
                                         }
                                     }
@@ -1009,7 +1009,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                                 progressDialog.dismiss();
                             }
                         });
@@ -1018,13 +1018,13 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                     }
                 }else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection), true);
                 }
             });
             networkStatusTask.execute();
         }else {
             progressDialog.dismiss();
-            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
         }
     }
 

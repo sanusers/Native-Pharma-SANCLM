@@ -258,7 +258,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     // to get all the HQ list initially only for MGR
 // to get all the HQ list initially only for MGR
                 } else {
-                    commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network), true);
                 }
             } else {
                 masterSyncAll(false);
@@ -674,7 +674,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 }
                             }
                         } else {
-                            commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
+                            commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network), true);
                         }
                     }
                 });
@@ -1645,7 +1645,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                         if (position < masterSyncItemModels.size()) {
                             masterSyncItemModels.get(position).setPBarVisibility(false);
                         }
-                        commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.poor_connection));
+                        commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.poor_connection), true);
                         checkAndSetStatus(masterSyncItemModel1);
                         masterSyncAdapter.notifyDataSetChanged();
                     }
@@ -1655,7 +1655,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 if (position < masterSyncItemModels.size()) {
                     masterSyncItemModels.get(position).setPBarVisibility(false);
                 }
-                commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network), true);
                 checkAndSetStatus(masterSyncItemModel1);
                 masterSyncAdapter.notifyDataSetChanged();
             }
@@ -1771,7 +1771,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     }
                     Log.e("test", "count : " + itemCount);
                 } else {
-                    commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network), true);
                 }
 
             }
@@ -3605,10 +3605,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                 if (isSingleSlideDowloaingStaus) {
                     isSingleSlideDowloaingStaus = false;
                     //  commonUtilsMethods.showToastMessage(this, "Slide Updated ");
-                    commonUtilsMethods.showToastMessage(this, getString(R.string.slide_updated));
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.slide_updated), true);
                 } else {
 //                    commonUtilsMethods.showToastMessage(this, " Slides Downloading Completed ");
-                    commonUtilsMethods.showToastMessage(this, getString(R.string.slides_downloading_completed));
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.slides_downloading_completed), true);
                 }
 
                 if (navigateFrom.equalsIgnoreCase("Login")) {
@@ -3720,9 +3720,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                 SharedPref.putWelcomeSlideStatus(MasterSyncActivity.this, true);
                 if (isSingleWelcomeSlideDownloadingStatus) {
                     isSingleWelcomeSlideDownloadingStatus = false;
-                    commonUtilsMethods.showToastMessage(this, getString(R.string.slide_updated));
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.slide_updated), true);
                 } else {
-                    commonUtilsMethods.showToastMessage(this, getString(R.string.welcome_slides_downloading_completed));
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.welcome_slides_downloading_completed), true);
                 }
 
                 if (navigateFrom.equalsIgnoreCase("Login")) {

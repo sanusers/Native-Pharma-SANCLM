@@ -6,8 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,7 +23,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 
-import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -40,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -453,28 +449,28 @@ public class TagCustSelectionList extends AppCompatActivity {
                                                 binding.noCustomer.setText(TagCustSelectionList.this.getString(R.string.no) + " " + SharedPref.getDrCap(TagCustSelectionList.this) + " " + TagCustSelectionList.this.getString(R.string.found));
                                                 binding.rvCustList.setVisibility(View.GONE);
                                                 binding.noCustomer.setVisibility(View.VISIBLE);
-                                                commonUtilsMethods.showToastMessage(TagCustSelectionList.this, TagCustSelectionList.this.getString(R.string.no_data_found) + "  " + TagCustSelectionList.this.getString(R.string.do_master_sync));
+                                                commonUtilsMethods.showToastMessage(TagCustSelectionList.this, TagCustSelectionList.this.getString(R.string.no_data_found) + "  " + TagCustSelectionList.this.getString(R.string.do_master_sync), true);
                                                 Log.d("Sync On Response", "No Data Found Kindly MasterSync dR");
                                                 break;
                                             case "C":
                                                 binding.noCustomer.setText(TagCustSelectionList.this.getString(R.string.no) + " " + SharedPref.getChmCap(TagCustSelectionList.this) + " " + TagCustSelectionList.this.getString(R.string.found));
                                                 binding.rvCustList.setVisibility(View.GONE);
                                                 binding.noCustomer.setVisibility(View.VISIBLE);
-                                                commonUtilsMethods.showToastMessage(TagCustSelectionList.this, TagCustSelectionList.this.getString(R.string.no_data_found) + "  " + TagCustSelectionList.this.getString(R.string.do_master_sync));
+                                                commonUtilsMethods.showToastMessage(TagCustSelectionList.this, TagCustSelectionList.this.getString(R.string.no_data_found) + "  " + TagCustSelectionList.this.getString(R.string.do_master_sync), true);
                                                 Log.d("Sync On Response", "No Data Found Kindly MasterSync CHM");
                                                 break;
                                             case "S":
                                                 binding.noCustomer.setText(TagCustSelectionList.this.getString(R.string.no) + " " + SharedPref.getStkCap(TagCustSelectionList.this) + " " + TagCustSelectionList.this.getString(R.string.found));
                                                 binding.rvCustList.setVisibility(View.GONE);
                                                 binding.noCustomer.setVisibility(View.VISIBLE);
-                                                commonUtilsMethods.showToastMessage(TagCustSelectionList.this, TagCustSelectionList.this.getString(R.string.no_data_found) + "  " + TagCustSelectionList.this.getString(R.string.do_master_sync));
+                                                commonUtilsMethods.showToastMessage(TagCustSelectionList.this, TagCustSelectionList.this.getString(R.string.no_data_found) + "  " + TagCustSelectionList.this.getString(R.string.do_master_sync), true);
                                                 Log.d("Sync On Response", "No Data Found Kindly MasterSync STK");
                                                 break;
                                             case "U":
                                                 binding.noCustomer.setText(TagCustSelectionList.this.getString(R.string.no) + " " + SharedPref.getUNLcap(TagCustSelectionList.this) + " " + TagCustSelectionList.this.getString(R.string.found));
                                                 binding.rvCustList.setVisibility(View.GONE);
                                                 binding.noCustomer.setVisibility(View.VISIBLE);
-                                                commonUtilsMethods.showToastMessage(TagCustSelectionList.this, TagCustSelectionList.this.getString(R.string.no_data_found) + "  " + TagCustSelectionList.this.getString(R.string.do_master_sync));
+                                                commonUtilsMethods.showToastMessage(TagCustSelectionList.this, TagCustSelectionList.this.getString(R.string.no_data_found) + "  " + TagCustSelectionList.this.getString(R.string.do_master_sync), true);
                                                 Log.d("Sync On Response", "No Data Found Kindly MasterSync ULdR");
                                                 break;
                                         }
@@ -530,7 +526,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_network), true);
         }
     }
 
@@ -900,7 +896,7 @@ public class TagCustSelectionList extends AppCompatActivity {
 
                     if (custListArrayList.isEmpty()) {
                         commonUtilsMethods.showToastMessage(TagCustSelectionList.this,
-                                getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
+                                getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync), true);
                     }
 
                 } catch (Exception e) {
@@ -959,7 +955,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                         }
                     }
                     if (jsonArray == null || jsonArray.length() == 0) {
-                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
+                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync), true);
                     } else {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             jsonObject = jsonArray.getJSONObject(i);
@@ -1034,7 +1030,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                         }
                     }
                     if (jsonArray == null || jsonArray.length() == 0) {
-                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
+                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync), true);
                     } else {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             jsonObject = jsonArray.getJSONObject(i);

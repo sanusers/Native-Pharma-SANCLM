@@ -49,6 +49,7 @@ public class SharedPref {
 
     public static final String TAG_IMAGE_URL = "tag_image_url";
     public static final String TAG_API_IMAGE_URL = "tag_api_image_url";
+    public static final String APP_URL = "appurl";
 
 
 // LogIN Data
@@ -512,8 +513,8 @@ public class SharedPref {
     public static final String SETUP_SYNCED = "setup_synced";
     public static final String RPT_MGR_CODE = "ReportingMgrCode";
     public static final String RPT_MGR_NAME = "ReportingMgrName";
-    public static final String TP_MGR_CODE  = "ReportingTPMgrCode";
-    public static final String TP_MGR_NAME  = "ReportingTPMgrName";
+    public static final String TP_MGR_CODE = "ReportingTPMgrCode";
+    public static final String TP_MGR_NAME = "ReportingTPMgrName";
     public static final String LEV_MGR_CODE = "ReportingLeaveMgrCode";
     public static final String LEV_MGR_NAME = "ReportingLeaveMgrName";
     public static final String RESET_PASSWORD_NEED = "reset_password_need";
@@ -535,7 +536,7 @@ public class SharedPref {
 
     public static final String TodayTPDoctor = "TodayTPDoctor";
     public static final String TodayTPChemists = "TodayTPChemist";
-   // public static final String DoctorRemainingShownDate = "DoctorRemainingShownDate";
+    // public static final String DoctorRemainingShownDate = "DoctorRemainingShownDate";
     public static final String RemainderTime = "RemainderTime";
     public static final String PRACTICE_NEED = "PracticeNd";
     public static final String DataClearedFlag = "DataClearedFlag";
@@ -551,6 +552,13 @@ public class SharedPref {
     public static final String NightStay = "NightStay";
     public static final String NS_FOR_NFW_NEED = "NS_For_NFW_Need";
     public static final String NS_ALL_CLUSTER_NEED = "NS_All_Cluster_Need";
+    public static final String PRODUCT_OTP_NEED = "Product_otp_need";
+    public static final String INPUT_OTP_NEED = "Input_otp_need";
+    public static final String EDIT_CALL_OTP_NEED = "Editcall_otp_need";
+    public static final String PAST_DATE_OTP_NEED = "Pastdate_otp_need";
+
+    public static final String AUTO_SUBMIT_TIME  = "Auto_Submit_Time";
+
 
     // Get last popup shown date
     public static String getTodayPopupShown(Context context) {
@@ -930,34 +938,39 @@ public class SharedPref {
             editor.putString(REPORTING_TO_SF, jsonObject.optString("Reporting_To_SF"));
             editor.putString(UNLST_DOC_APP_NEED, jsonObject.optString("Unlst_Doc_App_need"));
             editor.putString(SUBDIVISION_NAMES, jsonObject.optString("SubdivisionNames"));
-            editor.putString(LOGIN_TIMER,jsonObject.optString("LoginTimer"));
-            editor.putString(RESET_PASSWORD_NEED,jsonObject.optString("reset_password_need"));
-            editor.putString(RESET_PASSWORD_DAYS,jsonObject.optString("reset_password_days"));
+            editor.putString(LOGIN_TIMER, jsonObject.optString("LoginTimer"));
+            editor.putString(RESET_PASSWORD_NEED, jsonObject.optString("reset_password_need"));
+            editor.putString(RESET_PASSWORD_DAYS, jsonObject.optString("reset_password_days"));
             editor.putString(LOGIN_TIMER, jsonObject.optString("LoginTimer"));
             editor.putString(SLIDE_AUTO_PLAY, jsonObject.optString("Html_Play"));
             editor.putString(SLIDEWISE_DETAILING_NEED, jsonObject.optString("slidewise_detailing_need"));
-            editor.putString(MANDATORY_SLIDE,jsonObject.optString("MandatorySlide"));
-            editor.putString(LOGIN_TIMER,jsonObject.optString("LoginTimer"));
-            editor.putString(RPT_MGR_CODE,jsonObject.optString("ReportingMgrCode"));
-            editor.putString(RPT_MGR_NAME,jsonObject.optString("ReportingMgrName"));
-            editor.putString(TP_MGR_CODE,jsonObject.optString("ReportingTPMgrCode"));
-            editor.putString(TP_MGR_NAME,jsonObject.optString("ReportingTPMgrName"));
-            editor.putString(LEV_MGR_CODE,jsonObject.optString("ReportingLeaveMgrCode"));
-            editor.putString(LEV_MGR_NAME,jsonObject.optString("ReportingLeaveMgrName"));
-            editor.putString(ZOOM_FLAG,jsonObject.optString("Zoomflag"));
-            editor.putString(LEAVE_ATTACHMENT_NEED,jsonObject.optString("leave_attachment_need"));
+            editor.putString(MANDATORY_SLIDE, jsonObject.optString("MandatorySlide"));
+            editor.putString(LOGIN_TIMER, jsonObject.optString("LoginTimer"));
+            editor.putString(RPT_MGR_CODE, jsonObject.optString("ReportingMgrCode"));
+            editor.putString(RPT_MGR_NAME, jsonObject.optString("ReportingMgrName"));
+            editor.putString(TP_MGR_CODE, jsonObject.optString("ReportingTPMgrCode"));
+            editor.putString(TP_MGR_NAME, jsonObject.optString("ReportingTPMgrName"));
+            editor.putString(LEV_MGR_CODE, jsonObject.optString("ReportingLeaveMgrCode"));
+            editor.putString(LEV_MGR_NAME, jsonObject.optString("ReportingLeaveMgrName"));
+            editor.putString(ZOOM_FLAG, jsonObject.optString("Zoomflag"));
+            editor.putString(LEAVE_ATTACHMENT_NEED, jsonObject.optString("leave_attachment_need"));
             editor.putString(JW_AUTO_SELECTION_NEED, jsonObject.optString("jw_auto_selection_need"));
             editor.putString(RemainderTime, jsonObject.optString("Remainder_Time"));
-            editor.putString(PRACTICE_NEED,jsonObject.optString("PracticeNd"));
+            editor.putString(PRACTICE_NEED, jsonObject.optString("PracticeNd"));
             editor.putString(SCREEN_ACCESS, jsonObject.optString("Screen_Access"));
             editor.putString(CLEAR_DATA_NEED, jsonObject.optString("Clear_Data_Need"));
             editor.putString(SEND_LOGS_NEED, jsonObject.optString("Send_Logs_Need"));
             editor.putString(STP_TYPE, jsonObject.optString("STP_Type"));
-            editor.putString(DET_DR_CAP,jsonObject.optString("Detailing_Dr_Caption"));
-            editor.putString(DET_ULDR_CAP,jsonObject.optString("Detailing_UnlstDr_Caption"));
-            editor.putString(NightStay,jsonObject.optString("NightStay"));
-            editor.putString(NS_FOR_NFW_NEED,jsonObject.optString("NS_For_NFW_Need"));
-            editor.putString(NS_ALL_CLUSTER_NEED,jsonObject.optString("NS_All_Cluster_Need"));
+            editor.putString(DET_DR_CAP, jsonObject.optString("Detailing_Dr_Caption"));
+            editor.putString(DET_ULDR_CAP, jsonObject.optString("Detailing_UnlstDr_Caption"));
+            editor.putString(NightStay, jsonObject.optString("NightStay"));
+            editor.putString(NS_FOR_NFW_NEED, jsonObject.optString("NS_For_NFW_Need"));
+            editor.putString(NS_ALL_CLUSTER_NEED, jsonObject.optString("NS_All_Cluster_Need"));
+            editor.putString(PRODUCT_OTP_NEED, jsonObject.optString("Product_otp_need"));
+            editor.putString(INPUT_OTP_NEED, jsonObject.optString("Input_otp_need"));
+            editor.putString(EDIT_CALL_OTP_NEED, jsonObject.optString("Editcall_otp_need"));
+            editor.putString(PAST_DATE_OTP_NEED, jsonObject.optString("Pastdate_otp_need"));
+            editor.putString(AUTO_SUBMIT_TIME, jsonObject.optString("Auto_Submit_Time"));
             editor.apply();
         } catch (Exception ignore) {
             ignore.printStackTrace();
@@ -2248,7 +2261,7 @@ public class SharedPref {
         editor.apply();
     }
 
-    public static void saveUrlsOneBuild(Context context, String baseUrl, String licenseKey, String baseWebUrl, String detPathUrl, String reportsUrl, String logoUrl, String optionFiles, boolean settingState,String aBKey,String aBSKey) {
+    public static void saveUrlsOneBuild(Context context, String baseUrl, String licenseKey, String baseWebUrl, String detPathUrl, String reportsUrl, String logoUrl, String optionFiles, boolean settingState, String aBKey, String aBSKey) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(BASE_URL, baseWebUrl.replace("https://", "").replace("http://", ""));
@@ -2259,8 +2272,8 @@ public class SharedPref {
         editor.putString(S3_LOGO_URL, logoUrl);
         editor.putString(OPTION_FILES_URL, optionFiles);
         editor.putBoolean(SETTING_STATE, settingState);
-        editor.putString(A_B_AKEY,aBKey);
-        editor.putString(A_B_SKEY,aBSKey);
+        editor.putString(A_B_AKEY, aBKey);
+        editor.putString(A_B_SKEY, aBSKey);
         editor.apply();
     }
 
@@ -2303,9 +2316,11 @@ public class SharedPref {
     public static String getLogoUrl(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGO_URL, "");
     }
+
     public static String getS3LogoUrl(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(S3_LOGO_URL, "");
     }
+
     public static void saveSettingState(Context context, boolean state) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2322,10 +2337,11 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(SETTING_STATE, false);
     }
 
-    public static String getABKey(Context context){
+    public static String getABKey(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(A_B_AKEY, "");
     }
-    public static String getABSKey(Context context){
+
+    public static String getABSKey(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(A_B_SKEY, "");
     }
 
@@ -2454,6 +2470,16 @@ public class SharedPref {
 
     public static String getTagImageUrl(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TAG_IMAGE_URL, "");
+    }
+
+    public static void setAppUrl(Context context, String token) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(APP_URL, token).apply();
+    }
+
+    public static String getAppUrl(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(APP_URL, "");
     }
 
     public static void setTagApiImageUrl(Context context, String token) {
@@ -3332,31 +3358,37 @@ public class SharedPref {
     public static boolean getIsSetupSynced(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(SETUP_SYNCED, false);
     }
-    public static String getReportingMgrCode(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(RPT_MGR_CODE,"");
+
+    public static String getReportingMgrCode(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(RPT_MGR_CODE, "");
     }
-    public static String getReportingMgrName(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(RPT_MGR_NAME,"");
+
+    public static String getReportingMgrName(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(RPT_MGR_NAME, "");
     }
-    public static String getTpMgrCode(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(TP_MGR_CODE,"");
+
+    public static String getTpMgrCode(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TP_MGR_CODE, "");
     }
-    public static String getTpMgrName(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(TP_MGR_NAME,"");
+
+    public static String getTpMgrName(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TP_MGR_NAME, "");
     }
-    public static String getLeaveMgrCode(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(LEV_MGR_CODE,"");
+
+    public static String getLeaveMgrCode(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LEV_MGR_CODE, "");
     }
-    public static String getLeaveMgrName(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(LEV_MGR_NAME,"");
+
+    public static String getLeaveMgrName(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LEV_MGR_NAME, "");
     }
 
     public static String getResetPasswordNeed(Context context) {
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(RESET_PASSWORD_NEED,"1");
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(RESET_PASSWORD_NEED, "1");
     }
 
     public static String getResetPasswordDays(Context context) {
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(RESET_PASSWORD_DAYS,"90");
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(RESET_PASSWORD_DAYS, "90");
     }
 
     public static String getSlideAutoPlay(Context context) {
@@ -3366,8 +3398,9 @@ public class SharedPref {
     public static String getSlideWiseDetailingNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDEWISE_DETAILING_NEED, "1");
     }
-    public static String getZoomEnabled(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(ZOOM_FLAG,"1");
+
+    public static String getZoomEnabled(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(ZOOM_FLAG, "1");
     }
 
     public static void setStatusCheckedDate(Context context, String date) {
@@ -3398,8 +3431,8 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(JW_AUTO_SELECTION_NEED, "1");
     }
 
-    public static String getMandatorySlide(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(MANDATORY_SLIDE,"0");
+    public static String getMandatorySlide(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(MANDATORY_SLIDE, "0");
     }
 
     public static void setTodayTPDoctor(Context context, String doctorCodes) {
@@ -3420,6 +3453,7 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
                 .getString(TodayTPDoctor, "");
     }
+
     // Save last date popup was shown
     public static void setDoctorRemainingShownDate(Context context, String time) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -3432,26 +3466,27 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(RemainderTime, "");
     }
 
-    public static String getPracticeNeed(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(PRACTICE_NEED,"0");
+    public static String getPracticeNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(PRACTICE_NEED, "0");
     }
 
-//    public static void addVisitedDoctor(Context context, String custCode) {
+    //    public static void addVisitedDoctor(Context context, String custCode) {
 //        SharedPreferences sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
 //        Set<String> visited = sp.getStringSet("CumulativeVisitedDoctors", new HashSet<>());
 //        visited.add(custCode.toUpperCase());
 //        sp.edit().putStringSet("CumulativeVisitedDoctors", visited).apply();
 //    }
-public static void addVisitedDoctor(Context context, String custCode) {
-    SharedPreferences sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+    public static void addVisitedDoctor(Context context, String custCode) {
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
 
-    // Create mutable copy
-    Set<String> visited = new HashSet<>(sp.getStringSet("CumulativeVisitedDoctors", new HashSet<>()));
+        // Create mutable copy
+        Set<String> visited = new HashSet<>(sp.getStringSet("CumulativeVisitedDoctors", new HashSet<>()));
 
-    visited.add(custCode.trim().toUpperCase());
+        visited.add(custCode.trim().toUpperCase());
 
-    sp.edit().putStringSet("CumulativeVisitedDoctors", visited).apply();
-}
+        sp.edit().putStringSet("CumulativeVisitedDoctors", visited).apply();
+    }
+
     public static Set<String> getVisitedDoctors(Context context) {
         SharedPreferences sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         return new HashSet<>(sp.getStringSet("CumulativeVisitedDoctors", new HashSet<>()));
@@ -3468,6 +3503,7 @@ public static void addVisitedDoctor(Context context, String custCode) {
                 .edit().remove("CumulativeVisitedDoctors")
                 .apply();
     }
+
     public static void setDataCleared(Context context, boolean isCleared) {
         SharedPreferences sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         sp.edit().putBoolean(DataClearedFlag, isCleared).apply();
@@ -3478,6 +3514,7 @@ public static void addVisitedDoctor(Context context, String custCode) {
         SharedPreferences sp = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         return sp.getBoolean(DataClearedFlag, false);
     }
+
     // SharedPref.java additions
     // SharedPref.java
     public static boolean getPopupShownAfterClear(Context context) {
@@ -3534,24 +3571,44 @@ public static void addVisitedDoctor(Context context, String custCode) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(STP_TYPE, "0");
     }
 
-    public static String getDetDrCap(Context context){
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DET_DR_CAP,"");
+    public static String getDetDrCap(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DET_DR_CAP, "");
     }
 
-    public static String getDetUldrCap(Context context){
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DET_ULDR_CAP,"");
+    public static String getDetUldrCap(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DET_ULDR_CAP, "");
     }
 
-    public static String getNightStay(Context context){
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NightStay,"1");
+    public static String getNightStay(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NightStay, "1");
     }
 
-    public static String getNsForNfwNeed(Context context){
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NS_FOR_NFW_NEED,"1");
+    public static String getNsForNfwNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NS_FOR_NFW_NEED, "1");
     }
 
-    public static String getNsAllClusterNeed(Context context){
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NS_ALL_CLUSTER_NEED,"1");
+    public static String getNsAllClusterNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(NS_ALL_CLUSTER_NEED, "1");
+    }
+
+    public static String getProductOtpNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(PRODUCT_OTP_NEED, "1");
+    }
+
+    public static String getInputOtpNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(INPUT_OTP_NEED, "1");
+    }
+
+    public static String getEditCallOtpNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(EDIT_CALL_OTP_NEED, "1");
+    }
+
+    public static String getPastDateOtpNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(PAST_DATE_OTP_NEED, "1");
+    }
+
+    public static String getAutoSubmitTime(Context context){
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(AUTO_SUBMIT_TIME,"00:00");
     }
 
 }

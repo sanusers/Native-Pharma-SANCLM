@@ -285,7 +285,7 @@ public class DrSelectionSide extends Fragment {
                 e.printStackTrace();
             }
         } else {
-            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
         }
     }
 

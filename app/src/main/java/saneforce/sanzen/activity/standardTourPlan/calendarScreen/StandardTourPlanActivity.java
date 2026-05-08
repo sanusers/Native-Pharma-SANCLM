@@ -257,7 +257,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     saveAllSTPData();
                 }
             } else {
-                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network), true);
             }
         });
 
@@ -993,7 +993,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             }
             if (dayIDs == null || dayIDs.isEmpty()) {
                 //commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, "Kindly sync Standard Tour Plan Setup!");
-                CommonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, stpCap + " " + getString(R.string.is_empty));
+                CommonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, stpCap + " " + getString(R.string.is_empty), true);
 //                startActivity(new Intent(StandardTourPlanActivity.this, MasterSyncActivity.class));
 //                finish();
             } else {
@@ -1343,7 +1343,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             activityStandardTourPlanBinding.rvCalendar.setLayoutManager(calendarLayoutManager);
             activityStandardTourPlanBinding.rvCalendar.setAdapter(calendarAdapter);
         } else {
-            CommonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, stpCap + " " + getString(R.string.is_empty));
+            CommonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, stpCap + " " + getString(R.string.is_empty), true);
             activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
         }
     }
@@ -1467,9 +1467,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     showSwapDialog(calendarModel.getId(), calendarModel.getCaption());
                 }
             } else if (stpFlag.equalsIgnoreCase("1")) {
-                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
+                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval), true);
             } else if (stpFlag.equalsIgnoreCase("2")) {
-                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved));
+                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved), true);
             }
         } else {
             if (!stpFlag.equalsIgnoreCase("0") && !stpFlag.equalsIgnoreCase("2")) {
@@ -1488,9 +1488,9 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     showSwapDialog(calendarModel.getId(), calendarModel.getCaption());
                 }
             } else if (stpFlag.equalsIgnoreCase("0")) {
-                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved));
+                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.already_approved), true);
             } else if (stpFlag.equalsIgnoreCase("2")) {
-                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
+                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval), true);
             }
         }
     };
@@ -1547,7 +1547,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                     showSwapConfirmDialog(id, caption, swapCode, swapName);
                     dialogFilter.dismiss();
                 } else {
-                    CommonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.select_swap_to));
+                    CommonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.select_swap_to), true);
                 }
             });
 
@@ -1585,7 +1585,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 createSwapJson(fromID, fromName, toID, toName);
                 callSwapAPI(fromID, fromName, toID, toName);
             } else {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network), true);
             }
         });
         btn_clear.setOnClickListener(view -> {
@@ -1613,7 +1613,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         try {
                             JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
                             if (json.getString("success").equalsIgnoreCase("true")) {
-                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.swap_between) + " " + fromName + " " + getString(R.string.and) + " " + toName + " " + getString(R.string.was_successful));
+                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.swap_between) + " " + fromName + " " + getString(R.string.and) + " " + toName + " " + getString(R.string.was_successful), true);
                             }
                         } catch (Exception e) {
                             Log.e("STP SWAP", "onResponse: " + e.getMessage());
@@ -1626,13 +1626,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                     activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
                     Log.e("VALUES", Arrays.toString(t.getStackTrace()));
-                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network), true);
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
             activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
-            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network), true);
         }
     }
 
@@ -1700,14 +1700,14 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                     Log.e("STP", "onFailure: ");
                     activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
-                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network), true);
                     t.printStackTrace();
                 }
             });
 
         } catch (JSONException a) {
             activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
-            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network), true);
             a.printStackTrace();
         }
     }
@@ -1812,7 +1812,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
 //                    populateAdapters();
 //                    checkApprovalButtonStatus();
 //                } else {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network), true);
 //                }
             }
             dialogOptionSelection.dismiss();
@@ -1842,7 +1842,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                         try {
                             JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
                             if (json.getString("success").equalsIgnoreCase("true")) {
-                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, caption + " " + getString(R.string.deleted_successfully));
+                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, caption + " " + getString(R.string.deleted_successfully), true);
                             }
                         } catch (Exception e) {
                             Log.e("STP Delete", "onResponse: " + e.getMessage());
@@ -1855,13 +1855,13 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                     Log.e("VALUES", Arrays.toString(t.getStackTrace()));
                     activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
-                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network), true);
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
             activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
-            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network), true);
         }
     }
 
@@ -1924,19 +1924,19 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                     if (response.isSuccessful() && response.body() != null) {
                                         JSONObject jsonObject1 = new JSONObject(response.body().toString());
                                         if (jsonObject1.optString("success").equals("true")) {
-                                            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, dayCaption + " " + getString(R.string.saved_successfully));
+                                            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, dayCaption + " " + getString(R.string.saved_successfully), true);
                                             if (SharedPref.getOneBuild(StandardTourPlanActivity.this).equalsIgnoreCase("0")) {
                                                 stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, SharedPref.getSfCode(StandardTourPlanActivity.this), dayCaption, strClusterID, strClusterName, docCodes, docNames, chmCodes, chmNames, docSpeciality, docCategory, docClass, docCategoryCode, jsonObject, stpFlag, "0"));
                                             } else {
                                                 stpOfflineDataDao.saveSTPData(new STPOfflineDataTable(dayID, SharedPref.getSfCode(StandardTourPlanActivity.this), dayCaption, strClusterID, strClusterName, docCodes, docNames, chmCodes, chmNames, jsonObject, stpFlag, "0"));
                                             }
                                         } else {
-                                            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.stp_saved_locally));
+                                            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.stp_saved_locally), true);
                                         }
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.stp_saved_locally));
+                                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.stp_saved_locally), true);
                                 }
                                 if (apiCount[0] == stpOfflineDataTableList.size()) {
                                     activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
@@ -1952,7 +1952,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                     activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
                                     activityStandardTourPlanBinding.sendToApproval.setEnabled(true);
                                 }
-                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.stp_saved_locally));
+                                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.stp_saved_locally), true);
                             }
                         });
                     }
@@ -1960,7 +1960,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 activityStandardTourPlanBinding.flProgress.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.no_network), true);
             }
         }
     }
@@ -2154,7 +2154,7 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                             if (response.isSuccessful() && response.body() != null) {
                                 JSONObject jsonObject1 = new JSONObject(response.body().toString());
                                 if (jsonObject1.optString("success", "false").equals("true")) {
-                                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.send_approved_successfully));
+                                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.send_approved_successfully), true);
                                     activityStandardTourPlanBinding.sendToApproval.setEnabled(false);
                                     SharedPref.setStpStatus(StandardTourPlanActivity.this, getString(R.string.waiting_for_approval));
                                     activityStandardTourPlanBinding.tvStpStatus.setTextColor(getColor(R.color.yellow_45));
@@ -2167,27 +2167,27 @@ public class StandardTourPlanActivity extends AppCompatActivity {
                                     }
                                     syncSTP();
                                 } else {
-                                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval));
+                                    commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval), true);
                                 }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval));
+                            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval), true);
                         }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                         t.printStackTrace();
-                        commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval));
+                        commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval), true);
                     }
                 });
             } else {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network), true);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval));
+            commonUtilsMethods.showToastMessage(StandardTourPlanActivity.this, getString(R.string.failed_to_send_approval), true);
         }
     }
 

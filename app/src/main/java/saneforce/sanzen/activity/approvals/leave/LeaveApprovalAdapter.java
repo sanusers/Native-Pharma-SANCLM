@@ -305,11 +305,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.InputFilter;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -421,7 +419,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                         position, ed_reason.getText().toString());
             } else {
                 commonUtilsMethods.showToastMessage(
-                        context, context.getString(R.string.toast_enter_reason_for_reject));
+                        context, context.getString(R.string.toast_enter_reason_for_reject), true);
             }
         });
 
@@ -459,7 +457,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                         JSONObject res = new JSONObject(response.body().toString());
                         if (res.getString("success").equalsIgnoreCase("true")) {
                             commonUtilsMethods.showToastMessage(
-                                    context, context.getString(R.string.rejected_successfully));
+                                    context, context.getString(R.string.rejected_successfully), true);
                             dialogReject.dismiss();
                             removeAt(position);
                             ApprovalsActivity.LeaveCount--;

@@ -2,7 +2,6 @@ package saneforce.sanzen.activity.call.fragments.jwOthers;
 
 import static android.Manifest.permission.CAMERA;
 import static saneforce.sanzen.activity.call.DCRCallActivity.CapPob;
-import static saneforce.sanzen.activity.call.DCRCallActivity.SfCode;
 import static saneforce.sanzen.activity.call.DCRCallActivity.TodayPlanSfCode;
 import static saneforce.sanzen.activity.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.sanzen.activity.call.DCRCallActivity.isFromActivity;
@@ -269,7 +268,7 @@ public class JWOthersFragment extends Fragment {
                         captureFile();
                     }
                 } else {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_add_more_images));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_add_more_images), true);
                 }
             }
         });

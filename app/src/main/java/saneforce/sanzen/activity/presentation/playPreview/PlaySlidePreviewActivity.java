@@ -160,8 +160,8 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                                 binding.pdfView.setVisibility(View.VISIBLE);
                                 binding.videoView.setVisibility(View.GONE);
                                 binding.webView.setVisibility(View.GONE);
-                                binding.loadingView.setVisibility(View.VISIBLE);
-                                binding.loadingView.startLoading();
+//                                binding.loadingView.setVisibility(View.VISIBLE);
+//                                binding.loadingView.startLoading();
                                 loadPdf(file.getAbsolutePath());
                                 break;
                             case "mp4":
@@ -169,14 +169,14 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                                 binding.pdfView.setVisibility(View.GONE);
                                 binding.videoView.setVisibility(View.VISIBLE);
                                 binding.webView.setVisibility(View.GONE);
-                                binding.loadingView.setVisibility(View.VISIBLE);
-                                binding.loadingView.startLoading();
+//                                binding.loadingView.setVisibility(View.VISIBLE);
+//                                binding.loadingView.startLoading();
                                 Uri uri = Uri.parse(file.getAbsolutePath());
                                 binding.videoView.setVideoURI(uri);
                                 binding.videoView.setMediaController(mediaController);
                                 binding.videoView.setOnPreparedListener(mp -> {
-                                    binding.loadingView.setVisibility(View.GONE);
-                                    binding.loadingView.stopLoading();
+//                                    binding.loadingView.setVisibility(View.GONE);
+//                                    binding.loadingView.stopLoading();
                                     mp.start();
                                 });
 //                                binding.videoView.start();
@@ -185,8 +185,8 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                                 binding.pdfView.setVisibility(View.GONE);
                                 binding.videoView.setVisibility(View.GONE);
                                 binding.webView.setVisibility(View.VISIBLE);
-                                binding.loadingView.setVisibility(View.VISIBLE);
-                                binding.loadingView.startLoading();
+//                                binding.loadingView.setVisibility(View.VISIBLE);
+//                                binding.loadingView.startLoading();
 
                                 binding.webView.getSettings().setBuiltInZoomControls(false);
                                 binding.webView.getSettings().setDisplayZoomControls(false);
@@ -225,8 +225,8 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                                     public void onPageFinished(WebView view, String url) {
                                         super.onPageFinished(view, url);
                                         Log.i("webview", "onPageFinished: " + TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-                                        binding.loadingView.setVisibility(View.GONE);
-                                        binding.loadingView.stopLoading();
+//                                        binding.loadingView.setVisibility(View.GONE);
+//                                        binding.loadingView.stopLoading();
                                     }
                                 });
                               break;
@@ -248,8 +248,8 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                     binding.videoView.setVisibility(View.GONE);
                     binding.webView.setVisibility(View.GONE);
                     binding.upArrow.setVisibility(View.VISIBLE);
-                    binding.loadingView.setVisibility(View.GONE);
-                    binding.loadingView.stopLoading();
+//                    binding.loadingView.setVisibility(View.GONE);
+//                    binding.loadingView.stopLoading();
                     binding.ivPlayPauseTimer.setImageResource(R.drawable.baseline_pause_24);
                     startTimer();
                 }
@@ -419,8 +419,8 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     public void loadPdf(String fileName) {
         binding.pdfView.fromFile(new File(fileName))
                 .onRender((nbPages) -> {
-                    binding.loadingView.setVisibility(View.GONE);
-                    binding.loadingView.stopLoading();
+//                    binding.loadingView.setVisibility(View.GONE);
+//                    binding.loadingView.stopLoading();
                 })
                 .defaultPage(0)
                 .enableAnnotationRendering(true)

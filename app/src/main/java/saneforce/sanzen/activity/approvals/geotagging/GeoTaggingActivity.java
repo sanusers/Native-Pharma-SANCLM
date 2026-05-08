@@ -38,7 +38,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
-import saneforce.sanzen.activity.approvals.dcr.DcrApprovalActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -202,7 +201,7 @@ public class GeoTaggingActivity extends AppCompatActivity {
                     geoTaggingModelLists.clear();
                     CallGeoTagApi();
                 }else{
-                    commonUtilsMethods.showToastMessage(GeoTaggingActivity.this,getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(GeoTaggingActivity.this,getString(R.string.no_network), true);
                 }
             }
         });

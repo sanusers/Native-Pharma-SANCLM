@@ -3,7 +3,6 @@ package saneforce.sanzen.activity.call.dcrCallSelection;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static saneforce.sanzen.activity.map.MapsActivity.BitmapFromVector;
-import static saneforce.sanzen.activity.map.MapsActivity.mapsBinding;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -34,7 +33,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 //import saneforce.sanzen.activity.standardTourPlan.calendarScreen.StandardTourPlanActivity;
 import saneforce.sanzen.commonClasses.CommonAlertBox;
@@ -178,7 +176,7 @@ public class MapsAddition extends AppCompatActivity  implements OnMapReadyCallba
                 } else {
                     UnlistedDoctorAddition.setAddressText(binding.tvTaggedAddress.getText().toString());
                 }
-                commonUtilsMethods.showToastMessage(MapsAddition.this, getString(R.string.location_add));
+                commonUtilsMethods.showToastMessage(MapsAddition.this, getString(R.string.location_add), true);
                 finish();
             }
         });
@@ -215,7 +213,7 @@ public class MapsAddition extends AppCompatActivity  implements OnMapReadyCallba
                 val = true;
             }
         } catch (Exception e) {
-            commonUtilsMethods.showToastMessage(MapsAddition.this, getString(R.string.loc_not_detect));
+            commonUtilsMethods.showToastMessage(MapsAddition.this, getString(R.string.loc_not_detect), true);
         }
         return val;
     }

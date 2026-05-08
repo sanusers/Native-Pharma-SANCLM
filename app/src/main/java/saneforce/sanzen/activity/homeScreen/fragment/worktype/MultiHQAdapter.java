@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.modelClass.Multicheckclass_clust;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 
@@ -74,7 +73,7 @@ public class MultiHQAdapter extends RecyclerView.Adapter<MultiHQAdapter.ViewHold
                 multiHQSelectListener.onHQUnSelected(multicheckclassClust);
                 holder.checkBox.setChecked(false);
             } else if(selectedHQCount == 5) {
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.cannot_select_more_than_5) + context.getString(R.string.headquarter));
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.cannot_select_more_than_5) + context.getString(R.string.headquarter), true);
                 multicheckclassClust.setChecked(false);
                 multiHQSelectListener.onHQUnSelected(multicheckclassClust);
                 holder.checkBox.setChecked(false);

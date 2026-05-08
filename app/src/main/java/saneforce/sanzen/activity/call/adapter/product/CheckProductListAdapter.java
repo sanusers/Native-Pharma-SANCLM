@@ -154,7 +154,7 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
                                 CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                             }else {
                                 if(!callCommonCheckedListArrayList.get(position).isCheckedItem()) {
-                                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_qty_prd));
+                                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_qty_prd), true);
                                 }
                                 holder.checkBox.setChecked(false);
                                 callCommonCheckedListArrayList.set(position, new CallCommonCheckedList(callCommonCheckedListArrayList.get(position).getName(), callCommonCheckedListArrayList.get(position).getCode(), callCommonCheckedListArrayList.get(position).getStock_balance(), false, callCommonCheckedListArrayList.get(position).getCategory(), callCommonCheckedListArrayList.get(position).getCategoryExtra(), callCommonCheckedListArrayList.get(position).getPriorityCodes()));
@@ -175,16 +175,16 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
                         }
 //                        noProductHolder.checkBox.setChecked(false);
                         //commonUtilsMethods.showToastMessage(context, "Product selection is mandatory!");
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.product_selection_is_mandatory));
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.product_selection_is_mandatory), true);
                     }else {
 //                    CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                         if(holder.checkBox.isChecked() && checkAnyProductSelected()) {
                             holder.checkBox.setChecked(false);
                             CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_deselect_the_selected_products));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_deselect_the_selected_products), true);
                         }else {
                             if(noProductSelected) {
-                                commonUtilsMethods.showToastMessage(context,context.getString(R.string.cannot_deselect_no_product));
+                                commonUtilsMethods.showToastMessage(context,context.getString(R.string.cannot_deselect_no_product), true);
                             }
                             holder.checkBox.setChecked(true);
                             CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());

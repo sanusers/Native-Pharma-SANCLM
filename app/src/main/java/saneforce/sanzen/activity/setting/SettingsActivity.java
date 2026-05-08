@@ -34,7 +34,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import retrofit2.Call;
@@ -62,7 +61,7 @@ public class SettingsActivity extends AppCompatActivity {
     AsyncInterface asyncInterface;
     PackageManager packageManager;
     PackageInfo packageInfo;
-    String deviceId = "", url = "", licenseKey = "", divisionCode = "", baseWebUrl = "", phpPathUrl = "", reportsUrl = "", slidesUrl = "", logo = "",senderID = "",logoUrl = "", optionFiles = "",aBKey = "",aBSKey = "",detPathUrl = "",s3logoUrl = "";
+    String deviceId = "", url = "", licenseKey = "", divisionCode = "", baseWebUrl = "", phpPathUrl = "", reportsUrl = "", slidesUrl = "", logo = "",senderID = "",logoUrl = "", optionFiles = "",aBKey = "",aBSKey = "",detPathUrl = "",s3logoUrl = "", appURL = "";
     int hitCount = 0;
     CommonUtilsMethods commonUtilsMethods;
     Resources resources;
@@ -98,10 +97,10 @@ public class SettingsActivity extends AppCompatActivity {
 
                 if (url.isEmpty()) {
                     binding.etWebUrl.requestFocus();
-                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.enter_url));
+                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.enter_url), true);
                 } else if (licenseKey.isEmpty()) {
                     binding.etLicenseKey.requestFocus();
-                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.enter_license));
+                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.enter_license), true);
                 } else {
                     String selectedLang = SharedPref.getSelectedLanguage(getApplicationContext());
                     if (selectedLang != null && !selectedLang.isEmpty()) {
@@ -118,7 +117,7 @@ public class SettingsActivity extends AppCompatActivity {
                             Log.i("settings", "onCreate: " + validateURL + "\nLink: " + "https://" + url);
                             configuration(validateURL);
                         } else {
-                            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+                            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url), true);
                         }
 //                        if (checkURL("https://" + url)) {
 //                            Log.i("settings", "onCreate: " + url + "\nLink: " + "https://" + url);
@@ -127,7 +126,7 @@ public class SettingsActivity extends AppCompatActivity {
 //                            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
 //                        }
                     } else {
-                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.no_network));
+                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.no_network), true);
                     }
                 }
             }
@@ -460,6 +459,7 @@ public class SettingsActivity extends AppCompatActivity {
 //                                        divisionCode = config.getString("division");
                                         baseWebUrl = config.getString("deturl");
                                         detPathUrl = Constants.DET_URL;
+                                        appURL = config.getString("appurl");
                                         logo = config.getString("logo");
                                         senderID = config.optString("senderID");
                                         s3logoUrl = config.optString("aws_bucket_url");
@@ -479,6 +479,7 @@ public class SettingsActivity extends AppCompatActivity {
                                         String urlData = web_url_getText + detPathUrl;
                                         String UploadUrl = urlData.substring(0, urlData.indexOf('?')) + "/";
 
+                                        SharedPref.setAppUrl(getApplicationContext(), appURL);
                                         SharedPref.setTagImageUrl(getApplicationContext(), web_url_getText);
                                         SharedPref.setTagApiImageUrl(getApplicationContext(), UploadUrl);
 
@@ -496,7 +497,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 if (!licenseKeyValid) {
                                     binding.configurationPB.setVisibility(View.GONE);
                                     binding.btnSaveSettings.setEnabled(true);
-                                    CommonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_Lis));
+                                    CommonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_Lis), true);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -506,7 +507,7 @@ public class SettingsActivity extends AppCompatActivity {
                             SharedPref.Loginsite(getApplicationContext(), url);
                         } else {
                             binding.btnSaveSettings.setEnabled(true);
-                            CommonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+                            CommonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url), true);
                             binding.configurationPB.setVisibility(View.GONE);
                         }
                     }
@@ -521,7 +522,7 @@ public class SettingsActivity extends AppCompatActivity {
                             configuration("http://mapi.san.one");
                         } else {
                             binding.configurationPB.setVisibility(View.GONE);
-                            CommonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+                            CommonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url), true);
                             Log.e("test", "hit count is : " + hitCount);
                             hitCount = 0;
                         }
@@ -581,7 +582,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 if (!licenseKeyValid) {
                                     binding.configurationPB.setVisibility(View.GONE);
                                     binding.btnSaveSettings.setEnabled(true);
-                                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_Lis));
+                                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_Lis), true);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -589,7 +590,7 @@ public class SettingsActivity extends AppCompatActivity {
                             SharedPref.Loginsite(getApplicationContext(), url);
                         } else {
                             binding.btnSaveSettings.setEnabled(true);
-                            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+                            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url), true);
                             binding.configurationPB.setVisibility(View.GONE);
                         }
 
@@ -604,7 +605,7 @@ public class SettingsActivity extends AppCompatActivity {
                             configuration("http://" + url + "/apps/");
                         } else {
                             binding.configurationPB.setVisibility(View.GONE);
-                            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+                            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url), true);
                             Log.e("test", "hit count is : " + hitCount);
                             hitCount = 0;
                         }
@@ -612,7 +613,7 @@ public class SettingsActivity extends AppCompatActivity {
                 });
             }
         } catch (Exception exception) {
-            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url), true);
             exception.printStackTrace();
         }
     }
@@ -670,7 +671,7 @@ public class SettingsActivity extends AppCompatActivity {
         runOnUiThread(() -> {
             binding.configurationPB.setVisibility(View.GONE);
             binding.btnSaveSettings.setEnabled(false);
-            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.configure_success));
+            commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.configure_success), true);
         });
         Intent intent = new Intent(SettingsActivity.this, PrivacyPolicyActivity.class);
         intent.putExtra(Constants.NAVIGATE_FROM, "Setting");

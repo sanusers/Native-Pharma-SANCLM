@@ -13,13 +13,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.ImageFormat;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -38,7 +36,6 @@ import android.widget.ProgressBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.FileProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -204,7 +201,7 @@ public class ReportWebActivity extends AppCompatActivity {
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, URLUtil.guessFileName(url, contentDisposition, mimeType));
             DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
             downloadManager.enqueue(request);
-            CommonUtilsMethods.showToastMessage(ReportWebActivity.this, getString(R.string.downloading));
+            CommonUtilsMethods.showToastMessage(ReportWebActivity.this, getString(R.string.downloading), true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -237,7 +234,7 @@ public class ReportWebActivity extends AppCompatActivity {
                     savedUri = saveImageToGalleryLegacy(bitmap);
                 }
                 runOnUiThread(() -> {
-                    CommonUtilsMethods.showToastMessage(ReportWebActivity.this, getString(R.string.image_saved));
+                    CommonUtilsMethods.showToastMessage(ReportWebActivity.this, getString(R.string.image_saved), true);
                     progressBar.setVisibility(View.GONE);
 //                    showDownloadSnackBar(savedUri);
                     showDownloadNotification(savedUri);
@@ -249,7 +246,7 @@ public class ReportWebActivity extends AppCompatActivity {
                 e.printStackTrace();
                 runOnUiThread(() -> {
                     progressBar.setVisibility(View.GONE);
-                    CommonUtilsMethods.showToastMessage(this, getString(R.string.failed_to_save_image));
+                    CommonUtilsMethods.showToastMessage(this, getString(R.string.failed_to_save_image), true);
                 });
             }
         });
@@ -297,14 +294,14 @@ public class ReportWebActivity extends AppCompatActivity {
             } else {
                 savedUri = saveImageToGalleryLegacy(bitmap);
             }
-            CommonUtilsMethods.showToastMessage(ReportWebActivity.this, getString(R.string.image_saved));
+            CommonUtilsMethods.showToastMessage(ReportWebActivity.this, getString(R.string.image_saved), true);
 //            openImage(savedUri);
             if (isShare) {
                 shareImage(savedUri);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            CommonUtilsMethods.showToastMessage(ReportWebActivity.this, getString(R.string.failed_to_save_image));
+            CommonUtilsMethods.showToastMessage(ReportWebActivity.this, getString(R.string.failed_to_save_image), true);
         }
     }
 

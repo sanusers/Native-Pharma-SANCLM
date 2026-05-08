@@ -61,6 +61,8 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -196,11 +198,39 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 && SharedPref.getSeqDlyCtrl(requireContext()).equalsIgnoreCase("1"))) {
             return;
         }
-        String savedDate = SharedPref.getLastKnownDate(requireContext());
-        String today = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4);
-        if (!savedDate.isEmpty() && !savedDate.equals(today)) {
-            SharedPref.setLastKnownDate(requireContext(), "");
-            onDateChanged();
+//        String savedDate = SharedPref.getLastKnownDate(requireContext());
+//        String today = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4);
+//        if (!savedDate.isEmpty() && !savedDate.equals(today)) {
+//            SharedPref.setLastKnownDate(requireContext(), "");
+//            onDateChanged();
+//        }
+        try {
+            String savedDate = SharedPref.getLastKnownDate(requireContext());
+            String today = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4);
+            String closeTime = SharedPref.getAutoSubmitTime(requireContext());
+            boolean isEqualOrAfter = false;
+            try {
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+                LocalDate date = LocalDate.parse(savedDate, dateFormatter);
+                LocalTime time = LocalTime.parse(closeTime, timeFormatter);
+
+                LocalDateTime mergedDateTime = LocalDateTime.of(date, time);
+                LocalDateTime nextDateTime = mergedDateTime.plusDays(1);
+                LocalDateTime currentDateTime = LocalDateTime.now();
+
+                isEqualOrAfter = currentDateTime.isEqual(nextDateTime) || currentDateTime.isAfter(nextDateTime);
+                Log.d("Auto Submit", "checkDateChange: " + savedDate + " -> " + nextDateTime.toString() + " -> " + currentDateTime.toString() + " --> " + isEqualOrAfter);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (!savedDate.isEmpty() && !savedDate.equals(today) && isEqualOrAfter) {
+                SharedPref.setLastKnownDate(requireContext(), "");
+                onDateChanged();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -386,7 +416,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     deviation = "1";
                 } else {
                     deviation = "0";
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
                     binding.switchButton.setChecked(false);
                     binding.switchButton.getThumbDrawable().setTint(ContextCompat.getColor(requireContext(), R.color.white));
                     binding.switchButton.getTrackDrawable().setTint(ContextCompat.getColor(requireContext(), R.color.mildRed));
@@ -786,7 +816,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         e.printStackTrace();
                     }
                     if (isClusterNotSelected) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_any) + SharedPref.getClusterCap(requireContext()) + " for " + hqName);
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_any) + SharedPref.getClusterCap(requireContext()) + " for " + hqName, true);
                         return;
                     }
                 }
@@ -891,7 +921,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         MasterSyncItemModel STPSetup = new MasterSyncItemModel(Constants.STANDARD_TOUR_PLAN, "getstp_setup", Constants.STP_SETUP);
                         syncMaster(STPSetup.getMasterOf(), STPSetup.getRemoteTableName(), STPSetup.getLocalTableKeyName(), hqCode, false);
                     } else {
-                        CommonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                        CommonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                     }
                 }
 //                if(docAvailability && chemAvailability && stkAvailability && ulDocAvailability && hosAvailability && cipAvailability && clusterAvailability){
@@ -925,7 +955,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 } else {
                     TextHQ.setText("");
                     TextWorkDay.setText("");
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -1387,7 +1417,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
                 }
             } else {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.kindly_sync_subordinate));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.kindly_sync_subordinate), true);
             }
         } catch (Exception e) {
             Log.e("Work plan", "Find HQ : " + e.getMessage());
@@ -1452,7 +1482,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 case R.id.rlworktype1:
                     if (HomeDashBoard.binding.textDate.getText().toString().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_date));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_date), true);
                     } else {
                         updateWorkTypeList();
                         ShowWorkTypeAlert(binding.txtWorktype1, binding.rlcluster1, binding.rlheadquates1);
@@ -1461,10 +1491,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 case R.id.rlcluster1:
                     if (binding.txtheadquaters1.getText().toString().equalsIgnoreCase("") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq), true);
                     } else if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                         if (binding.txtWorktype1.getText().toString().equalsIgnoreCase("")) {
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype), true);
                         } else {
                             showMultiClusterAlert();
                         }
@@ -1480,10 +1510,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 case R.id.rlcluster2:
                     if (binding.txtheadquaters2.getText().toString().equalsIgnoreCase("") && SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq), true);
                     } else if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                         if (binding.txtWorktype2.getText().toString().equalsIgnoreCase("")) {
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype), true);
                         } else {
                             showMultiClusterAlert();
                         }
@@ -1494,7 +1524,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 case R.id.rlheadquates1:
                     if (binding.txtWorktype1.getText().toString().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype), true);
                     } else {
                         if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                             showHQ(binding.txtheadquaters1, binding.txtCluster1, binding.txtworkday1);
@@ -1506,7 +1536,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 case R.id.rlheadquates2:
                     if (binding.txtWorktype2.getText().toString().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype), true);
                     } else {
                         if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
                             showHQ(binding.txtheadquaters2, binding.txtCluster2, binding.txtworkday2);
@@ -1547,17 +1577,17 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 case R.id.txtAddPlan:
                     if (isTPorSTPBased() && TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.VISIBLE && !binding.switchButton.isChecked()) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_add_plan));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_add_plan), true);
                     } else if (!EditSession.equalsIgnoreCase("1") && DayPlanCount.equals("1")) {
                         if (mFwFlg1 != null && mFwFlg1.equalsIgnoreCase("W")) {
                             String weekOffName = findWTName("W");
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.already) + weekOffName + getString(R.string.has_been_submitted));
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.already) + weekOffName + getString(R.string.has_been_submitted), true);
                         } else if (mFwFlg1 != null && mFwFlg1.equalsIgnoreCase("H")) {
                             String holidayName = findWTName("H");
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.already) + holidayName + getString(R.string.has_been_submitted));
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.already) + holidayName + getString(R.string.has_been_submitted), true);
                         } else {
                             if (TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0") && TPDCRDeviation.equalsIgnoreCase("1")) {
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.cannot_add_plan_in_tour_plan_based_dcr));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.cannot_add_plan_in_tour_plan_based_dcr), true);
                             }
                             DayPlanCount = "2";
                             binding.llDelete.setVisibility(View.VISIBLE);
@@ -1612,7 +1642,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 submitMyDayPlan();
                             } else {
                                 gpsTrack = new GPSTrack(requireActivity());
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_location_please_try_again));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_location_please_try_again), true);
                             }
                         } else {
                             submitMyDayPlan();
@@ -1656,7 +1686,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 case R.id.fl_session1:
                     Log.d("Plan Edit", "onClick: Plan 1");
                     if (TPDCRDeviation.equalsIgnoreCase("0") && !binding.switchButton.isChecked() && binding.llDeviation.getVisibility() == View.VISIBLE && !deviation.equalsIgnoreCase("1")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_edit_work_plan));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_edit_work_plan), true);
                         break;
                     }
 //                    else if(TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1") && binding.flSession2.getVisibility() == View.VISIBLE) {
@@ -1666,9 +1696,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                    }
                     if (!UtilityClass.isNetworkAvailable(requireContext())) {
                         if (DayPlanCount.equalsIgnoreCase("2")) {
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_edit_delete_workplan));
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_edit_delete_workplan), true);
                         } else if (DayPlanCount.equalsIgnoreCase("1")) {
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_edit_workplan));
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_edit_workplan), true);
                         }
                         break;
                     }
@@ -1680,22 +1710,22 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             dialogEditOrDelete("1");
                         } else {
                             if (binding.llDeviation.getVisibility() == View.VISIBLE) {
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_edit_work_plan));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_edit_work_plan), true);
                             } else if (dayStatus.equalsIgnoreCase("0") && mFwFlg1.equalsIgnoreCase("F") && !(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
                                 dialogFWEditConfirmation("1", mWTName1);
                             } else {
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.rejection_re_entry_need));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.rejection_re_entry_need), true);
                             }
                         }
                     } else {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_update_session_2));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_update_session_2), true);
                     }
                     break;
 
                 case R.id.fl_session2:
                     Log.d("Plan Edit", "onClick: Plan 2");
                     if (TPDCRDeviation.equalsIgnoreCase("0") && !binding.switchButton.isChecked() && binding.llDeviation.getVisibility() == View.VISIBLE && !deviation.equalsIgnoreCase("1")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_edit_work_plan));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_edit_work_plan), true);
                         break;
                     }
 //                    else if(TPDCRDeviation.equalsIgnoreCase("0") && binding.llDeviation.getVisibility() == View.GONE && deviation.equalsIgnoreCase("1")) {
@@ -1709,9 +1739,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                    }
                     if (!UtilityClass.isNetworkAvailable(requireContext())) {
                         if (DayPlanCount.equalsIgnoreCase("2")) {
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_edit_delete_workplan));
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_edit_delete_workplan), true);
                         } else if (DayPlanCount.equalsIgnoreCase("1")) {
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_edit_workplan));
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_edit_workplan), true);
                         }
                         break;
                     }
@@ -1723,15 +1753,15 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             dialogEditOrDelete("2");
                         } else {
                             if (binding.llDeviation.getVisibility() == View.VISIBLE) {
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_edit_work_plan));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviate_to_edit_work_plan), true);
                             } else if (dayStatus.equalsIgnoreCase("0") && mFwFlg2.equalsIgnoreCase("F") && !(TPNeed.equalsIgnoreCase("0") && TPMandatory.equalsIgnoreCase("0") && TPBasedDCR.equalsIgnoreCase("0"))) {
                                 dialogFWEditConfirmation("2", mWTName2);
                             } else {
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.rejection_re_entry_need));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.rejection_re_entry_need), true);
                             }
                         }
                     } else {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_update_session_1));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_update_session_1), true);
                     }
                     break;
 
@@ -1739,7 +1769,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     if (UtilityClass.isNetworkAvailable(requireContext())) {
                         refresh(true);
                     } else {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
                     }
                     break;
             }
@@ -1908,7 +1938,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     }
                                 } else {
                                     if (isToSetupWorkPlan) {
-                                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviation_not_approved));
+                                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.deviation_not_approved), true);
                                     }
                                 }
                             } else {
@@ -2069,7 +2099,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                                     if (success) {
                                         if (jsonArray.length() == 0) {
-                                            CommonUtilsMethods.showToastMessage(requireContext(), "No STP plan available");
+                                            CommonUtilsMethods.showToastMessage(requireContext(), "No STP plan available", true);
                                         } else {
                                             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STANDARD_TOUR_PLAN, jsonArray.toString(), 2));
                                         }
@@ -2080,7 +2110,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             }
 //                        stpOfflineDataDao.deleteAllData("0");
                             if (jsonArray.length() == 0) {
-                                CommonUtilsMethods.showToastMessage(requireContext(), "No STP plan available");
+                                CommonUtilsMethods.showToastMessage(requireContext(), "No STP plan available", true);
                             } else {
                                 saveSTPDataToLocal(hqCode);
 
@@ -2120,7 +2150,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                         Log.e("STP", "onFailure: ");
                         binding.progress.setVisibility(View.GONE);
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
                         t.printStackTrace();
                     }
                 });
@@ -2280,12 +2310,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         submitDeviation();
 //                saveOrUpdateWorkPlan();
                     } else if (remarks.isEmpty()) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_enter_the_remarks));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_enter_the_remarks), true);
                     } else {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.remarks_must_contain_at_least_3_characters));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.remarks_must_contain_at_least_3_characters), true);
                     }
                 } else {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
                 }
             }
         });
@@ -2312,14 +2342,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             createDeviationJSON();
             deviationSubmitAPI();
         } else {
-            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
         }
     }
 
     private void createDeviationJSON() {
         try {
             if (mWTCode1 == null || mWTCode1.isEmpty() || mWTCode1.equalsIgnoreCase("0")) {
-                CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.kindly_replan));
+                CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.kindly_replan), true);
                 setUpWorkPlan();
                 return;
             }
@@ -2432,7 +2462,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     if (mFwFlg2.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("A"))
                                         HomeDashBoard.binding.viewPager.setCurrentItem(1);
                                 }
-                                commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
+                                commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"), true);
                                 if (TPDCRMGRApprNeed.equalsIgnoreCase("0")) {
                                     SharedPref.setTpDcrDeviationApprStatus(requireContext(), "3");
                                 } else {
@@ -2441,11 +2471,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 updateLocalWPData();
                             } else {
                                 setUpWorkPlan();
-                                commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
+                                commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"), true);
                             }
                         } catch (Exception e) {
                             Log.e("Workplan", "onResponse: " + e.getMessage());
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
                         }
                     }
                 }
@@ -2456,14 +2486,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     EditSession = "";
                     setUpWorkPlan();
                     Log.e("VALUES", String.valueOf(t));
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
             binding.progress.setVisibility(View.GONE);
             EditSession = "";
-            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
         }
     }
 
@@ -2482,7 +2512,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 saveOrUpdateWorkPlan(true);
             } else {
                 gpsTrack = new GPSTrack(requireActivity());
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_location_please_try_again));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_location_please_try_again), true);
             }
         } else {
             saveOrUpdateWorkPlan(true);
@@ -2665,7 +2695,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             }
 //                            CallDialogAfterCheckIn();
                         } else {
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.toast_leave_posted));
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.toast_leave_posted), true);
                         }
                         progressDialog.dismiss();
                     } catch (Exception e) {
@@ -2674,14 +2704,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.contact_admin_in));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.contact_admin_in), true);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
             }
         });
     }
@@ -2689,25 +2719,25 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private void submitMyDayPlan() {
         if (HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
             if (binding.rlworktype1.isEnabled()) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan), true);
             } else if (binding.cardPlan2.getVisibility() == View.VISIBLE && binding.rlworktype2.isEnabled() && !mWTName2.isEmpty()) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan), true);
             } else if (mWTName1.isEmpty()) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_worktype), true);
             } else if (mTowncode1.isEmpty() && mFwFlg1.equalsIgnoreCase("F")) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_cluster));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_cluster), true);
             } else if ((mFwFlg1.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("F"))
                     && ((SharedPref.getLastCallDate(requireContext()).isEmpty()
                     || !SharedPref.getLastCallDate(requireContext()).equalsIgnoreCase(HomeDashBoard.selectedDate.toString())))) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.should_have_a_call));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.should_have_a_call), true);
             } else if (isFromTP) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan), true);
             } else if ((mFwFlg1.equalsIgnoreCase("L") || mFwFlg2.equalsIgnoreCase("L")) && !rejectedReason.isEmpty()) {
                 String leaveName = findWTName("L");
                 if (leaveName.isEmpty()) {
                     leaveName = "Leave";
                 }
-                commonUtilsMethods.showToastMessage(requireContext(), leaveName + getString(R.string.has_been_rejected_kindly_select_other_work_type_and_save_work_plan));
+                commonUtilsMethods.showToastMessage(requireContext(), leaveName + getString(R.string.has_been_rejected_kindly_select_other_work_type_and_save_work_plan), true);
             } else {
 //                SharedPref.setCheckTodayCheckInOut(requireContext(), HomeDashBoard.selectedDate.toString());
                 if (CheckInOutManager.isCheckInAvailable(requireContext())) {
@@ -2717,7 +2747,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
             }
         } else {
-            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_select_a_date));
+            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_select_a_date), true);
         }
     }
 
@@ -2822,11 +2852,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
     private void showToast(int resId) {
-        commonUtilsMethods.showToastMessage(requireContext(), getString(resId));
+        commonUtilsMethods.showToastMessage(requireContext(), getString(resId), true);
     }
 
     private void showToast(String message) {
-        commonUtilsMethods.showToastMessage(requireContext(), message);
+        commonUtilsMethods.showToastMessage(requireContext(), message, true);
     }
 
     private boolean isTPorSTPBased() {
@@ -2989,7 +3019,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
 //                workPlanSubmit();
             } else {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_update_wp));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_update_wp), true);
                 if (sessionType.equals("1")) {
                     enableEditSession1();
                 } else if (sessionType.equals("2")) {
@@ -3179,7 +3209,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             SharedPref.setDayPlanStartedDate(requireContext(), HomeDashBoard.selectedDate.toString());
             OutboxFragment.SetupOutBoxAdapter(requireActivity(), requireContext());
             SharedPref.setCheckDateTodayPlan(requireContext(), HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)));
-            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.save_wt_locally));
+            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.save_wt_locally), true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -3210,7 +3240,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private void CreateJson() {
         try {
             if (mWTCode1 == null || mWTCode1.isEmpty() || mWTCode1.equalsIgnoreCase("0")) {
-                CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.kindly_replan));
+                CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.kindly_replan), true);
                 setUpWorkPlan();
                 return;
             }
@@ -3399,21 +3429,21 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 CallFinalSubmitAPI();
 //                            remarksAlertBox();
                             } else {
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.toast_leave_posted));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.toast_leave_posted), true);
                             }
                             progressDialog.dismiss();
                         } catch (Exception ignored) {
                             progressDialog.dismiss();
                         }
                     } else {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.contact_admin_out));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.contact_admin_out), true);
                         progressDialog.dismiss();
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
                     progressDialog.dismiss();
                 }
             });
@@ -3453,7 +3483,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             previousWTCode2 = "";
 //                            HomeDashBoard.canMoveNextDate = false;
                             FinalSubmitStatus = jsonObject.getString("Msg");
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.day_submitted_successfully));
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.day_submitted_successfully), true);
                             WorkPlanEntriesNeeded.skipDates.clear();
                             progressDialog.dismiss();
                             HomeDashBoard.checkAndSetEntryDate(requireContext(), true);
@@ -3463,14 +3493,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             progressDialog.dismiss();
                         }
                     } else {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.cannot_submit_work_plan));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.cannot_submit_work_plan), true);
                         progressDialog.dismiss();
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
                     progressDialog.dismiss();
                 }
             });
@@ -3785,7 +3815,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     if (mFwFlg2.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("A"))
                                         HomeDashBoard.binding.viewPager.setCurrentItem(1);
                                 }
-                                commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
+                                commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"), true);
                                 CallsFragment.syncCalls();
                                 updateLocalWPData();
                                 if (option.equalsIgnoreCase("Edit")) {
@@ -3833,7 +3863,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     deviationConfirmation.show();
                                 } else {
                                     setUpWorkPlan();
-                                    commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
+                                    commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"), true);
                                 }
                             }
                         } catch (Exception e) {
@@ -3848,7 +3878,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     EditSession = "";
                     setUpWorkPlan();
                     Log.e("VALUES", String.valueOf(t));
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
                 }
             });
         } catch (Exception e) {
@@ -3884,7 +3914,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     if (mFwFlg2.equalsIgnoreCase("F") || mFwFlg2.equalsIgnoreCase("A"))
                                         HomeDashBoard.binding.viewPager.setCurrentItem(1);
                                 }
-                                commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
+                                commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"), true);
                                 CallsFragment.syncCalls();
                                 updateLocalWPData();
 //                                if (option.equalsIgnoreCase("Edit")) {
@@ -3928,7 +3958,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                                    deviationConfirmation.show();
 //                                }else {
                                 setUpWorkPlan();
-                                commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
+                                commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"), true);
 //                                }
                             }
                         } catch (Exception e) {
@@ -3944,7 +3974,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     EditSession = "";
                     setUpWorkPlan();
                     Log.e("VALUES", String.valueOf(t));
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
                 }
             });
         } catch (Exception e) {
@@ -4307,7 +4337,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 e.printStackTrace();
             }
         } else {
-            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
             syncCount = 0;
             requiredSyncCount = 0;
             syncProgressDialog.dismiss();
@@ -5032,7 +5062,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             syncMyDayPlan(false);
                             dialog.dismiss();
                         } else {
-                            commonUtilsMethods.showToastMessage(requireContext(), requireContext().getResources().getString(R.string.no_network));
+                            commonUtilsMethods.showToastMessage(requireContext(), requireContext().getResources().getString(R.string.no_network), true);
                         }
                     }
                 });
@@ -5697,14 +5727,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                         Log.e("Mydayplan", "onFailure: ");
                         binding.progress.setVisibility(View.GONE);
-                        commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_sync_workplan));
+                        commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_sync_workplan), true);
                         t.printStackTrace();
                     }
                 });
 
             } catch (Exception a) {
                 binding.progress.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_sync_workplan));
+                commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_sync_workplan), true);
                 a.printStackTrace();
             }
         }
@@ -5772,11 +5802,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
             updateLocalData();
             if (offlineDaySubmitDao.getDaySubmit(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4))) != null) {
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_submitted_work_plan));
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_submitted_work_plan), true);
             } else {
                 offlineDaySubmitDao.insert(new OfflineDaySubmitDataTable(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), finalSubmitJSONObject.toString()));
             }
-            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.day_submit_saved_locally));
+            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.day_submit_saved_locally), true);
             WorkPlanEntriesNeeded.skipDates.clear();
 //            SharedPref.setCheckTodayCheckInOut(requireContext(), "");
 //            SharedPref.setCheckInTime(requireContext(), "");
@@ -5846,9 +5876,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     Log.e("Remarks", "remark : " + remarks);
                     finalSubmit("", remarks, false);
                 } else if (remarks.isEmpty()) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_enter_the_remarks));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.please_enter_the_remarks), true);
                 } else {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.remarks_must_contain_at_least_3_characters));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.remarks_must_contain_at_least_3_characters), true);
                 }
             }
         });
@@ -6020,7 +6050,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             hqNameData.add(getString(R.string.select_head_quarter));
             JSONArray hqJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
             if (hqJsonArray.length() == 0) {
-                CommonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.sync) + " " + requireContext().getString(R.string.headquarter));
+                CommonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.sync) + " " + requireContext().getString(R.string.headquarter), true);
                 return;
             } else {
                 spinnerTerritory.setEnabled(false);
@@ -6176,7 +6206,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     clusterNameData.add(getString(R.string.select) + " " + SharedPref.getClusterCap(requireContext()));
                     JSONArray clusterJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + selectedHQCode).getMasterSyncDataJsonArray();
                     if (clusterJsonArray.length() == 0) {
-                        CommonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.sync) + " " + requireContext().getString(R.string.headquarter));
+                        CommonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.sync) + " " + requireContext().getString(R.string.headquarter), true);
                         return;
                     } else {
                         for (int i = 0; i < clusterJsonArray.length(); i++) {
@@ -6365,7 +6395,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     //  HQ select based on choosen territory
                     if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")) {
                         if (spinnerHeadQuaters.getSelectedItemPosition() == 0) {
-                            CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_head_quarter));
+                            CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_head_quarter), true);
                             //  Toast.makeText(fragment, "Select Head Quarter", Toast.LENGTH_SHORT).show();
                             spinnerTerritory.setSelection(0); // Territory reset
                         }
@@ -6384,14 +6414,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             public void onSafeClick(View view) {
                 if (SharedPref.getSfType(fragment).equalsIgnoreCase("2")) {
                     if (spinnerHeadQuaters.getSelectedItemPosition() == 0) {
-                        CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_head_quarter));
+                        CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_head_quarter), true);
                         //  Toast.makeText(fragment, "Select Head Quarter", Toast.LENGTH_SHORT).show();
                         return;
                     }
                 }
                 if (spinnerTerritory.getSelectedItemPosition() == 0) {
                     String clusterCap = SharedPref.getClusterCap(requireContext());
-                    CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select) + " " + clusterCap);
+                    CommonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select) + " " + clusterCap, true);
                    // Toast.makeText(fragment, "Select Territory", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -6486,7 +6516,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onSafeClick(View view) {
                 if (isFromTP) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.save_work_plan_to_delete_session) + sessionType);
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.save_work_plan_to_delete_session) + sessionType, true);
                     dialogOptionSelection.dismiss();
                 } else {
                     dialogEditOrDeleteConfirmation(sessionType, "Delete");
@@ -6618,7 +6648,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             createDeleteJson(sessionType, "0");
             callDeleteWP(sessionType, option);
         } else {
-            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_delete_workplan));
+            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network) + getString(R.string.no_network_delete_workplan), true);
         }
     }
 
@@ -6666,7 +6696,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                                } catch (Exception e) {
 //                                    e.printStackTrace();
 //                                }
-                                commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
+                                commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"), true);
                                 syncMyDayPlan(false);
                             } else {
                                 workPlanSubmit(option);
@@ -6682,7 +6712,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.progress.setVisibility(View.GONE);
                     setUpWorkPlan();
                     Log.e("VALUES", Arrays.toString(t.getStackTrace()));
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
                 }
             });
         } catch (Exception ignored) {

@@ -352,7 +352,7 @@ public class DayReportDetailFragment extends Fragment {
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
                                 progressDialog.dismiss();
                             }
                         });
@@ -361,13 +361,13 @@ public class DayReportDetailFragment extends Fragment {
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.poor_connection));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.poor_connection), true);
                 }
             });
             networkStatusTask.execute();
         } else {
             progressDialog.dismiss();
-            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
         }
     }
 

@@ -105,7 +105,7 @@ public class EventDetailsCapture extends RecyclerView.Adapter<EventDetailsCaptur
                             @Override
                             public void onFailure(int pos) {
                                 Log.d("bitmap image", "Failed to load image, bitmap is null.");
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.image_not_found));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.image_not_found), true);
                                 holder.Imageview.setVisibility(View.VISIBLE);
                                 progressDialog.dismiss();
                             }

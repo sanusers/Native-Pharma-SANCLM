@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.HQChangeListener;
 import saneforce.sanzen.activity.call.dcrCallSelection.fragments.HQSelector;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
@@ -311,7 +310,7 @@ public class BrandMatrix extends Fragment {
 
         brandMatrixBinding.tvSelectDoctor.setOnClickListener(view1 -> {
             if (brandMatrixBinding.tvSelectHq.getText().toString().isEmpty() && !SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq), true);
             } else {
                 try {
                     DrSelectionSide drSelectionSide = (DrSelectionSide) requireActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_select_dr_side);

@@ -15,7 +15,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
@@ -75,7 +74,7 @@ public class AdapterDcrApprovalList extends RecyclerView.Adapter<AdapterDcrAppro
                     onItemClickListenerApproval.onClick(new DCRApprovalList(dcrApprovalLists.get(position).getTrans_slNo(), dcrApprovalLists.get(position).getSf_name(), dcrApprovalLists.get(position).getActivity_date(), dcrApprovalLists.get(position).getPlan_name(), dcrApprovalLists.get(position).getWorkType_name(), dcrApprovalLists.get(position).getSfCode(), dcrApprovalLists.get(position).getFieldWork_indicator(), dcrApprovalLists.get(position).getSubmission_date_sub(), dcrApprovalLists.get(position).getOther_wt(), dcrApprovalLists.get(position).getRemarks(), dcrApprovalLists.get(position).getAdditional_Temp_Details()), holder.getBindingAdapterPosition());
                     notifyDataSetChanged();
                 } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                 }
             }
         });

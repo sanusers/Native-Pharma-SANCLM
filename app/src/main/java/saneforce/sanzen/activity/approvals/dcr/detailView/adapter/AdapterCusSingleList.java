@@ -303,7 +303,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                                 dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                                                 dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
                                                 progressDialog.dismiss();
-                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_event_capture));
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_event_capture), true);
                                             }
 
                                         }
@@ -321,7 +321,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                 dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                                 dcrDetailViewBinding.rvEventListview.setVisibility(View.GONE);
                                 dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
-                                commonUtilsMethods.showToastMessage(context,context.getString(R.string.no_network));
+                                commonUtilsMethods.showToastMessage(context,context.getString(R.string.no_network), true);
                                 progressDialog.dismiss();
                             }
                         });
@@ -330,13 +330,13 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(context,context. getString(R.string.poor_connection));
+                    commonUtilsMethods.showToastMessage(context,context. getString(R.string.poor_connection), true);
                 }
             });
             networkStatusTask.execute();
         } else {
             progressDialog.dismiss();
-            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
         }
 
     }
@@ -391,7 +391,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                                 setSignatureData(SignatureData);
                                             }else {
                                                 progressDialog.dismiss();
-                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.signature_not_available));
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.signature_not_available), true);
                                             }
 
                                         }
@@ -403,7 +403,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                                 progressDialog.dismiss();
                             }
                         });
@@ -412,13 +412,13 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection), true);
                 }
             });
             networkStatusTask.execute();
         } else {
             progressDialog.dismiss();
-            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
         }
 
     }
@@ -479,7 +479,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                                 layout.setVisibility(View.GONE);
                                                 dcrDetailViewBinding.tagViewRcpa.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                                                // commonUtilsMethods.showToastMessage(context, "No RCPA Values");
-                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_rcpa_values));
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_rcpa_values), true);
                                             }
 
                                         }
@@ -495,7 +495,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 layout.setVisibility(View.GONE);
                                 dcrDetailViewBinding.tagViewRcpa.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                                 progressDialog.dismiss();
                             }
                         });
@@ -504,13 +504,13 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection), true);
                 }
             });
             networkStatusTask.execute();
         } else {
             progressDialog.dismiss();
-            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
         }
 
     }
@@ -558,7 +558,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                             }else {
                                                 layout.setVisibility(View.GONE);
                                                 dcrDetailViewBinding.tagViewSld.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
-                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.slides_details_not_available));
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.slides_details_not_available), true);
                                             }
                                         }
                                     }
@@ -571,7 +571,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                                 layout.setVisibility(View.GONE);
                                 dcrDetailViewBinding.tagViewSld.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                                 progressDialog.dismiss();
@@ -582,13 +582,13 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection), true);
                 }
             });
             networkStatusTask.execute();
         } else {
             progressDialog.dismiss();
-            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
         }
 
     }

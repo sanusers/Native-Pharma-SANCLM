@@ -137,10 +137,10 @@ public class AdditionalCallDetailedSide extends Fragment {
                         if (!addInputAdditionalCallArrayList.get(lastPos).getInput_name().equalsIgnoreCase("Select") && !addInputAdditionalCallArrayList.get(lastPos).getInput_name().isEmpty()) {
                             AddNewInputData();
                         } else {
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.sel_input_before_add_new));
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.sel_input_before_add_new), true);
                         }
                     } else {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_extra_input));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_extra_input), true);
                     }
                 } else {
                     AddNewInputData();
@@ -158,10 +158,10 @@ public class AdditionalCallDetailedSide extends Fragment {
                         if (!addProductAdditionalCallArrayList.get(lastPos).getPrd_name().equalsIgnoreCase("Select") && !addProductAdditionalCallArrayList.get(lastPos).getPrd_name().isEmpty()) {
                             AddNewSampleData();
                         } else {
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.sel_prd_before_add_new));
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.sel_prd_before_add_new), true);
                         }
                     } else {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_extra_prd));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_extra_prd), true);
                     }
                 } else {
                     AddNewSampleData();
@@ -180,7 +180,7 @@ public class AdditionalCallDetailedSide extends Fragment {
                     if (!addInputAdditionalCallArrayList.isEmpty()) {
                         for (int i = 0; i < addInputAdditionalCallArrayList.size(); i++) {
                             if (addInputAdditionalCallArrayList.get(i).getInp_qty().isEmpty()) {
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.qty_cannot_be_empty));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.qty_cannot_be_empty), true);
                                 callDetailsSideBinding.tabLayout.selectTab(callDetailsSideBinding.tabLayout.getTabAt(1));
                                 return;
                             }
@@ -192,7 +192,7 @@ public class AdditionalCallDetailedSide extends Fragment {
                     if (!addInputAdditionalCallArrayList.isEmpty()) {
                         for (int i = 0; i < addInputAdditionalCallArrayList.size(); i++) {
                             if (addInputAdditionalCallArrayList.get(i).getInp_qty().isEmpty()) {
-                                commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.qty_cannot_be_empty));
+                                commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.qty_cannot_be_empty), true);
                                 callDetailsSideBinding.tabLayout.selectTab(callDetailsSideBinding.tabLayout.getTabAt(1));
                                 return;
                             }

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -35,7 +33,6 @@ import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -114,7 +111,7 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
                 if (UtilityClass.isNetworkAvailable(context)) {
                     CallApi("0", geoTaggingModelLists.get(position).getMapId(), geoTaggingModelLists.get(position).getCust_mode(), geoTaggingModelLists.get(position).getCode(), geoTaggingModelLists.get(position).getHqCode(), holder.getBindingAdapterPosition(), holder);
                 } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_check_your_internet_connection));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_check_your_internet_connection), true);
                 }
             }
         });
@@ -124,7 +121,7 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
                 if (UtilityClass.isNetworkAvailable(context)) {
                     CallApi("2", geoTaggingModelLists.get(position).getMapId(), geoTaggingModelLists.get(position).getCust_mode(), geoTaggingModelLists.get(position).getCode(), geoTaggingModelLists.get(position).getHqCode(), holder.getBindingAdapterPosition(), holder);
                 } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_check_your_internet_connection));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_check_your_internet_connection), true);
                 }
             }
         });
@@ -224,9 +221,9 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
                             removeAt(Position);
                             ApprovalsActivity.GeoTagCount--;
                             if (Status.equalsIgnoreCase("0")) {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.approved_successfully));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.approved_successfully), true);
                             } else {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.rejected_successfully));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.rejected_successfully), true);
                             }
                         }
                     } catch (Exception e) {
@@ -234,14 +231,14 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
                     }
                 } else {
                     holder.progressBar.setVisibility(View.GONE);
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 holder.progressBar.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
             }
         });
     }

@@ -113,7 +113,7 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
                             CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                         }else {
                             if(!checked_arrayList.get(position).isCheckedItem()) {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_qty_input));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_qty_input), true);
                             }
                             holder.checkBox.setChecked(false);
                             checked_arrayList.set(position, new CallCommonCheckedList(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(), checked_arrayList.get(position).getStock_balance(), false));
@@ -138,12 +138,12 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
                     if(holder.checkBox.isChecked() && checkAnyInputSelected()) {
                         holder.checkBox.setChecked(false);
                         CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_deselect_the_selected_inputs));
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_deselect_the_selected_inputs), true);
 //                            holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
 //                            holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
                     }else {
                         if(noInputSelected) {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.cannot_deselect_no_input));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.cannot_deselect_no_input), true);
                         }
                         holder.checkBox.setChecked(true);
                         CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());

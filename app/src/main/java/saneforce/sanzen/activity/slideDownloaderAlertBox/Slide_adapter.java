@@ -2,7 +2,6 @@ package saneforce.sanzen.activity.slideDownloaderAlertBox;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
@@ -148,7 +147,7 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
                         WorkManager workManager = WorkManager.getInstance(activity);
                         workManager.enqueue(fileDownloadRequest);
                     } else {
-                        commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network));
+                        commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network), true);
                     }
                 }
             });

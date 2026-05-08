@@ -1,7 +1,5 @@
 package saneforce.sanzen.activity.approvals.tpdeviation;
 
-import static saneforce.sanzen.activity.approvals.dcr.DcrApprovalActivity.SelectedSfCode;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -163,7 +161,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
                 if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
                     CallRejectedTpDeviation(sfName, sfCode, slNo, position, status, date, ed_reason.getText().toString());
                 } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_reason_for_reject));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_reason_for_reject), true);
                 }
                 dialogReject.dismiss();
             }
@@ -225,9 +223,9 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                             if (status.equalsIgnoreCase("4")) {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.approved_successfully));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.approved_successfully), true);
                             } else {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.rejected_successfully));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.rejected_successfully), true);
                             }
                             removeAt(position);
                             ApprovalsActivity.DeviationCount--;
@@ -237,14 +235,14 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
             }
         });
     }

@@ -48,6 +48,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonObject;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -370,8 +372,7 @@ public class CommonUtilsMethods {
         return dialog;
     }
 
-    public static void showToastMessage(Activity activity, String message) {
-
+    public static void showToastMessage(Activity activity, String message, boolean isLong) {
         //ImageView image = layout.findViewById(R.id.image);
         // image.setImageResource(R.drawable.san_clm_logo);
         LayoutInflater inflater = activity.getLayoutInflater();
@@ -379,36 +380,33 @@ public class CommonUtilsMethods {
         TextView text = layout.findViewById(R.id.text);
        text.setText(message);
        // text.setText(activity.getString(R.string.message));
-
-
         if (toast != null) {
             toast.cancel();
         }
         toast = new Toast(activity.getApplicationContext());
 //        Toast toast = Toast.makeText(activity.getApplicationContext(), message, Toast.LENGTH_LONG);
 //        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-        toast.setDuration(Toast.LENGTH_LONG);
+        if (isLong) toast.setDuration(Toast.LENGTH_LONG);
+        else toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(layout);
         toast.show();
     }
 
-    public static void showToastMessage(Context context, String message) {
-
+    public static void showToastMessage(Context context, String message, boolean isLong) {
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View layout = inflater.inflate(R.layout.toast_layout, ((Activity) context).findViewById(R.id.toast_layout_root));
-
         //ImageView image = layout.findViewById(R.id.image);
         // image.setImageResource(R.drawable.san_clm_logo);
         TextView text = layout.findViewById(R.id.text);
         text.setText(message);
         // text.setText(context.getString(R.string.message));
-
         if (toast != null) {
             toast.cancel();
         }
         toast = new Toast(context);
 //        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-        toast.setDuration(Toast.LENGTH_LONG);
+        if (isLong) toast.setDuration(Toast.LENGTH_LONG);
+        else toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(layout);
         toast.show();
     }
@@ -614,6 +612,47 @@ public class CommonUtilsMethods {
 
 
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+
+    public static JsonObject CommonJsonObjectParameter(Context context) {
+        JsonObject jsonObject = new JsonObject();
+        try {
+            BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
+            int mBatteryPercent = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+            @SuppressLint("HardwareIds") String deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+            jsonObject.addProperty("SF_Code", SharedPref.getSfCode(context));
+            jsonObject.addProperty("SF_Name", SharedPref.getSfName(context));
+            jsonObject.addProperty("SF_Type", SharedPref.getSfType(context));
+            jsonObject.addProperty("Division_Code", CommonUtilsMethods.removeLastComma(SharedPref.getDivisionCode(context)));
+            jsonObject.addProperty("App_Mode", Constants.APP_MODE);
+            jsonObject.addProperty("App_Version", context.getResources().getString(R.string.app_version));
+            jsonObject.addProperty("App_Language", SharedPref.getSelectedLanguage(context));
+            jsonObject.addProperty("Device_ID", deviceId);
+            jsonObject.addProperty("Device_Name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonObject.addProperty("Device_Version", Build.VERSION.RELEASE);
+
+            jsonObject.addProperty("AppName", context.getString(R.string.str_app_name));
+            jsonObject.addProperty("Appver", context.getResources().getString(R.string.app_version));
+            jsonObject.addProperty("Mod", APP_MODE);
+            jsonObject.addProperty("sf_emp_id", SharedPref.getSfEmpId(context));
+            jsonObject.addProperty("sfname", SharedPref.getSfName(context));
+            jsonObject.addProperty("Device_version", Build.VERSION.RELEASE);
+            jsonObject.addProperty("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
+            jsonObject.addProperty("Device_id", deviceId);
+            jsonObject.addProperty("language", SharedPref.getSelectedLanguage(context));
+            jsonObject.addProperty("sf_type", SharedPref.getSfType(context));
+            jsonObject.addProperty("Designation", SharedPref.getDsName(context));
+            jsonObject.addProperty("state_code", SharedPref.getStateCode(context));
+            jsonObject.addProperty("subdivision_code", CommonUtilsMethods.removeLastComma(SharedPref.getSubdivisionCode(context)));
+            jsonObject.addProperty("key", SharedPref.getLicenseKey(context));
+            jsonObject.addProperty("Configurl", SharedPref.getBaseWebUrl(context));
+            jsonObject.addProperty("battery", String.valueOf(mBatteryPercent));
+            jsonObject.addProperty("Mod_No", "2");
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return jsonObject;

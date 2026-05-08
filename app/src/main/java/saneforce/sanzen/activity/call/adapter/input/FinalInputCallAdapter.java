@@ -77,7 +77,9 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
 
         holder.tv_inp_name.setText(saveCallInputLists.get(position).getInput_name());
         holder.tv_input_stk.setText(saveCallInputLists.get(position).getBalance_inp_stk());
-        holder.ed_inpQty.setText(saveCallInputLists.get(position).getInp_qty());
+        SaveCallInputList input = saveCallInputLists.get(position);
+        int inputQty = (input.getInp_qty() == null || input.getInp_qty().isEmpty()) ? 0 : Integer.parseInt(input.getInp_qty());
+        holder.ed_inpQty.setText(String.valueOf(inputQty));
 
         if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
             if (holder.ed_inpQty.getText().toString().equalsIgnoreCase("1")) {

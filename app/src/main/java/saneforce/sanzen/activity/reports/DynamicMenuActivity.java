@@ -1,7 +1,6 @@
 package saneforce.sanzen.activity.reports;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -81,7 +80,7 @@ public class DynamicMenuActivity extends AppCompatActivity {
         if (isNetworkConnected()) {
             loadMenuFromApi();
         } else {
-            commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(this, getString(R.string.no_network), true);
 
         }
     }
@@ -137,7 +136,7 @@ public class DynamicMenuActivity extends AppCompatActivity {
                                             dynamicAdapter.notifyDataSetChanged();
                                         }else{
                                           //  commonUtilsMethods.showToastMessage(DynamicMenuActivity.this,"No Record Found");
-                                            commonUtilsMethods.showToastMessage(DynamicMenuActivity.this,getString(R.string.no_record_found));
+                                            commonUtilsMethods.showToastMessage(DynamicMenuActivity.this,getString(R.string.no_record_found), true);
                                         }
 
 
@@ -158,7 +157,7 @@ public class DynamicMenuActivity extends AppCompatActivity {
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 progressDialog.dismiss();
                                 binding.noReportFoundTxt.setVisibility(View.VISIBLE);
-                                commonUtilsMethods.showToastMessage(DynamicMenuActivity.this, getString(R.string.poor_connection)+" "+getString(R.string.please_try_again));
+                                commonUtilsMethods.showToastMessage(DynamicMenuActivity.this, getString(R.string.poor_connection)+" "+getString(R.string.please_try_again), true);
                             }
                         });
                     } catch (JSONException e) {
@@ -173,7 +172,7 @@ public class DynamicMenuActivity extends AppCompatActivity {
             networkStatusTask.execute();
         } else {
             progressDialog.dismiss();
-            commonUtilsMethods.showToastMessage(DynamicMenuActivity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(DynamicMenuActivity.this, getString(R.string.no_network), true);
         }
 
     }

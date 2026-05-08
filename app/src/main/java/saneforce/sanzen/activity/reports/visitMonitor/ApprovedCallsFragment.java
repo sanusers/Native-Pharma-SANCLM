@@ -39,21 +39,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.function.ObjIntConsumer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.reports.missedReport.MissedReportItem;
 import saneforce.sanzen.activity.reports.visitMonitor.adapter.ApprovedCallsAdapter;
 import saneforce.sanzen.activity.reports.visitMonitor.model.VisitStatsModel;
 import saneforce.sanzen.commonClasses.Constants;
-import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.reports.ReportsActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.UtilityClass;
-import saneforce.sanzen.databinding.ActivityVisitMonitorBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -266,7 +261,7 @@ public class ApprovedCallsFragment extends Fragment {
             String selected = monthYearList.get(position);
             monthYearTextView.setText(selected);
             if(SharedPref.getSfType(requireContext()).equalsIgnoreCase("2")){
-                commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.please_select_headquarters));
+                commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.please_select_headquarters), true);
                 noReport.setVisibility(View.VISIBLE);
             }else {
                 noReport.setVisibility(View.GONE);
@@ -381,13 +376,13 @@ public class ApprovedCallsFragment extends Fragment {
 
                             @Override
                             public void onFailure(Call<JsonElement> call, Throwable throwable) {
-                                commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.something_went_wrong_please_try_again));
+                                commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.something_went_wrong_please_try_again), true);
 
                             }
 
                         });
                 }else{
-                    commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.poor_network_connection));
+                    commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.poor_network_connection), true);
 
                 }
 

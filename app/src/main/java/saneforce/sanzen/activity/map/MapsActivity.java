@@ -67,19 +67,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.amazonaws.mobile.client.AWSMobileClient;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -111,7 +98,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -128,7 +114,6 @@ import saneforce.sanzen.AWS.AWSBucketsTag;
 import saneforce.sanzen.AWS.S3DownloadFiles;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.camera.CameraActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
@@ -405,7 +390,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             DisplayDialog();
                         }
                     } else {
-                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.not_able_to_find_address));
+                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.not_able_to_find_address), true);
                         Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
                         startActivity(intent1);
                     }
@@ -877,7 +862,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 val = true;
             }
         } catch (Exception e) {
-            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.loc_not_detect));
+            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.loc_not_detect), true);
         }
         return val;
     }
@@ -1012,14 +997,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     } else {
                         if (from_tagging.equalsIgnoreCase("tagging")) {
-                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.loc_dect));
+                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.loc_dect), true);
                             progressBar.setVisibility(View.GONE);
                             dialogTagCust.dismiss();
                             getOnBackPressedDispatcher().onBackPressed();
                         }
                     }
                 } else {
-                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.no_network), true);
                 }
             }
         });
@@ -1099,7 +1084,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("Msg").equalsIgnoreCase("Tagged Successfully")) {
-                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tagged_successfully));
+                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tagged_successfully), true);
                             dialogTagCust.dismiss();
                             updateMasterData(SelectedTab, jsonTag);
 //                            CallAPIList(SelectedTab,progressBar);
@@ -1110,11 +1095,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             //SharedPref.setTaggedSuccessfully(MapsActivity.this, "true");
 //                            finish();
                         } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("Msg").equalsIgnoreCase("You have reached the maximum tags...")) {
-                            commonUtilsMethods.showToastMessage(MapsActivity.this, jsonSaveRes.getString("Msg"));
+                            commonUtilsMethods.showToastMessage(MapsActivity.this, jsonSaveRes.getString("Msg"), true);
                             dialogTagCust.dismiss();
                         } else {
                             //commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
-                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.poor_connection_please_check_after_sometime));
+                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.poor_connection_please_check_after_sometime), true);
                             dialogTagCust.dismiss();
                         }
                     } catch (Exception e) {
@@ -1126,7 +1111,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 } else {
                     progressBar.setVisibility(View.GONE);
                     // commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
-                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.poor_connection_please_check_after_sometime));
+                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.poor_connection_please_check_after_sometime), true);
                     dialogTagCust.dismiss();
                     btn_confirm.setEnabled(true);
                     btn_confirm.setBackground(ContextCompat.getDrawable(MapsActivity.this, R.drawable.bg_purple));
@@ -1137,7 +1122,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 //  commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
-                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.poor_connection_please_check_after_sometime));
+                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.poor_connection_please_check_after_sometime), true);
                 dialogTagCust.dismiss();
                 btn_confirm.setEnabled(true);
                 btn_confirm.setBackground(ContextCompat.getDrawable(MapsActivity.this, R.drawable.bg_purple));
@@ -2209,7 +2194,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 e.printStackTrace();
             }
         } else {
-            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.no_network), true);
         }
     }
 
@@ -2261,7 +2246,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 CallAPIGeo(jsonTag, progressBar);
                             } else {
                                 dialogTagCust.dismiss();
-                                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tag_failed));
+                                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tag_failed), true);
                             }
                         } catch (Exception e) {
                             Log.v("img_tag", e.toString());
@@ -2270,14 +2255,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     } else {
                         dialogTagCust.dismiss();
                         // commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
-                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.poor_connection_please_check_after_sometime));
+                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.poor_connection_please_check_after_sometime), true);
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                     // commonUtilsMethods.showToastMessage(MapsActivity.this, "Poor Connection Please Check After Sometime");
-                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.poor_connection_please_check_after_sometime));
+                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.poor_connection_please_check_after_sometime), true);
                     dialogTagCust.dismiss();
                 }
             });
@@ -2309,7 +2294,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.e("S3Upload", "File does not exist: " + destinationFilePath);
                     dialogTagCust.dismiss();
                     //       commonUtilsMethods.showToastMessage(MapsActivity.this, "File does not exist.");
-                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.file_does_not_exist));
+                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.file_does_not_exist), true);
                     return;
                 }
 
@@ -2334,7 +2319,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         } else if (state == TransferState.FAILED) {
                             Log.e("S3Upload", "Upload failed");
                             dialogTagCust.dismiss();
-                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tag_failed));
+                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tag_failed), true);
                         }
                     }
 
@@ -2348,7 +2333,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onError(int id, Exception ex) {
                         Log.e("S3Upload", "Error: " + ex.getMessage());
                         dialogTagCust.dismiss();
-                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.upload_failed_please_try_again));
+                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.upload_failed_please_try_again), true);
                     }
                 });
             }
@@ -2487,7 +2472,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mapsBinding.tvMeters.setText(String.format("%s \n Meters", getDistance));
                 }
             } else {
-                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.no_data_found));
+                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.no_data_found), true);
             }
 
             mMap.setMyLocationEnabled(true);
@@ -2782,7 +2767,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Dialog dialog_img = new Dialog(MapsActivity.this);
                             dialog_img.setContentView(R.layout.map_img_layout);
                             if (fileName.isEmpty()) {
-                                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_no_img_found));
+                                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_no_img_found), true);
                             } else {
                                 TransferNetworkLossHandler.getInstance(getApplicationContext());
                                 File MapView = new File(MapsActivity.this.getFilesDir(), fileName);
@@ -2803,7 +2788,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     @Override
                                     public void onFailure(int pos) {
                                         Log.d("bitmap image", "image: " + "bitmap image is null");
-                                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.image_not_found));
+                                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.image_not_found), true);
                                         fullScreenImage.setVisibility(View.GONE);
                                     }
                                 });
@@ -2845,10 +2830,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
                         if (Objects.requireNonNull(marker.getSnippet()).substring(marker.getSnippet().lastIndexOf("^") + 1).isEmpty()) {
-                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_no_img_found));
+                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_no_img_found), true);
                         } else {
                             if (img_url.equalsIgnoreCase("null") || img_url.isEmpty()) {
-                                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.save_settings_con_screen));
+                                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.save_settings_con_screen), true);
                             } else {
                                 Glide.with(getApplicationContext()).load(img_url + "photos/" + marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1)).fitCenter().into(fullScreenImage);
                                 fullScreenImage.setVisibility(View.VISIBLE);
@@ -2968,13 +2953,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void showToast(String selectedTap) {
         if (selectedTap.equals("D")) {
-            commonUtilsMethods.showToastMessage(this, SharedPref.getDrCap(MapsActivity.this) + MapsActivity.this.getString(R.string.list_updated_successfully));
+            commonUtilsMethods.showToastMessage(this, SharedPref.getDrCap(MapsActivity.this) + MapsActivity.this.getString(R.string.list_updated_successfully), true);
         } else if (selectedTap.equals("C")) {
-            commonUtilsMethods.showToastMessage(this, SharedPref.getChmCap(MapsActivity.this) + MapsActivity.this.getString(R.string.list_updated_successfully));
+            commonUtilsMethods.showToastMessage(this, SharedPref.getChmCap(MapsActivity.this) + MapsActivity.this.getString(R.string.list_updated_successfully), true);
         } else if (selectedTap.equals("S")) {
-            commonUtilsMethods.showToastMessage(this, SharedPref.getStkCap(MapsActivity.this) + MapsActivity.this.getString(R.string.list_updated_successfully));
+            commonUtilsMethods.showToastMessage(this, SharedPref.getStkCap(MapsActivity.this) + MapsActivity.this.getString(R.string.list_updated_successfully), true);
         } else if (selectedTap.equals("U")) {
-            commonUtilsMethods.showToastMessage(this, SharedPref.getUNLcap(MapsActivity.this) + MapsActivity.this.getString(R.string.list_updated_successfully));
+            commonUtilsMethods.showToastMessage(this, SharedPref.getUNLcap(MapsActivity.this) + MapsActivity.this.getString(R.string.list_updated_successfully), true);
         }
     }
 

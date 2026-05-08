@@ -136,7 +136,7 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
                             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(ed_remark.getWindowToken(), 0);
                         } else {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_feedback));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_feedback), true);
                         }
                     }
                 });

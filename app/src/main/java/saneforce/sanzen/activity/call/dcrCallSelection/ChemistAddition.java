@@ -42,15 +42,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -79,9 +75,7 @@ import saneforce.sanzen.AWS.AWSBucketsTag;
 import saneforce.sanzen.AWS.Util;
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.call.profile.CustomerProfile;
 import saneforce.sanzen.activity.camera.CameraActivity;
-import saneforce.sanzen.activity.map.MapsActivity;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
@@ -203,26 +197,26 @@ public class ChemistAddition extends AppCompatActivity {
             public void onSafeClick(View view) {
                 chemistadditionbinding.btnChmsave.setEnabled(false);
                 if (chemistadditionbinding.edtDctr.getText().toString().isEmpty()) {
-                    commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.name));
+                    commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.name), true);
                     chemistadditionbinding.btnChmsave.setEnabled(true);
                 } else if (chemistadditionbinding.edtDctr.getText().toString().contains("'")) {
                     chemistadditionbinding.edtDctr.setError("Invalid Character");
                     chemistadditionbinding.btnChmsave.setEnabled(true);
                 } else if (SharedPref.getSfType(ChemistAddition.this).equalsIgnoreCase("2")) {
                     if (chemistadditionbinding.txtSelectHq.getText().toString().isEmpty()) {
-                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.headquarter));
+                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.headquarter), true);
                         chemistadditionbinding.btnChmsave.setEnabled(true);
                     } else if (chemistadditionbinding.txtSelectTerritory.getText().toString().isEmpty()) {
                         if (SharedPref.getClusterCap(ChemistAddition.this).isEmpty() || SharedPref.getClusterCap(ChemistAddition.this) == null) {
-                            commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.cluster));
+                            commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.cluster), true);
                             chemistadditionbinding.btnChmsave.setEnabled(true);
                         } else {
-                            commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.fill) + " " + SharedPref.getClusterCap(ChemistAddition.this));
+                            commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.fill) + " " + SharedPref.getClusterCap(ChemistAddition.this), true);
                             chemistadditionbinding.btnChmsave.setEnabled(true);
                         }
                     } else if (!chemistadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("") &&
                             TagImgNd.equalsIgnoreCase("0") && destinationFilePath.equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.Photo_mand));
+                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.Photo_mand), true);
                         chemistadditionbinding.btnChmsave.setEnabled(true);
 
                     } else {
@@ -295,15 +289,15 @@ public class ChemistAddition extends AppCompatActivity {
                     }
                 } else if (chemistadditionbinding.txtSelectTerritory.getText().toString().isEmpty()) {
                     if (SharedPref.getClusterCap(ChemistAddition.this).isEmpty() || SharedPref.getClusterCap(ChemistAddition.this) == null) {
-                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.cluster));
+                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.fill) + " " + getResources().getString(R.string.cluster), true);
                         chemistadditionbinding.btnChmsave.setEnabled(true);
                     } else {
-                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.fill) + " " + SharedPref.getClusterCap(ChemistAddition.this));
+                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.fill) + " " + SharedPref.getClusterCap(ChemistAddition.this), true);
                         chemistadditionbinding.btnChmsave.setEnabled(true);
                     }
                 } else if (!chemistadditionbinding.edtGeotagaddr.getText().toString().equalsIgnoreCase("") &&
                         TagImgNd.equalsIgnoreCase("0") && destinationFilePath.equalsIgnoreCase("")) {
-                    commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.Photo_mand));
+                    commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.Photo_mand), true);
                     chemistadditionbinding.btnChmsave.setEnabled(true);
 
                 } else {
@@ -529,7 +523,7 @@ public class ChemistAddition extends AppCompatActivity {
                     ChemistAddition.this.startActivity(intent);
 
                 }else {
-                    commonUtilsMethods.showToastMessage(ChemistAddition.this, ChemistAddition.this.getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(ChemistAddition.this, ChemistAddition.this.getString(R.string.no_network), true);
                 }
             }
 
@@ -582,7 +576,7 @@ public class ChemistAddition extends AppCompatActivity {
                 }
                 if(SfType.equalsIgnoreCase("2")) {
                     if(chemistadditionbinding.txtSelectHq.getText().toString().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.select_headquater));
+                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.select_headquater), true);
                     }else {
                         chemistadditionbinding.fragmentSelectChmcluster.setVisibility(View.VISIBLE);
                     }
@@ -706,7 +700,7 @@ public class ChemistAddition extends AppCompatActivity {
                                             }
 
                                         }
-                                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.saved_successfully));
+                                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.saved_successfully), true);
 
 //                                        getOnBackPressedDispatcher().onBackPressed();
 //                                        finish();
@@ -716,7 +710,7 @@ public class ChemistAddition extends AppCompatActivity {
                             }else {
                                 chemistadditionbinding.btnChmsave.setEnabled(true);
                                 progressDialog.dismiss();
-                                commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.something_wrong));
+                                commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.something_wrong), true);
                             }
                         }
 
@@ -724,14 +718,14 @@ public class ChemistAddition extends AppCompatActivity {
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             chemistadditionbinding.btnChmsave.setEnabled(true);
                             progressDialog.dismiss();
-                            commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.no_network));
+                            commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.no_network), true);
                         }
                     });
                 }
             }else {
                 chemistadditionbinding.btnChmsave.setEnabled(true);
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.no_network), true);
             }
 
         } catch (Exception e) {
@@ -830,7 +824,7 @@ public class ChemistAddition extends AppCompatActivity {
                                         masterSyncItemModels.get(position).setSyncSuccess(2);
                                         masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 2));
                                         new Handler().postDelayed(() -> {
-                                            commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.saved_successfully));
+                                            commonUtilsMethods.showToastMessage(ChemistAddition.this, getResources().getString(R.string.saved_successfully), true);
                                             Intent resultIntent = new Intent();
                                             setResult(Activity.RESULT_OK, resultIntent);
                                             finish();
@@ -1193,7 +1187,7 @@ public class ChemistAddition extends AppCompatActivity {
             Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
             if(!fileToUpload.exists()) {
                 Log.e("S3Upload", "File does not exist: " + destinationFilePath);
-                commonUtilsMethods.showToastMessage(ChemistAddition.this, getString(R.string.file_does_not_exist));
+                commonUtilsMethods.showToastMessage(ChemistAddition.this, getString(R.string.file_does_not_exist), true);
                 return;
             }
 
@@ -1217,7 +1211,7 @@ public class ChemistAddition extends AppCompatActivity {
 //                        Log.v("S3Upload", "Upload successful"+file);
                     }else if(state == TransferState.FAILED) {
                         Log.e("S3Upload", "Upload failed");
-                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getString(R.string.tag_failed));
+                        commonUtilsMethods.showToastMessage(ChemistAddition.this, getString(R.string.tag_failed), true);
                     }
                 }
 
@@ -1231,7 +1225,7 @@ public class ChemistAddition extends AppCompatActivity {
                 public void onError(int id, Exception ex) {
                     Log.e("S3Upload", "Error: " + ex.getMessage());
 
-                    commonUtilsMethods.showToastMessage(ChemistAddition.this, getString(R.string.upload_failed_please_try_again));
+                    commonUtilsMethods.showToastMessage(ChemistAddition.this, getString(R.string.upload_failed_please_try_again), true);
                 }
             });
 

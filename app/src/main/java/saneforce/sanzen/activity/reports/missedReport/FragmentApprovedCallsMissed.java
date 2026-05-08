@@ -84,7 +84,6 @@ import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.UtilityClass;
-import saneforce.sanzen.databinding.ActivityMissedReportBinding;
 import saneforce.sanzen.databinding.FragmentApprovedCallsMissedBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
@@ -401,7 +400,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
         if (!UtilityClass.isNetworkAvailable(requireContext())) {
 //            hideLoadingOverlay();
             progressDialog.dismiss();
-            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
             return;
         }
 
@@ -409,7 +408,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
             if (!status) {
 //                hideLoadingOverlay();
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.poor_connection));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.poor_connection), true);
                 return;
             }
 
@@ -481,7 +480,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
 //                        hideLoadingOverlay();
                         progressDialog.dismiss();
                         requireActivity().runOnUiThread(() ->
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.failed_to_load_data)));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.failed_to_load_data), true));
                     }
                 });
             } catch (JSONException e) {
@@ -514,14 +513,14 @@ public class FragmentApprovedCallsMissed extends Fragment {
             progressDialog.show();
             if (!UtilityClass.isNetworkAvailable(requireContext())) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network), true);
                 return;
             }
 
             NetworkStatusTask networkStatusTask = new NetworkStatusTask(requireContext(), status -> {
                 if (!status) {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.poor_connection));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.poor_connection), true);
                     return;
                 }
 
@@ -602,7 +601,7 @@ public class FragmentApprovedCallsMissed extends Fragment {
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             progressDialog.dismiss();
                             requireActivity().runOnUiThread(() ->
-                                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.failed_to_load_data)));
+                                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.failed_to_load_data), true));
                         }
                     });
                 } catch (JSONException e) {

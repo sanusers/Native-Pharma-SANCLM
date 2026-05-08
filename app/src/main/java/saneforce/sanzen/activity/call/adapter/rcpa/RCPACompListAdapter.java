@@ -195,7 +195,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
 //
                         holder.tv_value.setText("0");
 //                        finalValuePrd = getPrdTotalStatic;
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.qty_must_be_greater_than_0));
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.qty_must_be_greater_than_0), true);
                     }
                 } catch (Exception e) {
                     Log.e("deleting_comb", "--refresh--" + e);
@@ -255,7 +255,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
                             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(ed_remark.getWindowToken(), 0);
                         } else {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_remarks));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_remarks), true);
                         }
                     }
                 });

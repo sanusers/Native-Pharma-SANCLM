@@ -40,7 +40,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import id.zelory.compressor.Compressor;
 import okhttp3.MultipartBody;
@@ -279,7 +278,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             public void onSafeClick(View view) {
                 List<String> dates = List.copyOf(outboxUtil.getOutboxDates());
                 if (dates.indexOf(date) > 0) {
-                    CommonUtilsMethods.showToastMessage(context, context.getString(R.string.please_sync_previous_dates));
+                    CommonUtilsMethods.showToastMessage(context, context.getString(R.string.please_sync_previous_dates), true);
                 } else {
                     if (UtilityClass.isNetworkAvailable(context)) {
                         progressDialog = CommonUtilsMethods.createProgressDialog(context);
@@ -291,7 +290,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                                 if (!outboxUtil.checkSyncAvailable(date, 1)) {
                                     CallAPIWorkPlan(position);
                                 } else {
-                                    commonUtilsMethods.showToastMessage(context,  context.getString(R.string.sync_check_in_out));
+                                    commonUtilsMethods.showToastMessage(context,  context.getString(R.string.sync_check_in_out), true);
                                     progressDialog.dismiss();
                                 }
                                 break;
@@ -299,7 +298,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                                 if (!outboxUtil.checkSyncAvailable(date, 2)) {
                                     CallAPIList(position);
                                 } else {
-                                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_work_plan));
+                                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_work_plan), true);
                                     progressDialog.dismiss();
                                 }
                                 break;
@@ -319,13 +318,13 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                                 if (!outboxUtil.checkSyncAvailable(date, 7)) {
                                     CallAPIDaySubmit(position);
                                 } else {
-                                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_work_plan_and_calls));
+                                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_work_plan_and_calls), true);
                                     progressDialog.dismiss();
                                 }
                                 break;
                         }
                     } else {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                     }
                 }
             }

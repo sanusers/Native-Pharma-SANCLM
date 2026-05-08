@@ -34,7 +34,6 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -153,7 +152,7 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
                                 CallSignImageApi(id, signModelClasses.get(position), signModelClasses.get(position).getFilePath(), signModelClasses.get(position).getJson_values());
                             }
                         } else {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                         }
                     } else if (menuItem.getItemId() == R.id.menuDelete) {
                         Dialog dialog = new Dialog(context);

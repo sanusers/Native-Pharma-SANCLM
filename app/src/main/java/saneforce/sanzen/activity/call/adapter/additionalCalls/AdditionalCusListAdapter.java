@@ -195,16 +195,16 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
                             if (count < Integer.parseInt(totalVisit)) {
                                 isValid = true;
                             } else {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_of_visit));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_of_visit), true);
                             }
                         } else {
                             isValid = true;
                         }
                     } else {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_visited));
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_visited), true);
                     }
                 } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.selected_same_doctor));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.selected_same_doctor), true);
                 }
             }
         } catch (Exception e) {

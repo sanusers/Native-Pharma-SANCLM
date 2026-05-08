@@ -2,7 +2,6 @@ package saneforce.sanzen.commonClasses;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.IntentSender;
 import android.util.Log;
 import android.view.View;
@@ -24,8 +23,6 @@ import com.google.android.play.core.install.model.UpdateAvailability;
 import java.util.Locale;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 
 public class InAppUpdate {
     private final Activity activity;
@@ -61,7 +58,7 @@ public class InAppUpdate {
                             case UpdateAvailability.UPDATE_NOT_AVAILABLE:
                                 Log.d("App update", "onNavigationItemSelected: update not available");
                                // commonUtilsMethods.showToastMessage(activity, "No Update Available");
-                                commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_update_available));
+                                commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_update_available), true);
 
 
                                 break;

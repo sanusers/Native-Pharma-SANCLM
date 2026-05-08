@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import com.google.gson.JsonElement;
-
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +15,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.network.ApiInterface;
@@ -50,12 +47,12 @@ public class LoginRepo {
                     if(!SharedPref.getLoginId(context).equalsIgnoreCase("")) {
                         LoginActivity.binding.progressBar.setVisibility(View.GONE);
                         LoginActivity.binding.loginBtn.setEnabled(true);
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_try_again));
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_try_again), true);
                         context.startActivity(new Intent(context, HomeDashBoard.class));
                     }else {
                         LoginActivity.binding.progressBar.setVisibility(View.GONE);
                         LoginActivity.binding.loginBtn.setEnabled(true);
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_try_again));
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.please_try_again), true);
                     }
                 } catch (Exception e) {
                     Log.e("Login", "onFailure: " + e.getMessage());

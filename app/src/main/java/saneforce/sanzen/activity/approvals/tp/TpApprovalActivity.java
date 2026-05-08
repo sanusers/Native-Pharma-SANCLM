@@ -42,7 +42,6 @@ import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.sanzen.activity.approvals.dcr.pojo.DcrDetailModelList;
-import saneforce.sanzen.activity.approvals.geotagging.GeoTaggingActivity;
 import saneforce.sanzen.activity.approvals.stp.model.STPModelList;
 import saneforce.sanzen.activity.approvals.tp.adapter.TpApprovalAdapter;
 import saneforce.sanzen.activity.approvals.tp.adapter.TpApprovalDetailedAdapter;
@@ -138,7 +137,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                     tpModelLists.clear();
                     CallTpListApi();
                 }else{
-                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_network), true);
                 }
             }
         });
@@ -207,7 +206,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.approved_successfully));
+                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.approved_successfully), true);
                             removeSelectedData();
                             TpCount--;
                         }
@@ -215,14 +214,14 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network), true);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network), true);
             }
         });
     }
@@ -260,7 +259,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                 if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
                     tpReject(ed_reason.getText().toString());
                 } else {
-                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.toast_enter_reason_for_reject));
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.toast_enter_reason_for_reject), true);
                 }
             }
         });
@@ -312,7 +311,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.rejected_successfully));
+                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.rejected_successfully), true);
                             dialogReject.dismiss();
                             removeSelectedData();
                             TpCount--;
@@ -323,14 +322,14 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                 } else {
                     progressDialog.dismiss();
                     dialogReject.dismiss();
-                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network), true);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network), true);
                 dialogReject.dismiss();
             }
         });
@@ -411,7 +410,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                             tpApprovalBinding.rvTpList.setAdapter(tpApprovalAdapter);
                         } else {
                             tpApprovalBinding.constraintSelectedDetails.setVisibility(View.GONE);
-                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_data_found));
+                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_data_found), true);
                         }
                     } catch (Exception ignored) {
 
@@ -419,7 +418,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                 } else {
                     tpApprovalBinding.constraintSelectedDetails.setVisibility(View.GONE);
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network), true);
                 }
             }
 
@@ -427,7 +426,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 tpApprovalBinding.constraintSelectedDetails.setVisibility(View.GONE);
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network), true);
             }
         });
     }
@@ -571,21 +570,21 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                             tpApprovalBinding.rvTpContentList.setLayoutManager(mLayoutManager);
                             tpApprovalBinding.rvTpContentList.setAdapter(tpApprovalDetailedAdapter);
                         } else {
-                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_data_found));
+                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_data_found), true);
                         }
                     } catch (Exception e) {
                         Log.v("tpDetailedList", "---" + e);
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network), true);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this, getString(R.string.no_network), true);
             }
         });
     }

@@ -223,7 +223,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                     });
                     popupMenu.show();
                 } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                 }
             }
         });
@@ -330,7 +330,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                             }
                         }
                         SharedPref.setTodayCallList(context, jsonArray.toString());
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_deleted));
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_deleted), true);
                         if (jsonArray.length() <= 0) {
                             SharedPref.setLastCallDate(context, "");
                         }
@@ -351,13 +351,13 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         Log.v("delCall", e.toString());
                     }
                 } else {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.response_failed_please_sync));
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.response_failed_please_sync), true);
             }
         });
     }
@@ -401,7 +401,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         Log.v("editCall", jsonObject.toString());
                         Intent intent = new Intent(context, DCRCallActivity.class);
                         JSONArray callData = jsonObject.optJSONArray("DCRDetail");
-                        String selectedHQ = "", mProds = "", townName = "", townCode = "";
+                        String selectedHQ = "", mProds = "", townName = "", townCode = "", mobileNumber = "";
                         if (callData != null) {
                             JSONObject dcrDetail = callData.optJSONObject(0);
                             if (dcrDetail != null) {
@@ -423,6 +423,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                                                 mProds = obj.optString("MProd");
                                                 townName = obj.optString("Town_Name");
                                                 townCode = obj.optString("Town_Code");
+                                                mobileNumber = obj.optString("Mobile");
                                                 break;
                                             }
                                         }
@@ -434,6 +435,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                                             if (obj.optString("Code").equalsIgnoreCase(docCode)) {
                                                 townName = obj.optString("Town_Name");
                                                 townCode = obj.optString("Town_Code");
+                                                mobileNumber = obj.optString("Mobile");
                                                 break;
                                             }
                                         }
@@ -445,6 +447,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         custList.setMappedSlides(mProds);
                         custList.setTown_code(townCode);
                         custList.setTown_name(townName);
+                        custList.setMobile(mobileNumber);
                         CallActivityCustDetails.add(0, custList);
                         intent.putExtra(Constants.DETAILING_REQUIRED, "false");
                         intent.putExtra(Constants.DCR_FROM_ACTIVITY, "edit_online");
@@ -467,14 +470,14 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                     }
                 } else {
                     progressBar.dismiss();
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressBar.dismiss();
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
             }
         });
     }

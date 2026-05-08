@@ -171,7 +171,7 @@ public class RCPASelectPrdSide extends Fragment {
                             RCPAFragment.rcpaBinding.tvValue.setText(prdList.get(holder.getBindingAdapterPosition()).getRate());
                             dcrCallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
                         } else {
-                             commonUtilsMethods.showToastMessage(context,context.getString(R.string.already_sel_prd));
+                             commonUtilsMethods.showToastMessage(context,context.getString(R.string.already_sel_prd), true);
                         }
                     } catch (Exception ignored) {
                     }
@@ -207,10 +207,10 @@ public class RCPASelectPrdSide extends Fragment {
                             RCPAFragment.rcpaBinding.tvValue.setText(prdList.get(holder.getBindingAdapterPosition()).getRate());
                             dcrCallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
                         } else {
-                             commonUtilsMethods.showToastMessage(context,context.getString(R.string.already_sel_prd));
+                             commonUtilsMethods.showToastMessage(context,context.getString(R.string.already_sel_prd), true);
                         }
                     } else {
-                         commonUtilsMethods.showToastMessage(context,context.getString(R.string.no_comp_available));
+                         commonUtilsMethods.showToastMessage(context,context.getString(R.string.no_comp_available), true);
                     }
 
                 } catch (Exception e) {

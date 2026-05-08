@@ -356,7 +356,7 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                                 }
                             } else {
                                 doctorbusinessEntryBinding.btnSave.setEnabled(true);
-                                commonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, getResources().getString(R.string.something_wrong));
+                                commonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, getResources().getString(R.string.something_wrong), true);
                                 progressDialog.dismiss();
                             }
                         }
@@ -364,14 +364,14 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             doctorbusinessEntryBinding.btnSave.setEnabled(true);
-                            commonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, getResources().getString(R.string.no_network));
+                            commonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, getResources().getString(R.string.no_network), true);
                             progressDialog.dismiss();
                         }
                     });
                 }
             } else {
                 doctorbusinessEntryBinding.btnSave.setEnabled(true);
-                commonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, getResources().getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, getResources().getString(R.string.no_network), true);
                 progressDialog.dismiss();
             }
         } catch (Exception e) {
@@ -910,7 +910,7 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                             } else {
                                 doctorbusinessEntryBinding.layoutButtons.setVisibility(View.GONE);
                                 doctorbusinessEntryBinding.btnStartentry.setEnabled(true);
-                                commonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, getResources().getString(R.string.something_wrong));
+                                commonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, getResources().getString(R.string.something_wrong), true);
                                 progressDialog.dismiss();
                             }
                         }
@@ -919,7 +919,7 @@ public class DoctorBusinessActivity extends AppCompatActivity {
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             doctorbusinessEntryBinding.layoutButtons.setVisibility(View.GONE);
                             doctorbusinessEntryBinding.btnStartentry.setEnabled(true);
-                            commonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, getResources().getString(R.string.no_network));
+                            commonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, getResources().getString(R.string.no_network), true);
                             progressDialog.dismiss();
                         }
                     });
@@ -927,7 +927,7 @@ public class DoctorBusinessActivity extends AppCompatActivity {
             } else {
                 doctorbusinessEntryBinding.layoutButtons.setVisibility(View.GONE);
                 doctorbusinessEntryBinding.btnStartentry.setEnabled(true);
-                commonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, getResources().getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, getResources().getString(R.string.no_network), true);
                 progressDialog.dismiss();
             }
         } catch (Exception e) {
@@ -942,7 +942,7 @@ public class DoctorBusinessActivity extends AppCompatActivity {
         try {
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR_MAS + selectedhq).getMasterSyncDataJsonArray();
             if (jsonArray.length() == 0) {
-                CommonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, DoctorBusinessActivity.this.getString(R.string.no_data_found) + "  " + DoctorBusinessActivity.this.getString(R.string.do_master_sync));
+                CommonUtilsMethods.showToastMessage(DoctorBusinessActivity.this, DoctorBusinessActivity.this.getString(R.string.no_data_found) + "  " + DoctorBusinessActivity.this.getString(R.string.do_master_sync), true);
             }
 //            Log.v("DrCall", "-dr_full_length-" + jsonArray.length());
             for (int i = 0; i < jsonArray.length(); i++) {

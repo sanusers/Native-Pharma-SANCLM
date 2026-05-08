@@ -388,7 +388,7 @@ public class DynamicActivity extends AppCompatActivity {
                 binding.rlNoActivity.setVisibility(View.VISIBLE);
                 binding.tvNoActivity.setText(getString(R.string.no) + " " + activityCap);
                 binding.llMainLayout.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + " " + activityCap);
+                commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + " " + activityCap, true);
             }
             binding.progressMain.setVisibility(View.GONE);
         } catch (Exception e) {
@@ -405,7 +405,7 @@ public class DynamicActivity extends AppCompatActivity {
             if (UtilityClass.isNetworkAvailable(this)) {
                 callActivityDetailsAPI(activityModelClass);
             } else {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network), true);
                 chosenActivityModelClass = null;
                 chosenActivityPosition = -1;
                 this.adapter.changeRowIndex(-1);
@@ -446,7 +446,7 @@ public class DynamicActivity extends AppCompatActivity {
                             binding.rlDetailsMain.setVisibility(View.GONE);
                             binding.btnSubmit.setVisibility(View.GONE);
                             binding.progrlessdetail.setVisibility(View.GONE);
-                            commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.select_headquater));
+                            commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.select_headquater), true);
                             showHQ();
                             return;
                         }
@@ -526,7 +526,7 @@ public class DynamicActivity extends AppCompatActivity {
                     binding.rlDetailsMain.setVisibility(View.GONE);
                     binding.btnSubmit.setVisibility(View.GONE);
                     binding.progrlessdetail.setVisibility(View.GONE);
-                    commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + activityCap + getString(R.string.details));
+                    commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + activityCap + getString(R.string.details), true);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -629,7 +629,7 @@ public class DynamicActivity extends AppCompatActivity {
                                     binding.rlNoActivity.setVisibility(View.VISIBLE);
                                     binding.llMainLayout.setVisibility(View.GONE);
 
-                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + activityCap);
+                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + activityCap, true);
                                 }
                             } catch (Exception a) {
                                 a.printStackTrace();
@@ -649,7 +649,7 @@ public class DynamicActivity extends AppCompatActivity {
                 a.printStackTrace();
             }
         } else {
-            commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(this, getString(R.string.no_network), true);
         }
     }
 
@@ -770,10 +770,10 @@ public class DynamicActivity extends AppCompatActivity {
                                     binding.rlDetailsMain.setVisibility(View.GONE);
                                     binding.btnSubmit.setVisibility(View.GONE);
                                     binding.progrlessdetail.setVisibility(View.GONE);
-                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + activityCap + getString(R.string.details));
+                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + activityCap + getString(R.string.details), true);
                                 }
                             } catch (Exception a) {
-                                commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + activityCap +  getString(R.string.details));
+                                commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + activityCap +  getString(R.string.details), true);
                                 Log.e("Error", "----- " + a);
                             }
                         }
@@ -781,7 +781,7 @@ public class DynamicActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + activityCap +  getString(R.string.details));
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no) + activityCap +  getString(R.string.details), true);
                         binding.rlNoData.setVisibility(View.VISIBLE);
                         binding.rlDetailsMain.setVisibility(View.GONE);
                         binding.btnSubmit.setVisibility(View.GONE);
@@ -793,7 +793,7 @@ public class DynamicActivity extends AppCompatActivity {
                 a.printStackTrace();
             }
         } else {
-            commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no_network), true);
         }
     }
 
@@ -1368,7 +1368,7 @@ public class DynamicActivity extends AppCompatActivity {
             public void onSafeClick(View view) {
                 String fromdate = textviewfromdate.getText().toString();
                 if (fromdate.equals("")) {
-                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.select_from_date));
+                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.select_from_date), true);
                 } else {
                     String datee[] = fromdate.split("-");
                     final Calendar c = Calendar.getInstance();
@@ -1528,7 +1528,7 @@ public class DynamicActivity extends AppCompatActivity {
             public void onClick(View view2) {
                 String fromdate = textviewfromdate.getText().toString();
                 if (fromdate.equals("")) {
-                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.select_from_date));
+                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.select_from_date), true);
                 } else {
                     String date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_30, TimeUtils.FORMAT_5, fromdate);
                     String Time = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_30, TimeUtils.FORMAT_29, fromdate);
@@ -1557,7 +1557,7 @@ public class DynamicActivity extends AppCompatActivity {
                                 if (mHour < hourOfDay || mMinute < minute1) {
                                     textviewtodate.setText(dateFormat.format(c.getTime()));
                                 } else {
-                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_as_after_from_time));
+                                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_as_after_from_time), true);
                                     textviewtodate.setText("");
                                 }
                             } else {
@@ -1789,7 +1789,7 @@ public class DynamicActivity extends AppCompatActivity {
             public void onSafeClick(View view) {
                 String data = textviewfromtime.getText().toString();
                 if (data.equalsIgnoreCase("")) {
-                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_from_time));
+                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_from_time), true);
                 } else {
                     String[] datas = data.split(":");
                     final int mHour = Integer.parseInt(datas[0]);
@@ -1801,7 +1801,7 @@ public class DynamicActivity extends AppCompatActivity {
                             if (mHour < hour || mMinute < minute) {
                                 textviewtotime.setText(String.format("%02d:%02d", hour, minute));
                             } else {
-                                commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_as_after_from_time));
+                                commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_as_after_from_time), true);
                                 textviewtotime.setText("");
                             }
                             commonFun();
@@ -2304,7 +2304,7 @@ public class DynamicActivity extends AppCompatActivity {
                     if (!CheckLocPermission()) {
                         RequestLocationPermission();
                     } else {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.wait_for_location));
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.wait_for_location), true);
                         String address;
                         gpsTrack = new GPSTrack(DynamicActivity.this);
                         double latitude = gpsTrack.getLatitude();
@@ -2600,7 +2600,7 @@ public class DynamicActivity extends AppCompatActivity {
                     }
                     String filename = getFileNameFromUri(uri);
                     if (filename == null) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_correct_path));
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_correct_path), true);
                         return;
                     }
 //                    if (filename.endsWith(".zip")) {
@@ -2608,12 +2608,12 @@ public class DynamicActivity extends AppCompatActivity {
 //                        return;
 //                    }
                     selectedTextFileUpload.setText(filename);
-                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.file_accepted));uri = data.getData();
+                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.file_accepted), true);uri = data.getData();
 
                     long fileSize = getFileSize(uri);
 
                     if (fileSize > MAX_FILE_SIZE) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "File size limit exceeded");
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, "File size limit exceeded", true);
                         removeFile(selectedTextFileUpload.getText().toString());
                         selectedTextFileUpload.setText("");
                         return;
@@ -2647,11 +2647,11 @@ public class DynamicActivity extends AppCompatActivity {
 //                    }
                 } catch (Exception ex) {
                     Log.v("Error", ex.toString());
-                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_correct_path));
+                    commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.please_select_correct_path), true);
                     ex.printStackTrace();
                 }
             } else {
-                commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.no_file_selected));
+                commonUtilsMethods.showToastMessage(DynamicActivity.this, DynamicActivity.this.getString(R.string.no_file_selected), true);
             }
             commonFun();
         }
@@ -2830,10 +2830,10 @@ public class DynamicActivity extends AppCompatActivity {
 
                 if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16")) {
                     if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this,getString(R.string.fill_the_from) + List.getFieldName());
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this,getString(R.string.fill_the_from) + List.getFieldName(), true);
                         break;
                     } else if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.fill_the_to) + List.getFieldName());
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.fill_the_to) + List.getFieldName(), true);
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
@@ -2842,7 +2842,7 @@ public class DynamicActivity extends AppCompatActivity {
                     }
                 } else if (List.getControlId().equalsIgnoreCase("17")) {
                     if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.choose_the)+ List.getFieldName() + "");
+                        commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.choose_the)+ List.getFieldName() + "", true);
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
@@ -2850,7 +2850,7 @@ public class DynamicActivity extends AppCompatActivity {
                     }
                 } else {
                     if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                            commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.fill_the) + List.getFieldName() + "");
+                            commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.fill_the) + List.getFieldName() + "", true);
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt());
@@ -3011,7 +3011,7 @@ public class DynamicActivity extends AppCompatActivity {
                 }
 
             }
-            commonUtilsMethods.showToastMessage(DynamicActivity.this, activityCap + getString(R.string.saved_successfully));
+            commonUtilsMethods.showToastMessage(DynamicActivity.this, activityCap + getString(R.string.saved_successfully), true);
         } catch (Exception a) {
             a.printStackTrace();
         }
@@ -3238,7 +3238,7 @@ public class DynamicActivity extends AppCompatActivity {
             } else if (UtilityClass.isNetworkAvailable(DynamicActivity.this)) {
                 getData(hqCode);
             } else {
-                commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no_network), true);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -3334,7 +3334,7 @@ public class DynamicActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(DynamicActivity.this, getString(R.string.no_network), true);
         }
     }
 

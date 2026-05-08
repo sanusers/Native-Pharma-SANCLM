@@ -19,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -288,7 +287,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                                 }
                             } else {
                                 progressBar.dismiss();
-                                new CommonUtilsMethods(context).showToastMessage(context, context.getString(R.string.no_network_available));
+                                new CommonUtilsMethods(context).showToastMessage(context, context.getString(R.string.no_network_available), true);
                             }
                             break;
                     }
@@ -322,7 +321,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                                 }
                             } else {
                                 progressBar.dismiss();
-                                new CommonUtilsMethods(context).showToastMessage(context, context.getString(R.string.no_network_available));
+                                new CommonUtilsMethods(context).showToastMessage(context, context.getString(R.string.no_network_available), true);
                             }
                             break;
                     }
@@ -410,7 +409,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
             public void onFailure(int pos) {
                 Log.d("bitmap image", "Failed to load image, bitmap is null.");
                 // commonUtilsMethods.showToastMessage(context, "Image Not Found");
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.image_not_found));
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.image_not_found), true);
                 holder.img_view.setVisibility(View.VISIBLE);
                 progressBar.dismiss();
             }

@@ -192,7 +192,7 @@ public class RCPASelectCompSide extends Fragment {
 
                     dcrCallBinding.fragmentAddRcpaSide.setVisibility(View.GONE);
                 } else {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.add_one_competitor));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.add_one_competitor), true);
                 }
             }
         });
@@ -220,9 +220,9 @@ public class RCPASelectCompSide extends Fragment {
             public void onSafeClick(View view) {
                 boolean isMatched = false;
                 if (Objects.requireNonNull(rcpaSideBinding.edCompPrd.getText()).toString().isEmpty()) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.enter_prd));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.enter_prd), true);
                 } else if (Objects.requireNonNull(rcpaSideBinding.edCompCompany.getText()).toString().isEmpty()) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.enter_company));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.enter_company), true);
                 } else {
                     try {
                         if (masterDataDao.getMasterSyncDataOfHQ(Constants.LOCAL_MAPPED_COMPETITOR_PROD)) {
@@ -251,7 +251,7 @@ public class RCPASelectCompSide extends Fragment {
 
                                 addCompList.add(new RCPAAddedCompList(addCompListDummy.get(0).getPrd_name(), addCompListDummy.get(0).getPrd_code(), addCompListDummy.get(0).getChem_names(), addCompListDummy.get(0).getChem_Code(), rcpaSideBinding.edCompCompany.getText().toString(), String.valueOf(finalCount), rcpaSideBinding.edCompPrd.getText().toString(), String.valueOf(finalCount), addCompListDummy.get(0).getRate(), false, addCompListDummy.get(0).getTotalPrdValue()));
 
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.competitor_added));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.competitor_added), true);
 
                                 rcpaSideBinding.constraintPreviewCompList.setVisibility(View.VISIBLE);
                                 rcpaSideBinding.constraintAddCompList.setVisibility(View.GONE);
@@ -268,7 +268,7 @@ public class RCPASelectCompSide extends Fragment {
                                 rcpaSideBinding.rvCompPrdList.setAdapter(adapterCompetitorPrd);
                                 adapterCompetitorPrd.notifyDataSetChanged();
                             } else {
-                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.prd_comp_available));
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.prd_comp_available), true);
                             }
                         } else {
                             jsonArray = new JSONArray();
@@ -281,7 +281,7 @@ public class RCPASelectCompSide extends Fragment {
 
                             addCompList.add(new RCPAAddedCompList(addCompListDummy.get(0).getPrd_name(), addCompListDummy.get(0).getPrd_code(), addCompListDummy.get(0).getChem_names(), addCompListDummy.get(0).getChem_Code(), rcpaSideBinding.edCompCompany.getText().toString(), "-1", rcpaSideBinding.edCompPrd.getText().toString(), "-1", addCompListDummy.get(0).getRate(), false, addCompListDummy.get(0).getTotalPrdValue()));
 
-                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.competitor_added));
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.competitor_added), true);
 
                             rcpaSideBinding.constraintPreviewCompList.setVisibility(View.VISIBLE);
                             rcpaSideBinding.constraintAddCompList.setVisibility(View.GONE);
@@ -400,7 +400,7 @@ public class RCPASelectCompSide extends Fragment {
                             holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
                             CompetitorList.get(position).setSelected(true);
                         } else {
-                             commonUtilsMethods.showToastMessage(context,context.getString(R.string.already_sel_prd));
+                             commonUtilsMethods.showToastMessage(context,context.getString(R.string.already_sel_prd), true);
                             holder.checkBox.setChecked(false);
                         }
 

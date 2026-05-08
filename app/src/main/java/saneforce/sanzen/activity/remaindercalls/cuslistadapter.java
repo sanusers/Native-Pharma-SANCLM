@@ -2,13 +2,11 @@ package saneforce.sanzen.activity.remaindercalls;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
@@ -278,7 +276,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                                 }
                                 if (jsonElement.toString().equals("[]")) {
                                     RemaindercallsActivity.listeduser.clear();
-                                    new CommonUtilsMethods(context).showToastMessage(context, context.getString(R.string.no_data));
+                                    new CommonUtilsMethods(context).showToastMessage(context, context.getString(R.string.no_data), true);
                                     progressDialog.dismiss();
                                 }
                                 RemaindercallsActivity.remaindercallsAdapter.notifyDataSetChanged();
@@ -303,7 +301,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                 e.printStackTrace();
             }
         } else {
-            new CommonUtilsMethods(context).showToastMessage(context, context.getString(R.string.please_check_your_internet_connection));
+            new CommonUtilsMethods(context).showToastMessage(context, context.getString(R.string.please_check_your_internet_connection), true);
         }
     }
 

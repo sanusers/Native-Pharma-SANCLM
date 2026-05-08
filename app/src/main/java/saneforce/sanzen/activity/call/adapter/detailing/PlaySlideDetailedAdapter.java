@@ -315,16 +315,16 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                             pdfView.setVisibility(View.VISIBLE);
                             videoView.setVisibility(View.GONE);
                             webView.setVisibility(View.GONE);
-                            if (loadingDotsView != null) {
-                                loadingDotsView.setVisibility(View.VISIBLE);
-                                loadingDotsView.startLoading();
-                            }
+//                            if (loadingDotsView != null) {
+//                                loadingDotsView.setVisibility(View.VISIBLE);
+//                                loadingDotsView.startLoading();
+//                            }
                             pdfView.fromFile(file)
                                     .onRender((nbPages) -> {
-                                        if (loadingDotsView != null) {
-                                            loadingDotsView.setVisibility(View.GONE);
-                                            loadingDotsView.stopLoading();
-                                        }
+//                                        if (loadingDotsView != null) {
+//                                            loadingDotsView.setVisibility(View.GONE);
+//                                            loadingDotsView.stopLoading();
+//                                        }
                                     })
                                     .defaultPage(0)
                                     .enableAnnotationRendering(true)
@@ -344,18 +344,18 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                             pdfView.setVisibility(View.GONE);
                             videoView.setVisibility(View.VISIBLE);
                             webView.setVisibility(View.GONE);
-                            if (loadingDotsView != null) {
-                                loadingDotsView.setVisibility(View.VISIBLE);
-                                loadingDotsView.startLoading();
-                            }
+//                            if (loadingDotsView != null) {
+//                                loadingDotsView.setVisibility(View.VISIBLE);
+//                                loadingDotsView.startLoading();
+//                            }
                             Uri uri = Uri.parse(file.getAbsolutePath());
                             videoView.setVideoURI(uri);
                             videoView.setMediaController(mediaController);
                             videoView.setOnPreparedListener(mp -> {
-                                if (loadingDotsView != null) {
-                                    loadingDotsView.setVisibility(View.GONE);
-                                    loadingDotsView.stopLoading();
-                                }
+//                                if (loadingDotsView != null) {
+//                                    loadingDotsView.setVisibility(View.GONE);
+//                                    loadingDotsView.stopLoading();
+//                                }
                                 mp.start();
                             });
                             videoView.setOnCompletionListener(mp -> {
@@ -367,10 +367,10 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                             pdfView.setVisibility(View.GONE);
                             videoView.setVisibility(View.GONE);
                             webView.setVisibility(View.VISIBLE);
-                            if (loadingDotsView != null) {
-                                loadingDotsView.setVisibility(View.VISIBLE);
-                                loadingDotsView.startLoading();
-                            }
+//                            if (loadingDotsView != null) {
+//                                loadingDotsView.setVisibility(View.VISIBLE);
+//                                loadingDotsView.startLoading();
+//                            }
 
                             webView.getSettings().setBuiltInZoomControls(false);
                             webView.getSettings().setDisplayZoomControls(false);
@@ -410,10 +410,10 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                                 public void onPageFinished(WebView view, String url) {
                                     super.onPageFinished(view, url);
                                     Log.i("webview", "onPageFinished: " + TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-                                    if (loadingDotsView != null) {
-                                        loadingDotsView.setVisibility(View.GONE);
-                                        loadingDotsView.stopLoading();
-                                    }
+//                                    if (loadingDotsView != null) {
+//                                        loadingDotsView.setVisibility(View.GONE);
+//                                        loadingDotsView.stopLoading();
+//                                    }
                                 }
                             });
                             break;
@@ -421,10 +421,10 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                             pdfView.setVisibility(View.GONE);
                             videoView.setVisibility(View.GONE);
                             webView.setVisibility(View.GONE);
-                            if (loadingDotsView != null) {
-                                loadingDotsView.setVisibility(View.GONE);
-                                loadingDotsView.stopLoading();
-                            }
+//                            if (loadingDotsView != null) {
+//                                loadingDotsView.setVisibility(View.GONE);
+//                                loadingDotsView.stopLoading();
+//                            }
                             break;
                     }
                 }
@@ -650,7 +650,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         }
 
 
-        commonUtilsMethods.showToastMessage(context, context.getString(R.string.processing));
+        commonUtilsMethods.showToastMessage(context, context.getString(R.string.processing), true);
         apiService = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
 
         Call<JsonObject> callImageScrub;
@@ -667,7 +667,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                         JSONObject jsonImgRes;
                         jsonImgRes = new JSONObject(response.body().toString());
                         if (jsonImgRes.getString("success").equalsIgnoreCase("true")) {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.scribble_upload));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.scribble_upload), true);
                             slideScribble.set(scribblePos, new StoreImageTypeUrl(slideScribble.get(scribblePos).getSlideNam(), slideScribble.get(scribblePos).getSlideid(), slideScribble.get(scribblePos).isLike(), slideScribble.get(scribblePos).isDisLike(), slideScribble.get(scribblePos).getSlideComments(), scribbleFileName));
                             dialog.dismiss();
                         }
@@ -676,13 +676,13 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     }
                 } else {
                     dialog.dismiss();
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.something_wrong));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.something_wrong), true);
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                 dialog.dismiss();
             }
         });
@@ -913,13 +913,13 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             if (playPauseCap.equalsIgnoreCase(context.getString(R.string.pause))) {
                 tv_play_pause.setText(context.getString(R.string.play));
                 iv_play_pause.setImageResource(R.drawable.baseline_play_arrow_24);
-                CommonUtilsMethods.showToastMessage(context, "Detailing Paused");
+                CommonUtilsMethods.showToastMessage(context, "Detailing Paused", true);
                 isPaused = true;
                 isDetailingPaused = true;
             } else {
                 tv_play_pause.setText(context.getString(R.string.pause));
                 iv_play_pause.setImageResource(R.drawable.baseline_pause_24);
-                CommonUtilsMethods.showToastMessage(context, "Detailing Resumed");
+                CommonUtilsMethods.showToastMessage(context, "Detailing Resumed", true);
                 isPaused = false;
                 isDetailingPaused = false;
             }

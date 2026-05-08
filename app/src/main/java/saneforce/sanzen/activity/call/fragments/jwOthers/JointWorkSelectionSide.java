@@ -12,20 +12,17 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -40,7 +37,6 @@ import org.json.JSONObject;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -52,7 +48,6 @@ import saneforce.sanzen.activity.call.adapter.jwOthers.AdapterCallJointWorkList;
 import saneforce.sanzen.activity.call.adapter.jwOthers.JwAdapter;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
-import saneforce.sanzen.activity.homeScreen.modelClass.CallsModalClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.commonClasses.SafeClickListener;
@@ -691,7 +686,7 @@ public class JointWorkSelectionSide extends Fragment {
                                         }
                                     } else {
                                         if (isProgressNeed) progressDialog.dismiss();
-                                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                                     }
                                 }
 
@@ -699,7 +694,7 @@ public class JointWorkSelectionSide extends Fragment {
                                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 
                                     if (isProgressNeed) progressDialog.dismiss();
-                                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                                 }
                             });
                         } catch (Exception e) {
@@ -710,7 +705,7 @@ public class JointWorkSelectionSide extends Fragment {
                         if (isProgressNeed) {
 
                             progressDialog.dismiss();
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection), true);
                         }
                     }
                 });

@@ -1,7 +1,6 @@
 package saneforce.sanzen.activity.call.profile;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.CallActivityCustDetails;
-import static saneforce.sanzen.activity.call.DCRCallActivity.CusCheckInOutNeed;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.storingSlide;
 
 import android.Manifest;
@@ -11,8 +10,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -202,7 +199,7 @@ public class CustomerProfile extends AppCompatActivity {
                         progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
                         PreCallAnalysisFragment.CallPreCallAPI(getApplicationContext(), CustomerProfile.this);
                     } else {
-                        commonUtilsMethods.showToastMessage(CustomerProfile.this, getString(R.string.no_network));
+                        commonUtilsMethods.showToastMessage(CustomerProfile.this, getString(R.string.no_network), true);
                     }
                 }
             }
@@ -259,7 +256,7 @@ public class CustomerProfile extends AppCompatActivity {
                     Intent intent = new Intent(CustomerProfile.this, HomeDashBoard.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                    CommonUtilsMethods.showToastMessage(CustomerProfile.this, getString(R.string.please_try_again));
+                    CommonUtilsMethods.showToastMessage(CustomerProfile.this, getString(R.string.please_try_again), true);
                     finish();
                 }
             }

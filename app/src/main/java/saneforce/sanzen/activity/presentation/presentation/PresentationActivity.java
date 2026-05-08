@@ -254,7 +254,7 @@ public class PresentationActivity extends AppCompatActivity {
         ArrayList<CustomerDataModel> customerDataList = new ArrayList<>();
         JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(customerType + presentationDataTable.getHeadquarterCode()).getMasterSyncDataJsonArray();
         if (jsonArray.length() == 0) {
-            commonUtilsMethods.showToastMessage(this, this.getString(R.string.no_data_found) + "  " + this.getString(R.string.do_master_sync));
+            commonUtilsMethods.showToastMessage(this, this.getString(R.string.no_data_found) + "  " + this.getString(R.string.do_master_sync), true);
         } else {
             try {
                 Set<String> customerCodes1 = new HashSet<>();

@@ -91,8 +91,6 @@ import saneforce.sanzen.activity.call.fragments.input.InputFragment;
 import saneforce.sanzen.activity.call.fragments.jwOthers.FeedbackSelectionSide;
 import saneforce.sanzen.activity.call.fragments.jwOthers.JWOthersFragment;
 import saneforce.sanzen.activity.call.fragments.jwOthers.JointWorkSelectionSide;
-import saneforce.sanzen.activity.call.fragments.jwOthers.PopupNameAdapter;
-import saneforce.sanzen.activity.call.fragments.jwOthers.modelClass;
 import saneforce.sanzen.activity.call.fragments.product.ProductFragment;
 import saneforce.sanzen.activity.call.fragments.rcpa.RCPAFragment;
 import saneforce.sanzen.activity.call.fragments.rcpa.RCPASelectCompSide;
@@ -185,6 +183,14 @@ public class DCRCallActivity extends AppCompatActivity {
     private int limit = 1;
     private ProgressBar progressBar;
     private RelativeLayout refreshLocation;
+    private String otpUid = "";
+    private OtpVerificationDialog otpDialog = null;
+    private int productCount = 0, inputCount = 0;
+    private List<String> editSelectedProducts = new ArrayList<>();
+    private List<String> editSelectedInputs = new ArrayList<>();
+    private List<String> saveSelectedProducts = new ArrayList<>();
+    private List<String> saveSelectedInputs = new ArrayList<>();
+    private boolean requestOTP = false;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -470,7 +476,7 @@ public class DCRCallActivity extends AppCompatActivity {
         });
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view -> {
-                onSubmitClicked();
+            onSubmitClicked();
         });
 
         assert isFromActivity != null;
@@ -489,7 +495,7 @@ public class DCRCallActivity extends AppCompatActivity {
             if (gpsTrack != null && ((gpsTrack.getLatitude() != 0.0) || (gpsTrack.getLongitude() != 0.0))) {
                 submitCall();
             } else {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.no_location_please_try_again));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_location_please_try_again), true);
                 progressDialog.dismiss();
             }
         } else {
@@ -516,19 +522,174 @@ public class DCRCallActivity extends AppCompatActivity {
                 signatureFragment1.getSignatureBitmap();
             }
             if (checkRequiredFunctions() && checkCurrentLoc()) {
-                if (CusCheckInOutNeed.equalsIgnoreCase("0")
-                        && checkInOutJsonObject != null && !checkInOutJsonObject.toString().isEmpty() && !checkInOutJsonObject.toString().equalsIgnoreCase("[]")
-                        && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))
-                        && !isFromActivity.equalsIgnoreCase("edit_local")
-                        && !isFromActivity.equalsIgnoreCase("edit_online")) {
-                    dialogCheckOut();
-                    progressDialog.dismiss();
+                boolean isToday = HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
+                boolean pastDateOtpNeeded = SharedPref.getPastDateOtpNeed(DCRCallActivity.this).equalsIgnoreCase("0");
+                boolean dateCheck = isToday || pastDateOtpNeeded;
+                boolean isNewCall = !isFromActivity.equalsIgnoreCase("edit_local") && !isFromActivity.equalsIgnoreCase("edit_online");
+                boolean productOtpTriggered = SharedPref.getProductOtpNeed(this).equalsIgnoreCase("0") && productCount > 0;
+                boolean inputOtpTriggered   = SharedPref.getInputOtpNeed(this).equalsIgnoreCase("0")   && inputCount   > 0;
+                boolean newCallNeedsOtp = isNewCall && (productOtpTriggered || inputOtpTriggered);
+                boolean editCallNeedsOtp = isFromActivity.equalsIgnoreCase("edit_online") && SharedPref.getEditCallOtpNeed(DCRCallActivity.this).equalsIgnoreCase("0") && requestOTP;
+                boolean callTypeCheck = newCallNeedsOtp || editCallNeedsOtp;
+                boolean doctorTypeCheck = CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1");
+
+                if (dateCheck && callTypeCheck && doctorTypeCheck) {
+                    if (UtilityClass.isNetworkAvailable(DCRCallActivity.this)) {
+                        requestOTP();
+                    } else {
+                        CommonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.no_network), true);
+                        progressDialog.dismiss();
+                    }
                 } else {
-                    callSubmit();
+                    verifyCheckInAndSubmit();
                 }
+//                if (((HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) || SharedPref.getPastDateOtpNeed(DCRCallActivity.this).equalsIgnoreCase("0"))
+//                        && ((!isFromActivity.equalsIgnoreCase("edit_local") && !isFromActivity.equalsIgnoreCase("edit_online") && ((SharedPref.getProductOtpNeed(this).equalsIgnoreCase("0") && productCount > 0) || (SharedPref.getInputOtpNeed(this).equalsIgnoreCase("0") && inputCount > 0)))
+//                        || (SharedPref.getEditCallOtpNeed(DCRCallActivity.this).equalsIgnoreCase("0") && isFromActivity.equalsIgnoreCase("edit_online") && requestOTP))
+//                        && CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
+//                    if (UtilityClass.isNetworkAvailable(DCRCallActivity.this)) {
+//                        requestOTP();
+//                    } else {
+//                        CommonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.no_network), true);
+//                        progressDialog.dismiss();
+//                    }
+//                } else {
+//                    verifyCheckInAndSubmit();
+//                }
             } else {
                 progressDialog.dismiss();
             }
+        }
+    }
+
+    private void requestOTP() {
+        try {
+            CommonUtilsMethods.showToastMessage(DCRCallActivity.this, "Requesting OTP...", false);
+            String name = CallActivityCustDetails.get(0).getName(), code = CallActivityCustDetails.get(0).getCode(), mobileNumber = CallActivityCustDetails.get(0).getMobile(), countryCode = "91";
+            if (mobileNumber == null || mobileNumber.isEmpty()) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                CommonUtilsMethods.showToastMessage(DCRCallActivity.this, (getString(R.string.no) + " " + SharedPref.getDrCap(DCRCallActivity.this) + " " + "mobile number found"), true);
+                return;
+            }
+            String dcrType = "DR";
+//            switch (CallActivityCustDetails.get(0).getType()) {
+//                case "1":
+//                    dcrType = "DR";
+//                    break;
+//                case "2":
+//                    dcrType = "CH";
+//                    break;
+//                case "3":
+//                    dcrType = "ST";
+//                    break;
+//                case "4":
+//                    dcrType = "UD";
+//                    break;
+//            }
+            JsonObject jsonObject = new JsonObject();
+            jsonObject = CommonUtilsMethods.CommonJsonObjectParameter(DCRCallActivity.this);
+            jsonObject.addProperty("SF_HQ_Code", DcrCallTabLayoutActivity.TodayPlanSfCode);
+            jsonObject.addProperty("SF_HQ_Name", DcrCallTabLayoutActivity.TodayPlanSfName);
+            jsonObject.addProperty("Activity_Date", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_15, HomeDashBoard.selectedDate.toString()));
+            jsonObject.addProperty("Submission_Date", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+            jsonObject.addProperty("DCR_Type", dcrType);
+            jsonObject.addProperty("DCR_Code", code);
+            jsonObject.addProperty("DCR_Name", name);
+            jsonObject.addProperty("Country_Code", countryCode);
+            jsonObject.addProperty("Mobile_No", mobileNumber);
+            jsonObject.addProperty("Mobile_No", "9962754312");
+            jsonObject.addProperty("Is_Resend", "0");
+            jsonObject.addProperty("OTP_UID", "");
+            jsonObject.addProperty("Product_Count", productCount);
+            jsonObject.addProperty("Input_Count", inputCount);
+
+            Log.d("OTP", "requestOTP: " + jsonObject);
+
+            if (UtilityClass.isNetworkAvailable(DCRCallActivity.this)) {
+                api_interface = RetrofitClient.getRetrofit(DCRCallActivity.this, SharedPref.getAppUrl(DCRCallActivity.this));
+                Call<JsonElement> call = api_interface.getJsonElement(SharedPref.getAppUrl(DCRCallActivity.this) + "api/DEV/v3/OTP/Send/", jsonObject);
+                call.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                        Log.d("OTP", "onResponse: " + response.body());
+                        if (progressDialog != null && progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
+                        otpUid = "";
+
+                        try {
+                            JSONObject jsonObject1 = new JSONObject(response.body().toString());
+                            boolean success = jsonObject1.optBoolean("success");
+                            String message = jsonObject1.optString("message");
+                            if (success) {
+                                JSONArray jsonArray = jsonObject1.optJSONArray("response");
+                                if (jsonArray.length() > 0) {
+                                    JSONObject jsonObject2 = jsonArray.optJSONObject(0);
+                                    otpUid = jsonObject2.optString("token");
+                                    otpDialog = new OtpVerificationDialog(DCRCallActivity.this, name, code, dcrType, productCount, inputCount, countryCode, mobileNumber, otpUid, new OtpVerificationDialog.OtpCallback() {
+                                        @Override
+                                        public void onVerified() {
+//                                            if (otpDialog != null && otpDialog.isShowing()) {
+//                                                otpDialog.dismiss();
+//                                            }
+                                            verifyCheckInAndSubmit();
+                                        }
+
+                                        @Override
+                                        public void onDismissed() {
+//                                            if (otpDialog != null && otpDialog.isShowing()) {
+//                                                otpDialog.dismiss();
+//                                            }
+                                            CommonUtilsMethods.showToastMessage(DCRCallActivity.this, "Required OTP to submit Call", true);
+                                        }
+                                    });
+                                    otpDialog.show();
+                                } else {
+                                    CommonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.something_went_wrong_please_try_again), true);
+                                }
+                            } else {
+                                CommonUtilsMethods.showToastMessage(DCRCallActivity.this, message, true);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                        if (progressDialog != null && progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
+                        t.printStackTrace();
+                        CommonUtilsMethods.showToastMessage(DCRCallActivity.this, "Failed to request OTP. Please try again later!", true);
+                    }
+                });
+            } else {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                CommonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.no_network), true);
+            }
+        } catch (Exception e) {
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+            e.printStackTrace();
+        }
+    }
+
+    private void verifyCheckInAndSubmit() {
+        if (CusCheckInOutNeed.equalsIgnoreCase("0")
+                && checkInOutJsonObject != null && !checkInOutJsonObject.toString().isEmpty() && !checkInOutJsonObject.toString().equalsIgnoreCase("[]")
+                && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))
+                && !isFromActivity.equalsIgnoreCase("edit_local")
+                && !isFromActivity.equalsIgnoreCase("edit_online")) {
+            dialogCheckOut();
+            progressDialog.dismiss();
+        } else {
+            callSubmit();
         }
     }
 
@@ -702,8 +863,8 @@ public class DCRCallActivity extends AppCompatActivity {
                     pages.add(capActivity);
                 }
             }
-            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
-            pages.add(DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
+            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw) + "/" + getString(R.string.others));
+            pages.add(DCRCallActivity.this.getString(R.string.jfw) + "/" + getString(R.string.others));
 
             viewPagerAdapter.add(signatureFragment1, DCRCallActivity.this.getString(R.string.signature));
             pages.add(DCRCallActivity.this.getString(R.string.signature));
@@ -744,8 +905,8 @@ public class DCRCallActivity extends AppCompatActivity {
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
-            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
-            pages.add(DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
+            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw) + "/" + getString(R.string.others));
+            pages.add(DCRCallActivity.this.getString(R.string.jfw) + "/" + getString(R.string.others));
 
             viewPagerAdapter.add(signatureFragment1, DCRCallActivity.this.getString(R.string.signature));
             pages.add(DCRCallActivity.this.getString(R.string.signature));
@@ -762,8 +923,8 @@ public class DCRCallActivity extends AppCompatActivity {
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
-            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
-            pages.add(DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
+            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw) + "/" + getString(R.string.others));
+            pages.add(DCRCallActivity.this.getString(R.string.jfw) + "/" + getString(R.string.others));
 
             viewPagerAdapter.add(signatureFragment1, DCRCallActivity.this.getString(R.string.signature));
             pages.add(DCRCallActivity.this.getString(R.string.signature));
@@ -776,8 +937,8 @@ public class DCRCallActivity extends AppCompatActivity {
                 viewPagerAdapter.add(new ActivityFragment(), capActivity);
                 pages.add(capActivity);
             }
-            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
-            pages.add(DCRCallActivity.this.getString(R.string.jfw)+"/"+getString(R.string.others));
+            viewPagerAdapter.add(new JWOthersFragment(), DCRCallActivity.this.getString(R.string.jfw) + "/" + getString(R.string.others));
+            pages.add(DCRCallActivity.this.getString(R.string.jfw) + "/" + getString(R.string.others));
 
             viewPagerAdapter.add(signatureFragment1, DCRCallActivity.this.getString(R.string.signature));
             pages.add(DCRCallActivity.this.getString(R.string.signature));
@@ -898,7 +1059,7 @@ public class DCRCallActivity extends AppCompatActivity {
             public void onSafeClick(View view) {
                 stopClock();
                 prepareCheckInOutJsonObject(checkInOutJsonObject);
-                commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.checked_out_successfully));
+                commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.checked_out_successfully), true);
 //            onSubmitClicked();
                 callSubmit();
                 dialogCheckOut.dismiss();
@@ -1119,7 +1280,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 if (!ActivityFragment.savedActivityList.contains(slNo) && activityDetailsModelClassMap != null) {
                     for (ActivityDetailsModelClass activityDetailsModelClass : activityDetailsModelClassMap.values()) {
                         if (!activityDetailsModelClass.getAnswerTxt().isEmpty() && (!activityDetailsModelClass.getControlId().equalsIgnoreCase("0") && !activityDetailsModelClass.getControlId().equalsIgnoreCase("17"))) {
-                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.save).trim(), capActivity));
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.save).trim(), capActivity), true);
                             moveToPage(capActivity);
                             return false;
                         }
@@ -1130,23 +1291,52 @@ public class DCRCallActivity extends AppCompatActivity {
         switch (CallActivityCustDetails.get(0).getType()) {
             case "1":
                 if (ProductNeed.equalsIgnoreCase("0")) {
+                    productCount = CheckProductListAdapter.saveCallProductListArrayList.size();
+                    if (CheckProductListAdapter.noProductSelected && (productCount != 0)) productCount--;
+                    try {
+                        if (SharedPref.getEditCallOtpNeed(DCRCallActivity.this).equalsIgnoreCase("0") && isFromActivity.equalsIgnoreCase("edit_online")) {
+                            for (int i = 0; i < CheckProductListAdapter.saveCallProductListArrayList.size(); i++) {
+                                SaveCallProductList product = CheckProductListAdapter.saveCallProductListArrayList.get(i);
+                                int sampleQty = (product.getSample_qty() == null ||product.getSample_qty().isEmpty()) ? 0 : Integer.parseInt(product.getSample_qty());
+                                int rxQty = (product.getRx_qty() == null ||product.getRx_qty().isEmpty()) ? 0 : Integer.parseInt(product.getRx_qty());
+                                int rcpaQty = (product.getRcpa_qty() == null || product.getRcpa_qty().isEmpty()) ? 0 : Integer.parseInt(product.getRcpa_qty());
+                                String productData = product.getCode() + "-" + product.getPromoted() + "-" + sampleQty + "-" + rxQty + "-" + rcpaQty;
+                                saveSelectedProducts.add(productData);
+                                if (editSelectedProducts.contains(productData)) {
+                                    Log.i("Product", "checkRequiredFunctions: found -> " + productData);
+                                } else {
+                                    requestOTP = true;
+                                    Log.e("Product", "checkRequiredFunctions: not found -> " + productData);
+                                    break;
+                                }
+                            }
+                            if (!requestOTP) {
+                                if (saveSelectedProducts.size() != editSelectedProducts.size()) {
+                                    requestOTP = true;
+                                }
+                            }
+                            productCount = saveSelectedProducts.size();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     if (PrdMandatory.equalsIgnoreCase("1")) {
                         if (CheckProductListAdapter.saveCallProductListArrayList.isEmpty() && !CheckProductListAdapter.noProductSelected) {
-                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.select_the).trim(), capPrd));
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.select_the).trim(), capPrd), true);
                             moveToPage(capPrd);
                             return false;
                         }
 
                         if (PrdSamNeed.equalsIgnoreCase("1") && SamQtyMandatory.equalsIgnoreCase("1")) {
                             if (CheckProductListAdapter.saveCallProductListArrayList.isEmpty() && !CheckProductListAdapter.noProductSelected) {
-                                commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.select_the).trim(), capPrd));
+                                commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.select_the).trim(), capPrd), true);
                                 moveToPage(capPrd);
                                 return false;
                             } else {
                                 for (int i = 0; i < CheckProductListAdapter.saveCallProductListArrayList.size(); i++) {
                                     if (!CheckProductListAdapter.saveCallProductListArrayList.get(i).getCategory().equalsIgnoreCase("Sale")
                                             && (CheckProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty().isEmpty())) {
-                                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), CapSamQty, getString(R.string.value)));
+                                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), CapSamQty, getString(R.string.value)), true);
                                         moveToPage(capPrd);
                                         return false;
                                     }
@@ -1156,13 +1346,13 @@ public class DCRCallActivity extends AppCompatActivity {
 
                         if (PrdRxNeed.equalsIgnoreCase("1") && RxQtyMandatory.equalsIgnoreCase("1")) {
                             if (CheckProductListAdapter.saveCallProductListArrayList.isEmpty() && !CheckProductListAdapter.noProductSelected) {
-                                commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.select_the).trim(), capPrd));
+                                commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.select_the).trim(), capPrd), true);
                                 moveToPage(capPrd);
                                 return false;
                             } else {
                                 for (int i = 0; i < CheckProductListAdapter.saveCallProductListArrayList.size(); i++) {
                                     if (!CheckProductListAdapter.saveCallProductListArrayList.get(i).getCategory().equalsIgnoreCase("Sample") && (CheckProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty().isEmpty())) {
-                                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), CapRxQty, getString(R.string.value)));
+                                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), CapRxQty, getString(R.string.value)), true);
                                         moveToPage(capPrd);
                                         return false;
                                     }
@@ -1179,7 +1369,7 @@ public class DCRCallActivity extends AppCompatActivity {
                             for (int i = 0; i < CheckProductListAdapter.saveCallProductListArrayList.size(); i++) {
                                 if (!CheckProductListAdapter.saveCallProductListArrayList.get(i).getCategory().equalsIgnoreCase("Sale")
                                         && (CheckProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty().isEmpty())) {
-                                    commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), CapSamQty, getString(R.string.value)));
+                                    commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), CapSamQty, getString(R.string.value)), true);
                                     moveToPage(capPrd);
                                     return false;
                                 }
@@ -1195,7 +1385,7 @@ public class DCRCallActivity extends AppCompatActivity {
 //                            }else {
                             for (int i = 0; i < CheckProductListAdapter.saveCallProductListArrayList.size(); i++) {
                                 if (!CheckProductListAdapter.saveCallProductListArrayList.get(i).getCategory().equalsIgnoreCase("Sample") && (CheckProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty().isEmpty())) {
-                                    commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), CapRxQty, getString(R.string.value)));
+                                    commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), CapRxQty, getString(R.string.value)), true);
                                     moveToPage(capPrd);
                                     return false;
                                 }
@@ -1206,16 +1396,43 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
 
                 if (InputNeed.equalsIgnoreCase("0")) {
+                    inputCount = CheckInputListAdapter.saveCallInputListArrayList.size();
+                    if (CheckInputListAdapter.noInputSelected && (inputCount != 0)) inputCount--;
+                    try {
+                        if (SharedPref.getEditCallOtpNeed(DCRCallActivity.this).equalsIgnoreCase("0") && isFromActivity.equalsIgnoreCase("edit_online")) {
+                            for (int i = 0; i < CheckInputListAdapter.saveCallInputListArrayList.size(); i++) {
+                                SaveCallInputList input = CheckInputListAdapter.saveCallInputListArrayList.get(i);
+                                int inputQty = (input.getInp_qty() == null || input.getInp_qty().isEmpty()) ? 0 : Integer.parseInt(input.getInp_qty());
+                                String inputData = input.getInp_code() + "-" + inputQty;
+                                saveSelectedInputs.add(inputData);
+                                if (editSelectedInputs.contains(inputData)) {
+                                    Log.i("Input", "checkRequiredFunctions: found -> " + inputData);
+                                } else {
+                                    requestOTP = true;
+                                    Log.e("Input", "checkRequiredFunctions: not found -> " + inputData);
+                                    break;
+                                }
+                            }
+                            if (!requestOTP) {
+                                if (saveSelectedInputs.size() != editSelectedInputs.size()) {
+                                    requestOTP = true;
+                                }
+                            }
+                            inputCount = saveSelectedInputs.size();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     if (InpMandatory.equalsIgnoreCase("1")) {
                         if (CheckInputListAdapter.saveCallInputListArrayList.isEmpty() && !CheckInputListAdapter.noInputSelected) {
-                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.select_the).trim(), capInp));
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.select_the).trim(), capInp), true);
                             moveToPage(capInp);
                             return false;
                         }
                     }
                     for (int i = 0; i < CheckInputListAdapter.saveCallInputListArrayList.size(); i++) {
                         if (CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty().isEmpty()) {
-                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), "Qty", getString(R.string.value)));
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), "Qty", getString(R.string.value)), true);
                             moveToPage(capInp);
                             return false;
                         }
@@ -1238,7 +1455,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                 if (ActivityNeed.equalsIgnoreCase("0") && ActivityMandatory.equalsIgnoreCase("0")) {
                     if (ActivityFragment.savedActivityList != null && ActivityFragment.savedActivityList.isEmpty()) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.activity_mandatory));
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.activity_mandatory), true);
                         moveToPage(capActivity);
                         return false;
                     }
@@ -1246,7 +1463,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                 if (PobNeed.equalsIgnoreCase("0") && PobMandatory.equalsIgnoreCase("0")) {
                     if (Objects.requireNonNull(jwOthersBinding.edPob.getText()).toString().isEmpty() || jwOthersBinding.edPob.getText().toString().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_pob_values));
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_pob_values), true);
                         moveToPage("JFW/Others");
                         return false;
                     }
@@ -1254,7 +1471,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 if (SharedPref.getDfNeed(this).equals("0")) {
                     if (FeedbackMandatory.equalsIgnoreCase("1")) {
                         if (jwOthersBinding.tvFeedback.getText().toString().isEmpty()) {
-                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_feedback));
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_feedback), true);
                             moveToPage("JFW/Others");
                             return false;
                         }
@@ -1263,7 +1480,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                 if (RemarkMandatory.equalsIgnoreCase("0")) {
                     if (Objects.requireNonNull(jwOthersBinding.edRemarks.getText()).toString().isEmpty() || jwOthersBinding.edRemarks.getText().toString().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_remark));
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_remark), true);
                         moveToPage("JFW/Others");
                         return false;
                     }
@@ -1271,7 +1488,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                 if (EventCaptureNeed.equalsIgnoreCase("0") && EventCapMandatory.equalsIgnoreCase("0")) {
                     if (callCaptureImageLists.isEmpty()) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.event_capture_needed));
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.event_capture_needed), true);
                         moveToPage("JFW/Others");
                         return false;
                     }
@@ -1279,7 +1496,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                 if (JwNeed.equalsIgnoreCase("0") && JwMandatory.equalsIgnoreCase("0")) {
                     if (JWOthersFragment.callAddedJointList.isEmpty()) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.jointwork_need));
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.jointwork_need), true);
                         moveToPage("JFW/Others");
                         return false;
                     }
@@ -1309,7 +1526,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                 if (PobNeed.equalsIgnoreCase("0") && PobMandatory.equalsIgnoreCase("0")) {
                     if (Objects.requireNonNull(jwOthersBinding.edPob.getText()).toString().isEmpty() || jwOthersBinding.edPob.getText().toString().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_pob_values));
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_pob_values), true);
                         moveToPage("JFW/Others");
                         return false;
                     }
@@ -1317,7 +1534,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                 if (EventCaptureNeed.equalsIgnoreCase("0") && EventCapMandatory.equalsIgnoreCase("0")) {
                     if (callCaptureImageLists.isEmpty()) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.event_capture_needed));
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.event_capture_needed), true);
                         moveToPage("JFW/Others");
                         return false;
                     }
@@ -1326,7 +1543,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 if (JwNeed.equalsIgnoreCase("0") && JwMandatory.equalsIgnoreCase("0")) {
                     if (SharedPref.getChmJointworkNeed(this).equals("0")) {
                         if (JWOthersFragment.callAddedJointList.isEmpty()) {
-                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.jointwork_need));
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.jointwork_need), true);
                             moveToPage("JFW/Others");
                             return false;
                         }
@@ -1370,21 +1587,21 @@ public class DCRCallActivity extends AppCompatActivity {
             case "4":
                 if (PobNeed.equalsIgnoreCase("0") && PobMandatory.equalsIgnoreCase("0")) {
                     if (Objects.requireNonNull(jwOthersBinding.edPob.getText()).toString().isEmpty() || jwOthersBinding.edPob.getText().toString().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_pob_values));
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_pob_values), true);
                         moveToPage("JFW/Others");
                         return false;
                     }
                 }
                 if (EventCaptureNeed.equalsIgnoreCase("0") && EventCapMandatory.equalsIgnoreCase("0")) {
                     if (callCaptureImageLists.isEmpty()) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.event_capture_needed));
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.event_capture_needed), true);
                         moveToPage("JFW/Others");
                         return false;
                     }
                 }
                 if (JwNeed.equalsIgnoreCase("0") && JwMandatory.equalsIgnoreCase("0")) {
                     if (JWOthersFragment.callAddedJointList.isEmpty()) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.jointwork_need));
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.jointwork_need), true);
                         moveToPage("JFW/Others");
                         return false;
                     }
@@ -1393,7 +1610,7 @@ public class DCRCallActivity extends AppCompatActivity {
             case "5":
                 if (EventCaptureNeed.equalsIgnoreCase("0") && EventCapMandatory.equalsIgnoreCase("0")) {
                     if (callCaptureImageLists.isEmpty()) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.event_capture_needed));
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.event_capture_needed), true);
                         moveToPage("JFW/Others");
                         return false;
                     }
@@ -1412,7 +1629,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
             if (dummyChk.isEmpty()) {
-                commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.need_competitors_for_prd));
+                commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.need_competitors_for_prd), true);
                 moveToPage("RCPA");
                 return false;
             }
@@ -1420,7 +1637,7 @@ public class DCRCallActivity extends AppCompatActivity {
         for (int i = 0; i < RCPASelectCompSide.rcpa_comp_list.size(); i++) {
 //            if (RCPASelectCompSide.rcpa_comp_list.get(i).getQty().isEmpty() || Integer.parseInt(RCPASelectCompSide.rcpa_comp_list.get(i).getQty()) == 0) {
             if (RCPASelectCompSide.rcpa_comp_list.get(i).getQty().isEmpty()) {
-                commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.rcpa_need_qty));
+                commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.rcpa_need_qty), true);
                 moveToPage("RCPA");
                 return false;
             }
@@ -1440,7 +1657,7 @@ public class DCRCallActivity extends AppCompatActivity {
     private boolean validateInput() {
         for (int i = 0; i < CheckInputListAdapter.saveCallInputListArrayList.size(); i++) {
             if (CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty().isEmpty() || CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty().equalsIgnoreCase("0")) {
-                commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), "Input Qty", getString(R.string.value)));
+                commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), "Input Qty", getString(R.string.value)), true);
                 moveToPage(capInp);
                 return false;
             }
@@ -1450,7 +1667,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
     private boolean validateRCPA() {
         if (RCPAFragment.ProductSelectedList.isEmpty()) {
-            commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_rcpa_values));
+            commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_rcpa_values), true);
             moveToPage("RCPA");
             return false;
         }
@@ -1462,14 +1679,14 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
             if (dummyChk.isEmpty()) {
-                commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.need_competitors_for_prd));
+                commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.need_competitors_for_prd), true);
                 moveToPage("RCPA");
                 return false;
             }
         }
         for (int i = 0; i < RCPASelectCompSide.rcpa_comp_list.size(); i++) {
             if (RCPASelectCompSide.rcpa_comp_list.get(i).getQty().isEmpty()) {
-                commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.rcpa_need_qty));
+                commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.rcpa_need_qty), true);
                 moveToPage("RCPA");
                 return false;
             }
@@ -1511,13 +1728,13 @@ public class DCRCallActivity extends AppCompatActivity {
                         JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
                         Log.v("callSave", "---" + jsonSaveRes);
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
-                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_successfully));
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_successfully), true);
                             UpdateInputStock();
                             UpdateSampleStock();
                         } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
-                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_already_exist));
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_already_exist), true);
                         } else {
-                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_failed));
+                            commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_failed), true);
                         }
 
                         outboxUtil.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
@@ -1534,7 +1751,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                     } catch (Exception e) {
                         progressDialog.dismiss();
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_something_wrong));
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_something_wrong), true);
                         if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
 //                            dialogCheckOut.show();
                         } else {
@@ -1552,7 +1769,7 @@ public class DCRCallActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 Log.v("callSave", "---" + t);
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_failed_saved_locally));
+                commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_failed_saved_locally), true);
                 if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
 //                    dialogCheckOut.show();
                 } else {
@@ -1647,11 +1864,12 @@ public class DCRCallActivity extends AppCompatActivity {
         Collections.addAll(addDatas, separated);
     }
 
-    private StringBuilder filterPromoted(String s) {
+    private StringBuilder filterPromoted(String s, ArrayList<String> promotedProducts) {
         String[] clstarrrayqty = s.split("#");
         StringBuilder ss1 = new StringBuilder();
         for (String value : clstarrrayqty) {
             ss1.append(value.substring(value.lastIndexOf("$") + 1)).append(",");
+            promotedProducts.add(value.substring(value.lastIndexOf("$") + 1));
         }
         return new StringBuilder(ss1.substring(0, ss1.length() - 1));
     }
@@ -1669,6 +1887,7 @@ public class DCRCallActivity extends AppCompatActivity {
         ArrayList<String> inputQty = new ArrayList<>();
         ArrayList<String> StartTimeSlide = new ArrayList<>();
         ArrayList<String> EndTimeSlide = new ArrayList<>();
+        ArrayList<String> promotedProducts = new ArrayList<>();
         StringBuilder productPromoted = new StringBuilder();
         DetailedFragment.callDetailingLists = new ArrayList<>();
         arrayStore = new ArrayList<>();
@@ -1825,7 +2044,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                 if (js.has("promoted_product")) {
                     if (!js.getString("promoted_product").isEmpty()) {
-                        productPromoted = filterPromoted(js.getString("promoted_product"));
+                        productPromoted = filterPromoted(js.getString("promoted_product"), promotedProducts);
                     }
                 }
 
@@ -1912,6 +2131,12 @@ public class DCRCallActivity extends AppCompatActivity {
                             break;
                         }
                     }
+                    try {
+                        String productData = prdCodeList.get(m) + "-" + (promotedProducts.contains(prdNameList.get(m)) ? "0" : "1") + "-" + prdSamQtyList.get(m) + "-" + prdRxQtyList.get(m) + "-" + prdRcpaQtyList.get(m);
+                        editSelectedProducts.add(productData);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 Log.v("jsonExtractOnline", "inputs--size--" + input.size());
@@ -1928,9 +2153,15 @@ public class DCRCallActivity extends AppCompatActivity {
                             break;
                         }
                     }
+                    try {
+                        String inputData = inputCode.get(n) + "-" + inputQty.get(n);
+                        editSelectedInputs.add(inputData);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             } else {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.syncing_calls) + getString(R.string.please_try_again));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.syncing_calls) + getString(R.string.please_try_again), true);
                 CallsFragment.syncCalls();
                 IsFromDCR = true;
                 HomeDashBoard.isDcrFrom = true;
@@ -2261,7 +2492,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
             //Additional Call
             JSONArray jsonAdditional = json.getJSONArray("AdCuss");
-            String code = "", townCode = "", townName = "",sfType = "";
+            String code = "", townCode = "", townName = "", sfType = "";
             for (int aw = 0; aw < jsonAdditional.length(); aw++) {
                 JSONObject jsAw = jsonAdditional.getJSONObject(aw);
                 if (funStringValidation(jsAw.getString("Name"))) nam = jsAw.getString("Name");
@@ -2560,7 +2791,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                     if (response.isSuccessful()) {
-                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, DCRCallActivity.this.getString(R.string.remaindercalls_added_successfully));
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, DCRCallActivity.this.getString(R.string.remaindercalls_added_successfully), true);
                         finish();
                     }
                     progressDialog.dismiss();
@@ -2683,9 +2914,9 @@ public class DCRCallActivity extends AppCompatActivity {
                 for (int j = 0; j < arrayStore.size(); j++) {
                     if (DetailedFragment.callDetailingLists.get(i).getBrandName().equalsIgnoreCase(arrayStore.get(j).getBrdName())) {
                         if (!arrayStore.get(j).getScribble().isEmpty()) {
-                            arr.add(new StoreImageTypeUrl(arrayStore.get(j).getScribble(), arrayStore.get(j).getSlideNam(), arrayStore.get(j).getSlideTyp(), arrayStore.get(j).getSlideUrl(), arrayStore.get(j).getRemTime(), arrayStore.get(j).getSlideComments(), arrayStore.get(j).getTiming(),arrayStore.get(j).getFlag()));
+                            arr.add(new StoreImageTypeUrl(arrayStore.get(j).getScribble(), arrayStore.get(j).getSlideNam(), arrayStore.get(j).getSlideTyp(), arrayStore.get(j).getSlideUrl(), arrayStore.get(j).getRemTime(), arrayStore.get(j).getSlideComments(), arrayStore.get(j).getTiming(), arrayStore.get(j).getFlag()));
                         } else {
-                            arr.add(new StoreImageTypeUrl("", arrayStore.get(j).getSlideNam(), arrayStore.get(j).getSlideTyp(), arrayStore.get(j).getSlideUrl(), arrayStore.get(j).getRemTime(), "", arrayStore.get(j).getTiming(),arrayStore.get(j).getFlag()));
+                            arr.add(new StoreImageTypeUrl("", arrayStore.get(j).getSlideNam(), arrayStore.get(j).getSlideTyp(), arrayStore.get(j).getSlideUrl(), arrayStore.get(j).getRemTime(), "", arrayStore.get(j).getTiming(), arrayStore.get(j).getFlag()));
                         }
                     }
                 }
@@ -2992,10 +3223,10 @@ public class DCRCallActivity extends AppCompatActivity {
 
                                         if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16")) {
                                             if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
-                                                commonUtilsMethods.showToastMessage(this, getString(R.string.fill_the_from) + List.getFieldName());
+                                                commonUtilsMethods.showToastMessage(this, getString(R.string.fill_the_from) + List.getFieldName(), true);
                                                 break;
                                             } else if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
-                                                commonUtilsMethods.showToastMessage(this, getString(R.string.fill_the_to) + List.getFieldName());
+                                                commonUtilsMethods.showToastMessage(this, getString(R.string.fill_the_to) + List.getFieldName(), true);
                                                 break;
                                             } else {
                                                 jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
@@ -3004,7 +3235,7 @@ public class DCRCallActivity extends AppCompatActivity {
                                             }
                                         } else if (List.getControlId().equalsIgnoreCase("17")) {
                                             if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                                                commonUtilsMethods.showToastMessage(this, getString(R.string.choose_the) + List.getFieldName() + "");
+                                                commonUtilsMethods.showToastMessage(this, getString(R.string.choose_the) + List.getFieldName() + "", true);
                                                 break;
                                             } else {
                                                 jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
@@ -3012,7 +3243,7 @@ public class DCRCallActivity extends AppCompatActivity {
                                             }
                                         } else {
                                             if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                                                commonUtilsMethods.showToastMessage(this, getString(R.string.fill_the) + List.getFieldName() + "");
+                                                commonUtilsMethods.showToastMessage(this, getString(R.string.fill_the) + List.getFieldName() + "", true);
                                                 break;
                                             } else {
                                                 jsonObject.put("values", List.getAnswerTxt());
@@ -3049,7 +3280,7 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("CustName", CallActivityCustDetails.get(0).getName());
             if (isFromActivity.equalsIgnoreCase("new")) {
                 if (SharedPref.getGeoChk(this).equalsIgnoreCase("0") && (lat == 0.0 || lng == 0.0)) {
-                    commonUtilsMethods.showToastMessage(this, getString(R.string.gathering_location_information_failed_please_try_again));
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.gathering_location_information_failed_please_try_again), true);
                     isCreateJsonSuccess = false;
                     return;
                 } else {
@@ -3644,13 +3875,13 @@ public class DCRCallActivity extends AppCompatActivity {
                         Log.v("chkInput", InputFragment.checkedInputList.get(i).getCode() + "---" + jsonObjectInput.getString("Code") + "--chk-----" + jsonObjectInput.getString("Code").equalsIgnoreCase(InputFragment.checkedInputList.get(i).getCode()));
                         if (jsonObjectInput.getString("Code").equalsIgnoreCase(InputFragment.checkedInputList.get(i).getCode())) {
                             InputFragment.checkedInputList.set(i, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getName(), InputFragment.checkedInputList.get(i).getCode(), jsonObjectInput.getString("Balance_Stock"), InputFragment.checkedInputList.get(i).isCheckedItem()));
-                            AddCallSelectInpSide.callInputList.set(i-1, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getName(), InputFragment.checkedInputList.get(i).getCode(), jsonObjectInput.getString("Balance_Stock"), InputFragment.checkedInputList.get(i).isCheckedItem()));
-                            StockInput.set(i-1, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getCode(), jsonObjectInput.getString("Balance_Stock"), jsonObjectInput.getString("Balance_Stock")));
+                            AddCallSelectInpSide.callInputList.set(i - 1, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getName(), InputFragment.checkedInputList.get(i).getCode(), jsonObjectInput.getString("Balance_Stock"), InputFragment.checkedInputList.get(i).isCheckedItem()));
+                            StockInput.set(i - 1, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getCode(), jsonObjectInput.getString("Balance_Stock"), jsonObjectInput.getString("Balance_Stock")));
                             break;
                         } else {
                             InputFragment.checkedInputList.set(i, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getName(), InputFragment.checkedInputList.get(i).getCode(), InputFragment.checkedInputList.get(i).getStock_balance(), InputFragment.checkedInputList.get(i).isCheckedItem()));
-                            AddCallSelectInpSide.callInputList.set(i-1, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getName(), InputFragment.checkedInputList.get(i).getCode(), InputFragment.checkedInputList.get(i).getStock_balance(), InputFragment.checkedInputList.get(i).isCheckedItem()));
-                            StockInput.set(i-1, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getCode(), InputFragment.checkedInputList.get(i).getStock_balance(), InputFragment.checkedInputList.get(i).getStock_balance()));
+                            AddCallSelectInpSide.callInputList.set(i - 1, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getName(), InputFragment.checkedInputList.get(i).getCode(), InputFragment.checkedInputList.get(i).getStock_balance(), InputFragment.checkedInputList.get(i).isCheckedItem()));
+                            StockInput.set(i - 1, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getCode(), InputFragment.checkedInputList.get(i).getStock_balance(), InputFragment.checkedInputList.get(i).getStock_balance()));
                         }
                     }
                 }
@@ -3960,7 +4191,7 @@ public class DCRCallActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String type = intent.getStringExtra("type");
-            if(type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|PR|GIF|TM|OTR|FSD|AMS|DCR|TP|STP|LE")) {
+            if (type != null && type.matches("(?i)DR|CH|ST|UL|HOS|CIP|SE|PR|GIF|TM|OTR|FSD|AMS|DCR|TP|STP|LE")) {
                 startActivity(new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class));
                 finish();
             }

@@ -237,7 +237,7 @@ public class SignatureFragment1 extends Fragment {
                 @Override
                 public void onFailure(int pos) {
                     Log.e("S3ImageLoad", "Failed to load image from S3: " + fileName + ", bitmap is null.");
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.image_not_found));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.image_not_found), true);
                 }
             });
         } else {

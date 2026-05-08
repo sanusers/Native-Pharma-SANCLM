@@ -40,7 +40,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.approvals.dcr.DcrApprovalActivity;
 import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.approvals.ApprovalsActivity;
 import saneforce.sanzen.activity.tourPlan.model.ModelClass;
@@ -111,7 +110,7 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                     tpDeviationModelLists.clear();
                     CallTpDeviationAPI();
                 }else{
-                    commonUtilsMethods.showToastMessage(TpDeviationApprovalActivity.this,getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(TpDeviationApprovalActivity.this,getString(R.string.no_network), true);
                 }
             }
         });
@@ -272,14 +271,14 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                     }
                 }else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(TpDeviationApprovalActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(TpDeviationApprovalActivity.this, getString(R.string.no_network), true);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(TpDeviationApprovalActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(TpDeviationApprovalActivity.this, getString(R.string.no_network), true);
             }
         });
 
@@ -324,14 +323,14 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                     }
                 }else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(TpDeviationApprovalActivity.this, getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(TpDeviationApprovalActivity.this, getString(R.string.no_network), true);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(TpDeviationApprovalActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(TpDeviationApprovalActivity.this, getString(R.string.no_network), true);
                 t.printStackTrace();
             }
         });

@@ -41,6 +41,10 @@ public interface ApiInterface {
     @POST()
     Call<JsonElement> getJSONElementOneBuild(@Url String url,  @Body JsonObject tourPlanBody);
 
+    @Headers("Content-Type: application/json")
+    @POST()
+    Call<JsonElement> getJsonElement(@Url String url, @Body JsonObject jsonObject);
+
     @FormUrlEncoded
     @POST()
     Call<ResponseBody> getResponseBody(@Url String url, @QueryMap Map<String, String> qry, @Field("data") String postObj);

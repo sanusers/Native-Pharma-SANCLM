@@ -123,7 +123,7 @@ public class OutBoxActivityUploadAdapter extends RecyclerView.Adapter<OutBoxActi
                         if (UtilityClass.isNetworkAvailable(context)) {
                             CallImageApi(holder.getAbsoluteAdapterPosition(), activityUploadModelClassList.get(position));
                         } else {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                         }
                     } else if (menuItem.getItemId() == R.id.menuDelete) {
                         Dialog dialog = new Dialog(context);
@@ -207,12 +207,12 @@ public class OutBoxActivityUploadAdapter extends RecyclerView.Adapter<OutBoxActi
                             if(jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                                 activityUploadDataDao.deleteUploadActivity(activityUploadModelClass.getId(), activityUploadModelClass.getActivityID());
                                 removeAt(pos);
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.activity_upload_saved_successfully));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.activity_upload_saved_successfully), true);
                             }else {
                                 outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), 5, Constants.FAILED);
                                 activityUploadModelClass.setSyncStatus(Constants.FAILED);
                                 activityUploadModelClass.setSyncCount(5);
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_failed));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_failed), true);
                             }
                             progressDialog.dismiss();
                         } catch (Exception e) {
@@ -231,7 +231,7 @@ public class OutBoxActivityUploadAdapter extends RecyclerView.Adapter<OutBoxActi
                     outboxUtil.updateStatusActivity(activityUploadModelClass.getActivityID(), activityUploadModelClass.getSyncCount() + 1, Constants.FAILED);
                     activityUploadModelClass.setSyncStatus(Constants.FAILED);
                     activityUploadModelClass.setSyncCount(activityUploadModelClass.getSyncCount() + 1);
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_failed));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.sync_failed), true);
                     progressDialog.dismiss();
                 }
             });

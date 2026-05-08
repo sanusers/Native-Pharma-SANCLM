@@ -393,7 +393,7 @@ public class DocBusinessProductList  extends AppCompatActivity {
                             }
                             else {
                                 docbusinessProductListBinding.btnSave.setEnabled(true);
-                                commonUtilsMethods.showToastMessage(DocBusinessProductList.this, getResources().getString(R.string.something_wrong));
+                                commonUtilsMethods.showToastMessage(DocBusinessProductList.this, getResources().getString(R.string.something_wrong), true);
                                 progressDialog.dismiss();
                             }
                         }
@@ -401,7 +401,7 @@ public class DocBusinessProductList  extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             docbusinessProductListBinding.btnSave.setEnabled(true);
-                            commonUtilsMethods.showToastMessage(DocBusinessProductList.this, getResources().getString(R.string.no_network));
+                            commonUtilsMethods.showToastMessage(DocBusinessProductList.this, getResources().getString(R.string.no_network), true);
                             progressDialog.dismiss();
                         }
                     });
@@ -409,7 +409,7 @@ public class DocBusinessProductList  extends AppCompatActivity {
             }
             else {
                 docbusinessProductListBinding.btnSave.setEnabled(true);
-                commonUtilsMethods.showToastMessage(DocBusinessProductList.this, getResources().getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(DocBusinessProductList.this, getResources().getString(R.string.no_network), true);
                 progressDialog.dismiss();
             }
         }

@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
@@ -75,13 +74,13 @@ public class RCPAFragment extends Fragment {
             @Override
             public void onSafeClick(View view) {
                 if (rcpaBinding.tvSelectChemist.getText().toString().isEmpty() || rcpaBinding.tvSelectChemist.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_chemist));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_chemist), true);
                 } else if (rcpaBinding.tvSelectProduct.getText().toString().isEmpty() || rcpaBinding.tvSelectProduct.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_prd));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_prd), true);
                 } else if (rcpaBinding.edQty.getText() == null || (rcpaBinding.edQty.getText().toString().isEmpty())) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.enter_qty));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.enter_qty), true);
                 } else if (Integer.parseInt(rcpaBinding.edQty.getText().toString()) < 0) {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.qty_must_be_greater_than_0));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.qty_must_be_greater_than_0), true);
                 } else {
                     rcpaBinding.llNoRcpa.setVisibility(View.GONE);
                     rcpaBinding.rvRcpaChemistList.setVisibility(View.VISIBLE);
@@ -207,7 +206,7 @@ public class RCPAFragment extends Fragment {
                     }
 
                 } else {
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_chemist));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_chemist), true);
                 }
             }
         });

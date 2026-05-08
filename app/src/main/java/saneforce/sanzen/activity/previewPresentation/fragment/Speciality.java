@@ -462,7 +462,7 @@ public class Speciality extends Fragment {
 
         specialityPreviewBinding.tvSelectDoctor.setOnClickListener(v1 -> {
             if (specialityPreviewBinding.tvSelectHq.getText().toString().isEmpty() && !SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
-                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq));
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.select_hq), true);
             } else {
                 try {
                     DrSelectionSide drSelectionSide = (DrSelectionSide) requireActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_select_dr_side);

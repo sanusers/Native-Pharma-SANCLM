@@ -177,7 +177,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                             OutBoxCallList outBoxCallList = outBoxCallLists.get(position);
                             CallAPI(holder.getAbsoluteAdapterPosition(), outBoxCallList, outBoxCallLists.get(position).getJsonData(), outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getSyncCount());
                         } else {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network), true);
                         }
                     } else if (menuItem.getItemId() == R.id.menuEdit) {
                         Intent intent = new Intent(context, DCRCallActivity.class);
@@ -266,7 +266,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                         btn_yes.setOnClickListener(view1 -> {
                             try {
                                 if (UtilityClass.isNetworkAvailable(context) && !status.equalsIgnoreCase(Constants.DUPLICATE_CALL)) {
-                                    commonUtilsMethods.showToastMessage(context,context.getString(R.string.con_internet));
+                                    commonUtilsMethods.showToastMessage(context,context.getString(R.string.con_internet), true);
                                     dialog.dismiss();
                                 } else {
                                     dialog.dismiss();
@@ -437,23 +437,23 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                                 outboxUtil.deleteOfflineCalls(cusCode, cusName, date);
                                 removeAt(pos);
                                 //   CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_saved_successfully));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_saved_successfully), true);
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
                                 outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.DUPLICATE_CALL, 1);
                                 outBoxCallList.setStatus(Constants.DUPLICATE_CALL);
                                 outBoxCallList.setSyncCount(5);
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_already_exist));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_already_exist), true);
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false")) {
                                 if (jsonSaveRes.has("msg")) {
                                     outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("msg"), 1);
                                     outBoxCallList.setStatus(jsonSaveRes.getString("msg"));
                                     outBoxCallList.setSyncCount(5);
-                                    commonUtilsMethods.showToastMessage(context, jsonSaveRes.getString("msg"));
+                                    commonUtilsMethods.showToastMessage(context, jsonSaveRes.getString("msg"), true);
                                 } else if (jsonSaveRes.has("Msg")) {
                                     outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, jsonSaveRes.getString("Msg"), 1);
                                     outBoxCallList.setStatus(jsonSaveRes.getString("Msg"));
                                     outBoxCallList.setSyncCount(5);
-                                    commonUtilsMethods.showToastMessage(context, jsonSaveRes.getString("Msg"));
+                                    commonUtilsMethods.showToastMessage(context, jsonSaveRes.getString("Msg"), true);
                                 }
                             }
                             progressDialog.dismiss();
@@ -473,7 +473,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                     outboxUtil.updateOfflineUpdateStatusEC(date, cusCode, syncCount + 1, Constants.CALL_FAILED, 1);
                     outBoxCallList.setStatus(Constants.CALL_FAILED);
                     outBoxCallList.setSyncCount(syncCount + 1);
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_failed));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_failed), true);
                     progressDialog.dismiss();
                 }
             });

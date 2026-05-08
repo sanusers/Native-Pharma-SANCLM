@@ -225,13 +225,13 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                             if (count < Integer.parseInt(custList.getTotalVisitCount())) {
                                 goNextActivity(custList);
                             } else {
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_of_visit));
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_of_visit), true);
                             }
                         } else {
                             goNextActivity(custList);
                         }
                     } else {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_visited));
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_visited), true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -398,7 +398,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                 @Override
                 public void onSafeClick(View view) {
                     stopClock();
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.check_in_successfully));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.check_in_successfully), true);
                     dialogCheckIn.dismiss();
                     changeActivity(custList);
                 }

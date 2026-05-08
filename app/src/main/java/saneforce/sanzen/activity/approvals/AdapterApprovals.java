@@ -22,7 +22,6 @@ import saneforce.sanzen.activity.approvals.stp.STPApprovalActivity;
 import saneforce.sanzen.activity.approvals.tp.TpApprovalActivity;
 import saneforce.sanzen.activity.approvals.tpdeviation.TpDeviationApprovalActivity;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
-import saneforce.sanzen.storage.SharedPref;
 
 public class AdapterApprovals extends RecyclerView.Adapter<AdapterApprovals.ViewHolder> {
     Context context;
@@ -54,14 +53,14 @@ public class AdapterApprovals extends RecyclerView.Adapter<AdapterApprovals.View
                     if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
                         context.startActivity(new Intent(context, LeaveApprovalActivity.class));
                     } else {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.leave_ap_not_available));
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.leave_ap_not_available), true);
                     }
                 } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.tp_approvals))) {
 
                     if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
                         context.startActivity(new Intent(context, TpApprovalActivity.class));
                     } else {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.tp_ap_not_available));
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.tp_ap_not_available), true);
                     }
 
                 } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.tp_deviation))) {
@@ -69,27 +68,27 @@ public class AdapterApprovals extends RecyclerView.Adapter<AdapterApprovals.View
                     if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
                         context.startActivity(new Intent(context, TpDeviationApprovalActivity.class));
                     } else {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.tpdevication_ap_not_available));
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.tpdevication_ap_not_available), true);
                     }
                 } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.dcr_approvals))) {
                     if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
                         context.startActivity(new Intent(context, DcrApprovalActivity.class));
                     } else {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.dcr_ap_not_available));
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.dcr_ap_not_available), true);
                     }
 
                 } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.geo_tagging))) {
                     if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
                         context.startActivity(new Intent(context, GeoTaggingActivity.class));
                     } else {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.geoTagging_ap_not_available));
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.geoTagging_ap_not_available), true);
                     }
 
                 } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.standard_tour_plan))) {
                     if (Integer.parseInt(approval_list.get(position).getCount()) > 0) {
                         context.startActivity(new Intent(context, STPApprovalActivity.class));
                     } else {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.stp_ap_not_available));
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.stp_ap_not_available), true);
                     }
 
                 }

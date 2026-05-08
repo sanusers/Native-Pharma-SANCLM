@@ -66,9 +66,13 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.tv_prd_name.setText(productListArrayList.get(position).getName());
-        holder.ed_samplesQty.setText(productListArrayList.get(position).getSample_qty());
-        holder.ed_rxQty.setText(productListArrayList.get(position).getRx_qty());
-        holder.ed_rcpaQty.setText(productListArrayList.get(position).getRcpa_qty());
+        SaveCallProductList product = productListArrayList.get(position);
+        int sampleQty = (product.getSample_qty() == null ||product.getSample_qty().isEmpty()) ? 0 : Integer.parseInt(product.getSample_qty());
+        int rxQty = (product.getRx_qty() == null ||product.getRx_qty().isEmpty()) ? 0 : Integer.parseInt(product.getRx_qty());
+        int rcpaQty = (product.getRcpa_qty() == null || product.getRcpa_qty().isEmpty()) ? 0 : Integer.parseInt(product.getRcpa_qty());
+        holder.ed_samplesQty.setText(String.valueOf(sampleQty));
+        holder.ed_rxQty.setText(String.valueOf(rxQty));
+        holder.ed_rcpaQty.setText(String.valueOf(rcpaQty));
         holder.switch_promoted.setChecked(productListArrayList.get(position).getPromoted().equalsIgnoreCase("0"));
         if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2") || DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
             holder.switch_promoted.setVisibility(View.GONE);

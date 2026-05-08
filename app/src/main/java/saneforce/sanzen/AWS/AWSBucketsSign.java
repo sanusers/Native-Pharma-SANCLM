@@ -82,7 +82,7 @@ public class AWSBucketsSign {
                         if (ex instanceof com.amazonaws.AmazonClientException &&
                                 ex.getMessage() != null &&
                                 ex.getMessage().contains("SocketTimeoutException")) {
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.network_timeout_please_try_again));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.network_timeout_please_try_again), true);
                         }
                         ex.printStackTrace();
                     }
@@ -132,7 +132,7 @@ public class AWSBucketsSign {
                                 ex.getMessage() != null &&
                                 ex.getMessage().contains("SocketTimeoutException")) {
 //                            Toast.makeText(context, "Network timeout. Please try again.", Toast.LENGTH_LONG).show();
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.network_timeout_please_try_again));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.network_timeout_please_try_again), true);
                         }
                         ex.printStackTrace();
                     }

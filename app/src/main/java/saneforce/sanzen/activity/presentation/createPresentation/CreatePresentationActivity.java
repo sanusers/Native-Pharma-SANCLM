@@ -29,8 +29,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.activity.forms.weekoff.WeekOffViewScreen;
-import saneforce.sanzen.activity.myresource.MyResource_Activity;
 import saneforce.sanzen.activity.presentation.createPresentation.brand.BrandNameAdapter;
 import saneforce.sanzen.activity.presentation.createPresentation.selectedSlide.ItemTouchHelperCallBack;
 import saneforce.sanzen.activity.presentation.createPresentation.selectedSlide.SelectedSlidesAdapter;
@@ -133,7 +131,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
                             if (!presentationDataDao.presentationExists(name)) {
                                 intentAction(oldName, name);
                             } else {
-                                commonUtilsMethods.showToastMessage(CreatePresentationActivity.this, getString(R.string.presentation_saved_already));
+                                commonUtilsMethods.showToastMessage(CreatePresentationActivity.this, getString(R.string.presentation_saved_already), true);
                             }
                         } else {
                             intentAction(oldName, name);
@@ -142,11 +140,11 @@ public class CreatePresentationActivity extends AppCompatActivity {
                         if (!presentationDataDao.presentationExists(name)) {
                             intentAction("", name);
                         } else {
-                            commonUtilsMethods.showToastMessage(CreatePresentationActivity.this, getString(R.string.presentation_saved_already));
+                            commonUtilsMethods.showToastMessage(CreatePresentationActivity.this, getString(R.string.presentation_saved_already), true);
                         }
                     }
                 } else {
-                    commonUtilsMethods.showToastMessage(CreatePresentationActivity.this, getString(R.string.enter_presentation_name));
+                    commonUtilsMethods.showToastMessage(CreatePresentationActivity.this, getString(R.string.enter_presentation_name), true);
                 }
             }
             UtilityClass.hideKeyboard(CreatePresentationActivity.this);

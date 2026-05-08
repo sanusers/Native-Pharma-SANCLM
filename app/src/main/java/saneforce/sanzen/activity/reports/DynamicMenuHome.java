@@ -1,6 +1,5 @@
 package saneforce.sanzen.activity.reports;
 
-import android.app.ProgressDialog;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -78,7 +77,7 @@ public class DynamicMenuHome extends AppCompatActivity {
         if (isNetworkConnected()) {
             loadMenuFromApi();
         } else {
-            commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(this, getString(R.string.no_network), true);
 
         }
         if(SharedPref.getDynamicOptionNeed(DynamicMenuHome.this).equalsIgnoreCase("0")) {
@@ -138,7 +137,7 @@ public class DynamicMenuHome extends AppCompatActivity {
                                         }else{
                                             binding.noReportFoundTxt.setVisibility(View.VISIBLE);
                                             //commonUtilsMethods.showToastMessage(DynamicMenuHome.this,"No Record Found");
-                                            commonUtilsMethods.showToastMessage(DynamicMenuHome.this,getString(R.string.no_record_found));
+                                            commonUtilsMethods.showToastMessage(DynamicMenuHome.this,getString(R.string.no_record_found), true);
                                         }
 
 
@@ -159,7 +158,7 @@ public class DynamicMenuHome extends AppCompatActivity {
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 binding.dynamicProg.setVisibility(View.GONE);
                                 binding.noReportFoundTxt.setVisibility(View.VISIBLE);
-                                commonUtilsMethods.showToastMessage(DynamicMenuHome.this, getString(R.string.poor_connection)+" "+getString(R.string.please_try_again));
+                                commonUtilsMethods.showToastMessage(DynamicMenuHome.this, getString(R.string.poor_connection)+" "+getString(R.string.please_try_again), true);
                             }
                         });
                     } catch (JSONException e) {
@@ -167,14 +166,14 @@ public class DynamicMenuHome extends AppCompatActivity {
                     }
                 } else {
                     binding.dynamicProg.setVisibility(View.GONE);
-                    commonUtilsMethods.showToastMessage(DynamicMenuHome.this, getString(R.string.poor_connection));
+                    commonUtilsMethods.showToastMessage(DynamicMenuHome.this, getString(R.string.poor_connection), true);
                 }
 
             });
             networkStatusTask.execute();
         } else {
             binding.dynamicProg.setVisibility(View.GONE);
-            commonUtilsMethods.showToastMessage(DynamicMenuHome.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(DynamicMenuHome.this, getString(R.string.no_network), true);
         }
 
     }

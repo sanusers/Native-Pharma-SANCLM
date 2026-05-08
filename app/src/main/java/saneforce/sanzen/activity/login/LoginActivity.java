@@ -41,7 +41,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Objects;
@@ -195,12 +194,12 @@ public class LoginActivity extends AppCompatActivity {
                 if (!UtilityClass.isNetworkAvailable(getApplicationContext())) {
                     if (userId.isEmpty()) {
                         binding.userId.requestFocus();
-                        CommonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.enter_user_id));
+                        CommonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.enter_user_id), true);
                     } else if (userPwd.isEmpty()) {
                         binding.password.requestFocus();
-                        CommonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.enter_password));
+                        CommonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.enter_password), true);
                     } else if (SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase("")) {
-                        CommonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.no_network));
+                        CommonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.no_network), true);
                     } else if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase(userId) && (SharedPref.getLoginUserPwd(LoginActivity.this).equalsIgnoreCase(userPwd))) {
                         SharedPref.setSetUpClickedTab(getApplicationContext(), 0);
                         notificationDataDao.getNotificationBySyncStatus(5).forEach(data -> {
@@ -212,20 +211,20 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, getString(R.string.login_successfully), Toast.LENGTH_LONG).show();
                     } else {
                         loginFailed();
-                        commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.mismatch));
+                        commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.mismatch), true);
                     }
                 } else {
                     if (userId.isEmpty()) {
                         binding.userId.requestFocus();
-                        commonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.enter_user_id));
+                        commonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.enter_user_id), true);
                     } else if (userPwd.isEmpty()) {
                         binding.password.requestFocus();
-                        commonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.enter_password));
+                        commonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.enter_password), true);
                     } else {
                         if (UtilityClass.isNetworkAvailable(LoginActivity.this)) {
                             login(userId, userPwd);
                         } else {
-                            commonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.no_network));
+                            commonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.no_network), true);
                         }
                     }
                 }
@@ -389,7 +388,7 @@ public class LoginActivity extends AppCompatActivity {
         SharedPref.setDataCleared(this, true);
 
         startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
-        commonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.data_cleared_successfully));
+        commonUtilsMethods.showToastMessage(LoginActivity.this, LoginActivity.this.getString(R.string.data_cleared_successfully), true);
 
     }
 
@@ -633,7 +632,7 @@ public class LoginActivity extends AppCompatActivity {
                                 msg = ctx.getString(R.string.mismatch);
                             }
 
-                            commonUtilsMethods.showToastMessage(LoginActivity.this, msg);
+                            commonUtilsMethods.showToastMessage(LoginActivity.this, msg, true);
 //                            loginFailed();
 //                            if (responseObject.has("msg")) {
 //                                commonUtilsMethods.showToastMessage(LoginActivity.this, responseObject.getString("msg"));

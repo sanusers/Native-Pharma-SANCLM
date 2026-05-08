@@ -41,21 +41,21 @@ public class SanZenApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                .detectDiskReads()
-                .detectDiskWrites()
-                .detectNetwork()
-                .penaltyLog()
-                .build());
+//        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+//                .detectDiskReads()
+//                .detectDiskWrites()
+//                .detectNetwork()
+//                .penaltyLog()
+//                .build());
 
         AppActivityTracker.init(this);
 
 //        if (BuildConfig.DEBUG) {
         // Disable Crashlytics collection for debug builds
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
+//        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
 //        } else {
         // Explicitly enable for release builds (it's true by default, but this ensures it)
-//            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 //        }
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override

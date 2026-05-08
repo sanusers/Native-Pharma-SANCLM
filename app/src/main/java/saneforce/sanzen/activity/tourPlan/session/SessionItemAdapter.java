@@ -1,7 +1,6 @@
 package saneforce.sanzen.activity.tourPlan.session;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +14,6 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -28,7 +26,6 @@ import saneforce.sanzen.activity.tourPlan.model.DoctorVisitModel;
 import saneforce.sanzen.activity.tourPlan.model.EditModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.storage.SharedPref;
 
 public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.MyViewHolder> implements Filterable {
@@ -148,7 +145,7 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
             if (isNowChecked) {
                 selectedHQCount++;
                 if (selectedHQCount > 5) {
-                    CommonUtilsMethods.showToastMessage(context, context.getString(R.string.cannot_select_more_than_5) + context.getString(R.string.headquarter));
+                    CommonUtilsMethods.showToastMessage(context, context.getString(R.string.cannot_select_more_than_5) + context.getString(R.string.headquarter), true);
                     selectedHQCount--;
                     clickedItem.setChecked(false);
                     checkedCount--;
@@ -194,7 +191,7 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
                     }
                 }
                 if (!isValid) {
-                    CommonUtilsMethods.showToastMessage(context, "Cannot plan with minimum gap of " + minimumGap);
+                    CommonUtilsMethods.showToastMessage(context, "Cannot plan with minimum gap of " + minimumGap, true);
                     clickedItem.setChecked(false);
                     checkedCount--;
                     notifyItemChanged(position, "CHECK");
@@ -202,7 +199,7 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
                 }
             }
             if (visitFrequencyNeed && plannedVisits >= totalVisits) {
-                CommonUtilsMethods.showToastMessage(context, "Visit Frequency already met");
+                CommonUtilsMethods.showToastMessage(context, "Visit Frequency already met", true);
                 clickedItem.setChecked(false);
                 checkedCount--;
                 notifyItemChanged(position, "CHECK");

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import saneforce.sanzen.R;
-import saneforce.sanzen.commonClasses.SafeClickListener;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.AddListActivity;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.ClusterModel;
 import saneforce.sanzen.activity.standardTourPlan.addListScreen.model.NoDataModel;
@@ -189,10 +188,10 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             dcrViewHolder.checkBox.setOnClickListener(buttonView -> {
                 Log.d("Adapter", "onBindViewHolder: position -> " + position + " binding position -> " + dcrViewHolder.getBindingAdapterPosition() + " absolute position -> " + dcrViewHolder.getAbsoluteAdapterPosition());
                 if (SharedPref.getStpStatus(context).equalsIgnoreCase("Approved")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.cannot_edit_already_approved));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.cannot_edit_already_approved), true);
                     dcrViewHolder.checkBox.setChecked(!dcrViewHolder.checkBox.isChecked());
                 }else if (SharedPref.getStpStatus(context).equalsIgnoreCase("Waiting For Approval")) {
-                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.cannot_edit_waiting_for_approval));
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.cannot_edit_waiting_for_approval), true);
                     dcrViewHolder.checkBox.setChecked(!dcrViewHolder.checkBox.isChecked());
                 } else {
                     String[] docList = CommonUtilsMethods.removeLastComma(dcrModel.getPlannedForCode()).split(",");
@@ -202,7 +201,7 @@ public class DCRSelectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         updateDcrModelAndViews(dcrModel, dcrViewHolder, position);
 //                    } else if (dcrViewHolder.checkBox.isChecked() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR) && docList.length >= dcrModel.getVisitFrequency()) {
                     } else if (dcrViewHolder.checkBox.isChecked() && selectedDCR.equalsIgnoreCase(Constants.DOCTOR_MAS) && docList.length >= dcrModel.getVisitFrequency() && !stpType.equalsIgnoreCase("1")) {
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.visit_frequency_already_met));
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.visit_frequency_already_met), true);
                         dcrViewHolder.checkBox.setChecked(false);
                     } else {
                         updateDcrModelAndViews(dcrModel, dcrViewHolder, position);

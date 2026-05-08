@@ -54,9 +54,7 @@ import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.sanzen.activity.call.dcrCallSelection.adapter.FillteredAdapter;
-import saneforce.sanzen.activity.forms.weekoff.WeekOffViewScreen;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
-import saneforce.sanzen.activity.myresource.MyResource_Activity;
 import saneforce.sanzen.activity.presentation.createPresentation.CreatePresentationActivity;
 import saneforce.sanzen.activity.presentation.customerSelection.adapter.CustomerListSelectionAdapter;
 import saneforce.sanzen.activity.presentation.customerSelection.model.CustomerDataModel;
@@ -209,7 +207,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
 
         binding.btnNext.setOnClickListener(view -> {
             if (selectedCustomerCodes.isEmpty()) {
-                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_any) + selectedCustomerCaption);
+                commonUtilsMethods.showToastMessage(this, getString(R.string.please_select_any) + selectedCustomerCaption, true);
             } else {
                 if (binding.btnNext.getText().toString().equals(getString(R.string.next))) {
                     Intent intent = new Intent(this, CreatePresentationActivity.class);
@@ -220,7 +218,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
                     finish();
                 } else if (binding.btnNext.getText().toString().equals(getString(R.string.save))) {
                     presentationDataDao.changeSelectedCustomers(presentationName, (Arrays.toString(selectedCustomerCodes.toArray()).replaceAll("\\[", "").replaceAll("\\]", "")));
-                    commonUtilsMethods.showToastMessage(this, selectedCustomerCaption + getString(R.string.updated_successfully));
+                    commonUtilsMethods.showToastMessage(this, selectedCustomerCaption + getString(R.string.updated_successfully), true);
                     finish();
                 }
             }
@@ -268,7 +266,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(customerType + selectedHQ).getMasterSyncDataJsonArray();
             if (jsonArray.length() == 0) {
-                commonUtilsMethods.showToastMessage(this, this.getString(R.string.no_data_found) + "  " + this.getString(R.string.do_master_sync));
+                commonUtilsMethods.showToastMessage(this, this.getString(R.string.no_data_found) + "  " + this.getString(R.string.do_master_sync), true);
             }
 
             Set<String> customerCodes = new HashSet<>();
@@ -559,7 +557,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
             } else if (UtilityClass.isNetworkAvailable(CustomerSelectionActivity.this)) {
                 getData(hqCode);
             } else {
-                commonUtilsMethods.showToastMessage(CustomerSelectionActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(CustomerSelectionActivity.this, getString(R.string.no_network), true);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -660,7 +658,7 @@ public class CustomerSelectionActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            commonUtilsMethods.showToastMessage(CustomerSelectionActivity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(CustomerSelectionActivity.this, getString(R.string.no_network), true);
         }
     }
 

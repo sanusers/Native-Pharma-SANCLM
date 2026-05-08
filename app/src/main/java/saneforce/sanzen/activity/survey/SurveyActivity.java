@@ -52,7 +52,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.commonClasses.SafeClickListener;
-import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanzen.activity.survey.adapter.SurveyAdapter;
@@ -70,7 +69,6 @@ import saneforce.sanzen.commonClasses.UtilityClass;
 import saneforce.sanzen.databinding.ActivitySurveyBinding;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
-import saneforce.sanzen.roomdatabase.ActivityTableDetails.ActivityDetailsDataTable;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.sanzen.roomdatabase.RoomDB;
@@ -223,7 +221,7 @@ public class SurveyActivity extends AppCompatActivity {
             @Override
             public void onSafeClick(View view) {
                 if (SharedPref.getSfType(SurveyActivity.this).equalsIgnoreCase("2") && surveyBinding.tvHeadquarters.getText().toString().isEmpty()) {
-                    commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.select_hq));
+                    commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.select_hq), true);
                 } else {
                     ArrayList<SurveyOptionsModelClass> mList = new ArrayList<>();
                     try {
@@ -257,7 +255,7 @@ public class SurveyActivity extends AppCompatActivity {
             @Override
             public void onSafeClick(View view) {
                 if (surveyBinding.tvCustomerType.getText().toString().isEmpty()) {
-                    commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.select_customer_type));
+                    commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.select_customer_type), true);
                 } else {
                     ArrayList<SurveyOptionsModelClass> mList = new ArrayList<>();
                     try {
@@ -305,11 +303,11 @@ public class SurveyActivity extends AppCompatActivity {
                             callSaveAPI();
                         }
                     } else {
-                        commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.please_check_your_internet_connection));
+                        commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.please_check_your_internet_connection), true);
                     }
                 } else {
                    // commonUtilsMethods.showToastMessage(SurveyActivity.this, "Please fill at-least any one question");
-                    commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.please_fill_atleast_any_one_question));
+                    commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.please_fill_atleast_any_one_question), true);
                 }
             }
         });
@@ -407,25 +405,25 @@ public class SurveyActivity extends AppCompatActivity {
                                 clearAll();
                                 answerMap.clear();
                                 //commonUtilsMethods.showToastMessage(SurveyActivity.this, "Survey Submitted Successfully");
-                                commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.survey_submitted_successfully));
+                                commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.survey_submitted_successfully), true);
                             }
                             surveyBinding.progressSubmit.setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onFailure(@NonNull Call<JsonElement> quiz, @NonNull Throwable t) {
-                            commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.poor_connection));
+                            commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.poor_connection), true);
                             surveyBinding.progressSubmit.setVisibility(View.GONE);
                         }
                     });
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                commonUtilsMethods.showToastMessage(this, getString(R.string.poor_connection));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.poor_connection), true);
                 surveyBinding.progressSubmit.setVisibility(View.GONE);
             }
         }else {
-            commonUtilsMethods.showToastMessage(this, getString(R.string.please_check_your_internet_connection));
+            commonUtilsMethods.showToastMessage(this, getString(R.string.please_check_your_internet_connection), true);
         }
     }
 
@@ -458,9 +456,9 @@ public class SurveyActivity extends AppCompatActivity {
                         if(surveyDetailsModelClass.getMandatory().equalsIgnoreCase("1") && (answer == null || answer.isEmpty())) {
                             if(surveyDetailsModelClass.getQuestionCodeID().equals("3") || surveyDetailsModelClass.getQuestionCodeID().equals("4")) {
                                // commonUtilsMethods.showToastMessage(this, "Select option for " + surveyDetailsModelClass.getQuestion());
-                                commonUtilsMethods.showToastMessage(this, getString(R.string.select_option_for) + surveyDetailsModelClass.getQuestion());
+                                commonUtilsMethods.showToastMessage(this, getString(R.string.select_option_for) + surveyDetailsModelClass.getQuestion(), true);
                             }else {
-                                commonUtilsMethods.showToastMessage(this, getString(R.string.fill) + surveyDetailsModelClass.getQuestion());
+                                commonUtilsMethods.showToastMessage(this, getString(R.string.fill) + surveyDetailsModelClass.getQuestion(), true);
                             }
                             return false;
                         }else {
@@ -479,7 +477,7 @@ public class SurveyActivity extends AppCompatActivity {
             saveJsonObject.put("val", jsonArray);
             return true;
         } catch (Exception e) {
-            commonUtilsMethods.showToastMessage(this, getString(R.string.please_try_again));
+            commonUtilsMethods.showToastMessage(this, getString(R.string.please_try_again), true);
             e.printStackTrace();
         }
         return false;
@@ -611,14 +609,14 @@ public class SurveyActivity extends AppCompatActivity {
                     surveyBinding.rlNoSurveyFound.setVisibility(View.VISIBLE);
                     surveyBinding.rlSurveyMain.setVisibility(View.GONE);
                     surveyBinding.btnSubmit.setVisibility(View.GONE);
-                    commonUtilsMethods.showToastMessage(this, getString(R.string.no_survey_found));
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.no_survey_found), true);
                 }
             }else {
                 surveyBinding.tvNoSurveyFound.setText(getString(R.string.no_survey_found));
                 surveyBinding.rlNoSurveyFound.setVisibility(View.VISIBLE);
                 surveyBinding.rlSurveyMain.setVisibility(View.GONE);
                 surveyBinding.btnSubmit.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(this, getString(R.string.no_survey_found));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_survey_found), true);
             }
             surveyBinding.progrlessdetail.setVisibility(View.GONE);
         } catch (Exception e) {
@@ -698,7 +696,7 @@ public class SurveyActivity extends AppCompatActivity {
                 surveyBinding.rlDetailsMain.setVisibility(View.GONE);
                 surveyBinding.rlNoSurvey.setVisibility(View.VISIBLE);
                 surveyBinding.llMainLayout.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(this, getString(R.string.no_survey_found));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_survey_found), true);
             }else {
                 surveyBinding.rlNoSurvey.setVisibility(View.GONE);
                 surveyBinding.llMainLayout.setVisibility(View.VISIBLE);
@@ -1238,7 +1236,7 @@ public class SurveyActivity extends AppCompatActivity {
             }else if(UtilityClass.isNetworkAvailable(SurveyActivity.this)) {
                 getData(hqCode);
             }else {
-                commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.no_network), true);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1335,7 +1333,7 @@ public class SurveyActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }else {
-            commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.no_network), true);
         }
     }
 
@@ -1348,7 +1346,7 @@ public class SurveyActivity extends AppCompatActivity {
         if(UtilityClass.isNetworkAvailable(SurveyActivity.this)) {
             callSyncSurveyAPI();
         } else {
-            commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(SurveyActivity.this, getString(R.string.no_network), true);
             startActivity(new Intent(SurveyActivity.this, HomeDashBoard.class));
             finishAffinity();
         }

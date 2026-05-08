@@ -96,7 +96,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.activityModule.CheckBoxInterface;
-import saneforce.sanzen.activity.activityModule.DynamicActivity;
 import saneforce.sanzen.activity.activityModule.adapter.ActivityAdapter;
 import saneforce.sanzen.activity.activityModule.adapter.ActvityList2Adapter;
 import saneforce.sanzen.activity.activityModule.model.ActivityDetailsModelClass;
@@ -433,7 +432,7 @@ public class ActivityFragment extends Fragment {
             if (UtilityClass.isNetworkAvailable(requireContext())) {
                 callActivityDetailsAPI(activityModelClass);
             } else {
-                commonUtilsMethods.showToastMessage(requireActivity(), getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(requireActivity(), getString(R.string.no_network), true);
                 chosenActivityModelClass = null;
                 chosenActivityPosition = -1;
                 this.adapter.changeRowIndex(-1);
@@ -539,7 +538,7 @@ public class ActivityFragment extends Fragment {
                     fragmentActivityBinding.rlDetailsMain.setVisibility(View.GONE);
                     fragmentActivityBinding.btnSubmit.setVisibility(View.GONE);
                     fragmentActivityBinding.progrlessdetail.setVisibility(View.GONE);
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no) + activityCap + getString(R.string.details));
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no) + activityCap + getString(R.string.details), true);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1404,7 +1403,7 @@ public class ActivityFragment extends Fragment {
             public void onSafeClick(View view) {
                 String fromdate = textviewfromdate.getText().toString();
                 if (fromdate.equals("")) {
-                    commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.select_from_date));
+                    commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.select_from_date), true);
                 } else {
                     String datee[] = fromdate.split("-");
                     final Calendar c = Calendar.getInstance();
@@ -1603,7 +1602,7 @@ public class ActivityFragment extends Fragment {
             public void onClick(View view2) {
                 String fromdate = textviewfromdate.getText().toString();
                 if (fromdate.equals("")) {
-                    commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.select_from_date));
+                    commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.select_from_date), true);
                 } else {
                     String date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_30, TimeUtils.FORMAT_5, fromdate);
                     String Time = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_30, TimeUtils.FORMAT_29, fromdate);
@@ -1632,7 +1631,7 @@ public class ActivityFragment extends Fragment {
                                 if (mHour < hourOfDay || mMinute < minute1) {
                                     textviewtodate.setText(dateFormat.format(c.getTime()));
                                 } else {
-                                    commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_as_after_from_time));
+                                    commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_as_after_from_time), true);
                                     textviewtodate.setText("");
                                 }
                             } else {
@@ -1927,7 +1926,7 @@ public class ActivityFragment extends Fragment {
             public void onSafeClick(View view) {
                 String data = textviewfromtime.getText().toString();
                 if (data.equalsIgnoreCase("")) {
-                    commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_from_time));
+                    commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_from_time), true);
                 } else {
                     String[] datas = data.split(":");
                     final int mHour = Integer.parseInt(datas[0]);
@@ -1939,7 +1938,7 @@ public class ActivityFragment extends Fragment {
                             if (mHour < hour || mMinute < minute) {
                                 textviewtotime.setText(String.format("%02d:%02d", hour, minute));
                             } else {
-                                commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_as_after_from_time));
+                                commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_as_after_from_time), true);
                                 textviewtotime.setText("");
                             }
                             commonFun();
@@ -2651,7 +2650,7 @@ public class ActivityFragment extends Fragment {
                     if (!CheckLocPermission()) {
                         RequestLocationPermission();
                     } else {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.wait_for_location));
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.wait_for_location), true);
                         String address;
                         gpsTrack = new GPSTrack(requireActivity());
                         double latitude = gpsTrack.getLatitude();
@@ -3081,10 +3080,10 @@ public class ActivityFragment extends Fragment {
 
                 if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16")) {
                     if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.fill_the_from) + List.getFieldName());
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.fill_the_from) + List.getFieldName(), true);
                         break;
                     } else if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.fill_the_to)+ List.getFieldName());
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.fill_the_to)+ List.getFieldName(), true);
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
@@ -3093,7 +3092,7 @@ public class ActivityFragment extends Fragment {
                     }
                 } else if (List.getControlId().equalsIgnoreCase("17")) {
                     if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.choose_the) + List.getFieldName() + "");
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.choose_the) + List.getFieldName() + "", true);
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
@@ -3101,7 +3100,7 @@ public class ActivityFragment extends Fragment {
                     }
                 } else {
                     if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.fill_the) + List.getFieldName() + "");
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.fill_the) + List.getFieldName() + "", true);
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt());
@@ -3215,7 +3214,7 @@ public class ActivityFragment extends Fragment {
                 }
 
             }
-            commonUtilsMethods.showToastMessage(requireContext(), activityCap + getString(R.string.saved_successfully));
+            commonUtilsMethods.showToastMessage(requireContext(), activityCap + getString(R.string.saved_successfully), true);
         } catch (Exception a) {
             a.printStackTrace();
         }
@@ -3488,20 +3487,20 @@ public class ActivityFragment extends Fragment {
                     }
                     String filename = getFileNameFromUri(uri);
                     if (filename == null) {
-                        commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_correct_path));
+                        commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_correct_path), true);
                         return;
                     }
                     if (filename.endsWith(".zip")) {
-                        commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.zip_not_supported));
+                        commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.zip_not_supported), true);
                         return;
                     }
                     selectedTextFileUpload.setText(filename);
-                    commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.file_accepted));uri = data.getData();
+                    commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.file_accepted), true);uri = data.getData();
 
                     long fileSize = getFileSize(uri);
 
                     if (fileSize > MAX_FILE_SIZE) {
-                        commonUtilsMethods.showToastMessage(requireContext(), "File size limit exceeded");
+                        commonUtilsMethods.showToastMessage(requireContext(), "File size limit exceeded", true);
                         removeFile(selectedTextFileUpload.getText().toString());
                         selectedTextFileUpload.setText("");
                         return;
@@ -3535,11 +3534,11 @@ public class ActivityFragment extends Fragment {
 //                    }
                 } catch (Exception ex) {
                     Log.v("Error", ex.toString());
-                    commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_correct_path));
+                    commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.please_select_correct_path), true);
                     ex.printStackTrace();
                 }
             } else {
-                commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.no_file_selected));
+                commonUtilsMethods.showToastMessage(requireContext(), requireContext().getString(R.string.no_file_selected), true);
             }
             commonFun();
         }

@@ -141,7 +141,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                     CallListCountAPI();
                 }else{
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(ApprovalsActivity.this,getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(ApprovalsActivity.this,getString(R.string.no_network), true);
                 }
             }
         });
@@ -208,7 +208,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                         if (progressDialog != null && progressDialog.isShowing() && !isFinishing() && !isDestroyed()) {
                             progressDialog.dismiss();
                         }
-                        commonUtilsMethods.showToastMessage(ApprovalsActivity.this, getString(R.string.something_wrong));
+                        commonUtilsMethods.showToastMessage(ApprovalsActivity.this, getString(R.string.something_wrong), true);
                         Log.v("counts", "-error-" + e);
                     }
                 }
@@ -216,7 +216,7 @@ public class ApprovalsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                commonUtilsMethods.showToastMessage(ApprovalsActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(ApprovalsActivity.this, getString(R.string.no_network), true);
                 if (progressDialog != null && progressDialog.isShowing() && !isFinishing() && !isDestroyed()) {
                     progressDialog.dismiss();
                 }

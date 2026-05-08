@@ -433,9 +433,9 @@ public class QuizActivity extends AppCompatActivity {
                 SharedPref.putQuizAssertDownloadingStatus(QuizActivity.this, true);
                 if(isSingleAssertDownloadingStatus) {
                     isSingleAssertDownloadingStatus = false;
-                    commonUtilsMethods.showToastMessage(this, quizCap + getString(R.string.asserts_updated));
+                    commonUtilsMethods.showToastMessage(this, quizCap + getString(R.string.asserts_updated), true);
                 }else {
-                    commonUtilsMethods.showToastMessage(this, quizCap + getString(R.string.asserts_downloading_completed));
+                    commonUtilsMethods.showToastMessage(this, quizCap + getString(R.string.asserts_downloading_completed), true);
                 }
                 dialog.dismiss();
                 if(!isFinishing()) {
@@ -560,7 +560,7 @@ public class QuizActivity extends AppCompatActivity {
                 showSubmitAlert();
                 isStarted = false;
             }else {
-                commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network), true);
             }
         }else {
             try {
@@ -573,7 +573,7 @@ public class QuizActivity extends AppCompatActivity {
                         unAttendedQuestions.remove(index);
                     }
                 }
-                commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.please_complete) + Arrays.toString(unAttendedQuestions.toArray()).replaceAll("\\[", "").replaceAll("]", ""));
+                commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.please_complete) + Arrays.toString(unAttendedQuestions.toArray()).replaceAll("\\[", "").replaceAll("]", ""), true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -632,7 +632,7 @@ public class QuizActivity extends AppCompatActivity {
             callSaveAPI();
 //            setScoreView();
         }else {
-            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network), true);
             showSubmitPopup();
         }
 //        quizOfflineDataDao.insert(new QuizOfflineDataTable(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4), TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_32), saveJsonObject.toString(), 0, Constants.WAITING_FOR_SYNC));
@@ -812,7 +812,7 @@ public class QuizActivity extends AppCompatActivity {
                         public void onFailure(@NonNull Call<JsonElement> quiz, @NonNull Throwable t) {
                             t.printStackTrace();
                             binding.flProgress.setVisibility(View.GONE);
-                            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.poor_connection));
+                            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.poor_connection), true);
                             showSyncPopup();
                         }
                     });
@@ -823,7 +823,7 @@ public class QuizActivity extends AppCompatActivity {
                 showSyncPopup();
             }
         }else {
-            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network), true);
             showSyncPopup();
         }
     }
@@ -846,7 +846,7 @@ public class QuizActivity extends AppCompatActivity {
                                 if(response.body() != null) {
                                     Log.e("test", "response : " + " : " + response.body());
                                 }
-                                commonUtilsMethods.showToastMessage(QuizActivity.this, quizCap + getString(R.string.submitted_successfully));
+                                commonUtilsMethods.showToastMessage(QuizActivity.this, quizCap + getString(R.string.submitted_successfully), true);
                                 int attempts = SharedPref.getQuizAttempts(QuizActivity.this);
 //                            if(attempts == 1) {
                                 SharedPref.setLastQuizSubmittedDate(QuizActivity.this, HomeDashBoard.selectedDate.toString());
@@ -862,7 +862,7 @@ public class QuizActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(@NonNull Call<JsonElement> quiz, @NonNull Throwable t) {
-                            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.poor_connection));
+                            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.poor_connection), true);
                             binding.flProgress.setVisibility(View.GONE);
                             showSubmitPopup();
                         }
@@ -871,12 +871,12 @@ public class QuizActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 binding.flProgress.setVisibility(View.GONE);
-                commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.poor_connection));
+                commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.poor_connection), true);
                 showSubmitPopup();
             }
         } else {
             binding.flProgress.setVisibility(View.GONE);
-            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network));
+            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.no_network), true);
             showSubmitPopup();
         }
     }
@@ -1052,7 +1052,7 @@ public class QuizActivity extends AppCompatActivity {
                 populateQuestionNumber();
                 setQuestion(0);
             }else {
-                commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.sync) + quizCap + getString(R.string.from_master_sync));
+                commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.sync) + quizCap + getString(R.string.from_master_sync), true);
                 finish();
             }
         } catch (Exception e) {
@@ -1209,7 +1209,7 @@ public class QuizActivity extends AppCompatActivity {
             }.start();
         } catch (Exception e) {
             e.printStackTrace();
-            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.please_try_after_sometime));
+            commonUtilsMethods.showToastMessage(QuizActivity.this, getString(R.string.please_try_after_sometime), true);
         }
     }
 

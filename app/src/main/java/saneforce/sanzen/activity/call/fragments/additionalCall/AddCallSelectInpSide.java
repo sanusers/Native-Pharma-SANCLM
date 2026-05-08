@@ -164,7 +164,7 @@ public class AddCallSelectInpSide extends Fragment {
                             SelectContent(callInputListAdapter.get(position).getCode(), holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                         } else {
                             holder.checkBox.setChecked(false);
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_qty_input));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_qty_input), true);
                         }
                     } else {
                         SelectContent(callInputListAdapter.get(position).getCode(), holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
@@ -187,7 +187,7 @@ public class AddCallSelectInpSide extends Fragment {
                             checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
                             callInputListAdapter.get(adapterPos).setCheckedItem(false);
                             checkBox.setChecked(false);
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_available));
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_available), true);
                             break;
                         }
                     }

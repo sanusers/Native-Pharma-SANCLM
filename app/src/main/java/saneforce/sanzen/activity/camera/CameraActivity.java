@@ -274,7 +274,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
                     setResult(RESULT_CANCELED);
                     finish();
                 }
-                CommonUtilsMethods.showToastMessage(this, getString(R.string.camera_permission_needed));
+                CommonUtilsMethods.showToastMessage(this, getString(R.string.camera_permission_needed), true);
                 isImageCaptured = false;
                 openCamera();
                 permissionRequestCount++;
@@ -289,7 +289,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
                     setResult(RESULT_CANCELED);
                     finish();
                 }
-                CommonUtilsMethods.showToastMessage(this, getString(R.string.location_permission_needed));
+                CommonUtilsMethods.showToastMessage(this, getString(R.string.location_permission_needed), true);
                 isImageCaptured = false;
                 openCamera();
                 permissionRequestCount++;
@@ -329,7 +329,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
             activityCameraBinding.switchCamera.setVisibility(View.GONE);
             openCamera(frontCameraId);
         } else {
-            commonUtilsMethods.showToastMessage(this, getString(R.string.no_camera_detected));
+            commonUtilsMethods.showToastMessage(this, getString(R.string.no_camera_detected), true);
             finish();
         }
     }
@@ -569,7 +569,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
                 val = true;
             }
         } catch (Exception e) {
-            commonUtilsMethods.showToastMessage(this, getString(R.string.loc_not_detect));
+            commonUtilsMethods.showToastMessage(this, getString(R.string.loc_not_detect), true);
         }
         return val;
     }

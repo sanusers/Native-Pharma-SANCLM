@@ -145,7 +145,7 @@ public class AssertDownloadAdapter extends RecyclerView.Adapter<AssertDownloadAd
                         WorkManager workManager = WorkManager.getInstance(activity);
                         workManager.enqueue(fileDownloadRequest);
                     } else {
-                        commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network));
+                        commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network), true);
                     }
                 }
             });

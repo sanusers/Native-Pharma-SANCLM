@@ -429,14 +429,14 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
                 String email = email1.getText().toString().trim();
 
                 if (Qualification.getText().toString().equals("")) {
-                    commonUtilsMethods.showToastMessage(Resource_profiling.this, Resource_profiling.this.getString(R.string.select_qualification));
+                    commonUtilsMethods.showToastMessage(Resource_profiling.this, Resource_profiling.this.getString(R.string.select_qualification), true);
                 } else if (Speciality.getText().toString().equals("")) {
-                    commonUtilsMethods.showToastMessage(Resource_profiling.this, Resource_profiling.this.getString(R.string.select_speciality));
+                    commonUtilsMethods.showToastMessage(Resource_profiling.this, Resource_profiling.this.getString(R.string.select_speciality), true);
                 } else if (Category.getText().toString().equals("")) {
-                    commonUtilsMethods.showToastMessage(Resource_profiling.this, Resource_profiling.this.getString(R.string.select_category));
+                    commonUtilsMethods.showToastMessage(Resource_profiling.this, Resource_profiling.this.getString(R.string.select_category), true);
                 } else if (!email.isEmpty()) {
                     if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        commonUtilsMethods.showToastMessage(Resource_profiling.this, Resource_profiling.this.getString(R.string.mail_not_valid));
+                        commonUtilsMethods.showToastMessage(Resource_profiling.this, Resource_profiling.this.getString(R.string.mail_not_valid), true);
                     } else {
                         submit_profiling();
                     }
@@ -555,7 +555,7 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
                         Intent intent12 = new Intent(Resource_profiling.this, HomeDashBoard.class);
                         startActivity(intent12);
 
-                        commonUtilsMethods.showToastMessage(Resource_profiling.this, Resource_profiling.this.getString(R.string.remaindercalls_added_successfully));
+                        commonUtilsMethods.showToastMessage(Resource_profiling.this, Resource_profiling.this.getString(R.string.remaindercalls_added_successfully), true);
                     }
 
                     progressDialog.dismiss();

@@ -106,7 +106,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
                     leaveModelLists.clear();
                     CallApiLeave();
                 }else{
-                    commonUtilsMethods.showToastMessage(LeaveApprovalActivity.this,getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(LeaveApprovalActivity.this,getString(R.string.no_network), true);
                 }
             }
         });
@@ -155,7 +155,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.showToastMessage(getApplicationContext(), getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(getApplicationContext(), getString(R.string.no_network), true);
                 }
             }
 
@@ -163,7 +163,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 t.printStackTrace();
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(getApplicationContext(), getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(getApplicationContext(), getString(R.string.no_network), true);
             }
         });
     }

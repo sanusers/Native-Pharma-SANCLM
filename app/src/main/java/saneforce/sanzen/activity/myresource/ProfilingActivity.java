@@ -608,7 +608,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                     intent.putExtra("Long", Longitude.get(0));
                     ProfilingActivity.this.startActivity(intent);
                 } else {
-                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network), true);
                 }
             }
         });
@@ -623,7 +623,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                     ProfilingActivity.this.startActivity(intent);
 
                 } else {
-                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network), true);
                 }
             }
 
@@ -639,7 +639,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                     ProfilingActivity.this.startActivity(intent);
 
                 } else {
-                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network), true);
                 }
             }
 
@@ -655,7 +655,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                     ProfilingActivity.this.startActivity(intent);
 
                 } else {
-                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network), true);
                 }
             }
 
@@ -671,7 +671,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                     ProfilingActivity.this.startActivity(intent);
 
                 } else {
-                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network), true);
                 }
             }
 
@@ -687,7 +687,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                     ProfilingActivity.this.startActivity(intent);
 
                 } else {
-                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network));
+                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network), true);
                 }
             }
 
@@ -798,11 +798,11 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                 String email = activityProfilingBinding.edtEmail.getText().toString().trim();
                 String chmemail = activityProfilingBinding.edtChmemail.getText().toString().trim();
                 if (!email.isEmpty() && activityProfilingBinding.edtEmail.getError() != null) {
-                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.enter_crct_email));
+                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.enter_crct_email), true);
                     activityProfilingBinding.edtEmail.requestFocus();
                     activityProfilingBinding.btnSave.setEnabled(true);
                 } else if (!chmemail.isEmpty() && activityProfilingBinding.edtChmemail.getError() != null) {
-                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.enter_crct_email));
+                    commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.enter_crct_email), true);
                     activityProfilingBinding.edtChmemail.requestFocus();
                     activityProfilingBinding.btnSave.setEnabled(true);
                 } else {
@@ -953,7 +953,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                             } else {
                                 activityProfilingBinding.btnSave.setEnabled(true);
                                 progressDialog.dismiss();
-                                commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.something_wrong));
+                                commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.something_wrong), true);
                             }
                         }
 
@@ -961,14 +961,14 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             activityProfilingBinding.btnSave.setEnabled(true);
                             progressDialog.dismiss();
-                            commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network));
+                            commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network), true);
                         }
                     });
                 }
             } else {
                 activityProfilingBinding.btnSave.setEnabled(true);
                 progressDialog.dismiss();
-                commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.no_network), true);
             }
 
         } catch (Exception e) {
@@ -1045,7 +1045,7 @@ public class ProfilingActivity extends AppCompatActivity implements OnMapReadyCa
                                         masterSyncItemModels.get(position).setSyncSuccess(2);
                                         masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 2));
                                         //new Handler().postDelayed(() -> {
-                                        commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.saved_successfully));
+                                        commonUtilsMethods.showToastMessage(ProfilingActivity.this, getResources().getString(R.string.saved_successfully), true);
                                         MyResource_Activity.shouldRefresh = true; // Mark that refresh is needed
                                         finish();
 

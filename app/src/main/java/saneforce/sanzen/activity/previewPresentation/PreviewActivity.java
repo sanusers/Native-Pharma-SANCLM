@@ -2,7 +2,6 @@ package saneforce.sanzen.activity.previewPresentation;
 
 import static saneforce.sanzen.activity.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.sanzen.activity.call.DCRCallActivity.arrayStore;
-import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing.binding;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.mandatoryProductList;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter.playedMandatorySlideIds;
 import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing.context;
@@ -10,7 +9,6 @@ import static saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailin
 import static saneforce.sanzen.activity.call.fragments.detailing.DetailedFragment.callDetailingLists;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -21,7 +19,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -40,7 +37,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -51,7 +47,6 @@ import java.util.stream.Stream;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter;
-import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.pojo.detailing.CallDetailingList;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
@@ -375,7 +370,7 @@ public class PreviewActivity extends AppCompatActivity {
                 // --- CONDITION 1: Direct Finish ---
                 if (PlaySlideDetailedAdapter.playedMandatorySlideIds.isEmpty() &&
                         (PlaySlideDetailedAdapter.timer == null || PlaySlideDetailedAdapter.timer.isEmpty())) {
-                    commonUtilsMethods.showToastMessage(this, getString(R.string.please_detail_mandatory_slides));
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.please_detail_mandatory_slides), true);
                     return;
                 }
 
@@ -392,8 +387,8 @@ public class PreviewActivity extends AppCompatActivity {
                             context.getString(
                                     R.string.mandatory_slides_pending_for_brand,
                                     TextUtils.join(", ", formattedList)
-                            )
-                    );
+                            ),
+                            true);
 //                    String joinedBrands = TextUtils.join(", ", formattedList);
 //                    commonUtilsMethods.showToastMessage(this, getString(R.string.mandatory_slides_pending_for_brand, joinedBrands));
                     return;
@@ -634,7 +629,7 @@ public class PreviewActivity extends AppCompatActivity {
         ArrayList<CustomerDataModel> customerDataList = new ArrayList<>();
         JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(customerType + presentationDataTable.getHeadquarterCode()).getMasterSyncDataJsonArray();
         if (jsonArray.length() == 0) {
-            commonUtilsMethods.showToastMessage(this, this.getString(R.string.no_data_found) + "  " + this.getString(R.string.do_master_sync));
+            commonUtilsMethods.showToastMessage(this, this.getString(R.string.no_data_found) + "  " + this.getString(R.string.do_master_sync), true);
         } else {
             try {
                 Set<String> customerCodes1 = new HashSet<>();
