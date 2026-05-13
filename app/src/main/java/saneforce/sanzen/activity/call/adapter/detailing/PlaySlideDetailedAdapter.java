@@ -312,19 +312,29 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     String fileFormat = SupportClass.getFileExtension(fileName);
                     switch (fileFormat) {
                         case "pdf":
+                            ImageView thumb = imageViewList.get(position);
+                            if (thumb != null) thumb.setVisibility(View.VISIBLE);  // show thumbnail
+
+                            // Make PDF view VISIBLE but fully TRANSPARENT (so it can render without being seen)
                             pdfView.setVisibility(View.VISIBLE);
+                            pdfView.setAlpha(0f);
                             videoView.setVisibility(View.GONE);
                             webView.setVisibility(View.GONE);
-//                            if (loadingDotsView != null) {
-//                                loadingDotsView.setVisibility(View.VISIBLE);
-//                                loadingDotsView.startLoading();
-//                            }
+
+                            PDFView finalPdfView = pdfView;  // for use inside callbacks
+
                             pdfView.fromFile(file)
-                                    .onRender((nbPages) -> {
-//                                        if (loadingDotsView != null) {
-//                                            loadingDotsView.setVisibility(View.GONE);
-//                                            loadingDotsView.stopLoading();
-//                                        }
+                                    .onRender(nbPages -> {
+                                        // PDF is ready – fade in PDF, hide thumbnail
+                                        if (thumb != null) thumb.setVisibility(View.GONE);
+                                        finalPdfView.animate().alpha(1f).setDuration(300).start();
+                                        Log.e("PDF_OK", "Rendered and faded in");
+                                    })
+                                    .onError(e -> {
+                                        // On error, still show PDF (maybe blank, but better than stuck thumbnail)
+                                        if (thumb != null) thumb.setVisibility(View.GONE);
+                                        finalPdfView.setAlpha(1f);
+                                        Log.e("PDF_ERROR", e.getMessage());
                                     })
                                     .defaultPage(0)
                                     .enableAnnotationRendering(true)
@@ -336,9 +346,19 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                                     .pageFling(true)
                                     .spacing(0)
                                     .load();
+
+                            // Fallback: if onRender never fires after 3 seconds, force PDF visible
+                            // The PDF view has been rendering so it should already have content
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                if (thumb != null && thumb.getVisibility() == View.VISIBLE) {
+                                    thumb.setVisibility(View.GONE);
+                                    finalPdfView.setAlpha(1f);
+                                    Log.e("PDF_FALLBACK", "Forced visible after delay");
+                                }
+                            }, 3000);
                             break;
-                        case "mp4":
-                        case "avi":
+                            case "mp4":
+                            case "avi":
                             mediaController = new MediaController(context);
                             mediaController.setAnchorView(videoView);
                             pdfView.setVisibility(View.GONE);
