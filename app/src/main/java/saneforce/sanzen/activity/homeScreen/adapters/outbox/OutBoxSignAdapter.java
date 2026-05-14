@@ -104,7 +104,7 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.tvImageName.setText(signModelClasses.get(position).getImg_name());
+        holder.tvImageName.setText(signModelClasses.get(position).getImg_name().replace(" ","_"));
         holder.tvStatus.setText(signModelClasses.get(position).getSync_status());
 
         File imgFile = new File(signModelClasses.get(position).getFilePath());
@@ -203,7 +203,7 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
 //                                System.out.println("file not Deleted :" + signModelClasses.get(position).getFilePath());
                                 }
                             }
-                            callOfflineSignDataDao.deleteSignDataByImageName(signModelClasses.get(position).getImg_name());
+                            callOfflineSignDataDao.deleteSignDataByImageName(signModelClasses.get(position).getImg_name().replace(" ","_"));
                             removeAt(position);
                         });
 
@@ -234,7 +234,7 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
 
     private void CallSignImageApi(String id, SignModelClass signModelClass, String filePath, String jsonValues){
         ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
-        MultipartBody.Part img = convertImg("SignImg", filePath);
+        MultipartBody.Part img = convertImg("SignImg", filePath.replace(" ","_"));
         HashMap<String, RequestBody> values = field(jsonValues);
         Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
         saveImgDcr.enqueue(new Callback<JsonObject>() {

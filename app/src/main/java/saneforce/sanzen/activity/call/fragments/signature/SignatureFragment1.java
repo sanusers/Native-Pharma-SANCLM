@@ -19,8 +19,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 
 import java.io.File;
@@ -249,27 +253,40 @@ public class SignatureFragment1 extends Fragment {
         if (fileName != null && !fileName.equalsIgnoreCase("null")) {
             File file = new File(context.getExternalFilesDir(null) + "/Signature/", fileName);
 
-            String imageUrl = SharedPref.getTagImageUrl(context) + "Signs/" + fileName;
-
+            String imageUrl = SharedPref.getTagImageUrl(context) + "signs/" + fileName;
+            Log.d("TAG", "loadImageFromGlide: "+imageUrl);
             Glide.with(context)
                     .asBitmap()
                     .load(imageUrl)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL) // cache original & resized
+                    .diskCacheStrategy(DiskCacheStrategy.NONE) // cache original & resized
                     .skipMemoryCache(false) // allow memory caching
+                    .listener(new RequestListener<Bitmap>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                    Target<Bitmap> target, boolean isFirstResource) {
+                            Log.e("GlideError", "Load failed: " + e.getMessage());
+                            return false;
+                        }
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, Object model,
+                                                       Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                            return false;
+                        }
+                    })
                     .into(new CustomTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(@NonNull Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {
                             if (bitmap != null) {
                                 Log.d("GlideImageLoad", "Image successfully loaded from Glide: " + fileName);
-                                try (FileOutputStream fos = new FileOutputStream(file)) {
-                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
-                                    if (!fileName.equalsIgnoreCase("null")) {
-                                        callSignCaptureImage.add(0, new CallSignCaptureImageList(id, imageName, file.getAbsolutePath(), bitmap, false));
-                                    }
-                                    Log.d("GlideImageLoad", "Image stored locally at: " + file.getAbsolutePath());
-                                } catch (Exception e) {
-                                    Log.e("GlideImageLoad", "Error saving image locally: " + e.getMessage());
-                                }
+//                                try (FileOutputStream fos = new FileOutputStream(file)) {
+//                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+//                                    if (!fileName.equalsIgnoreCase("null")) {
+//                                        callSignCaptureImage.add(0, new CallSignCaptureImageList(id, imageName, file.getAbsolutePath(), bitmap, false));
+//                                    }
+//                                    Log.d("GlideImageLoad", "Image stored locally at: " + file.getAbsolutePath());
+//                                } catch (Exception e) {
+//                                    Log.e("GlideImageLoad", "Error saving image locally: " + e.getMessage());
+//                                }
                                 signatureCanvas.setBackgroundBitmap(bitmap);
                             } else {
                                 Log.e("GlideImageLoad", "Failed to load image via Glide: " + fileName + ", bitmap is null.");

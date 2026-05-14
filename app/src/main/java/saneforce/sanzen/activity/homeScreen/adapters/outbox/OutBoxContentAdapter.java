@@ -914,7 +914,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
 
     private void CallSendSignImage(int position, int i, SignModelClass signModelClass, String jsonValues, String filePath, String id) {
         ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
-        MultipartBody.Part img = convertImg("SignImg", filePath);
+        MultipartBody.Part img = convertImg("SignImg", filePath.replace(" ","_"));
         HashMap<String, RequestBody> values = field(jsonValues);
 
         Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);

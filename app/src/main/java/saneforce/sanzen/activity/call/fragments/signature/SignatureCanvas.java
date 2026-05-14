@@ -163,9 +163,9 @@ public class SignatureCanvas extends View {
 
     public String getSignature() {
 //        imageName = DCRCallActivity.CallActivityCustDetails.get(0).getCode();
-        imageName = DCRCallActivity.CallActivityCustDetails.get(0).getName();
+        imageName = DCRCallActivity.CallActivityCustDetails.get(0).getName().replace(" ","_");
         if(imageName != null) {
-            this.imageName = /*"Sign" + SfCode + "_" +*/ imageName + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";
+            this.imageName = imageName + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";  // jpeg
 
             File file = null;
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
@@ -198,6 +198,10 @@ public class SignatureCanvas extends View {
                 Log.e("SignatureFlow", "Failed to get a valid file path.");
                 return null;
             }
+            if (getWidth() <= 0 || getHeight() <= 0) {
+                Log.e("SignatureFlow", "Invalid canvas size");
+                return null;
+            }
             Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             canvas.drawColor(Color.WHITE);
@@ -207,7 +211,7 @@ public class SignatureCanvas extends View {
             try {
                 File destinationFile = new File(filePath);
                 fileOutputStream = new FileOutputStream(destinationFile);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fileOutputStream);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
                 Log.d("SignatureFlow", "Signature saved to: " + filePath);
                 return filePath;
             } catch (FileNotFoundException e) {

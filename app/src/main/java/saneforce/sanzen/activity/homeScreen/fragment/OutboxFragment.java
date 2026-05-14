@@ -1057,7 +1057,7 @@ public class OutboxFragment extends Fragment {
 
     private void CallSendAPISignImage(ChildListModelClass child, int index, int attempt, SignModelClass signModelClass, ApiCallback callback) {
         ApiInterface apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getTagApiImageUrl(requireContext()));
-        MultipartBody.Part img = convertImg("SignImg", signModelClass.getFilePath());
+        MultipartBody.Part img = convertImg("SignImg", signModelClass.getFilePath().replace(" ","_"));
         HashMap<String, RequestBody> values = field(signModelClass.getJson_values());
         Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
         saveImgDcr.enqueue(new Callback<JsonObject>() {
@@ -1793,7 +1793,7 @@ public class OutboxFragment extends Fragment {
 
     private void CallSendSignImage(int parentPos, SignModelClass signModelClass, int childPos, int CurrentPos, String jsonValues, String filePath, String id, GroupModelClass modelClass) {
         ApiInterface apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getTagApiImageUrl(requireContext()));
-        MultipartBody.Part img = convertImg("SignImg", filePath);
+        MultipartBody.Part img = convertImg("SignImg", filePath.replace(" ","_"));
         HashMap<String, RequestBody> values = field(jsonValues);
         Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
         saveImgDcr.enqueue(new Callback<JsonObject>() {
