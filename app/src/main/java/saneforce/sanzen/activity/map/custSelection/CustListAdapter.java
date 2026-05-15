@@ -104,7 +104,7 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
             }
         }
 */
-            if (Integer.parseInt(custListArrayList.get(position).getTag())>=1){
+            if (safeParseInt(custListArrayList.get(position).getTag())>=1){
                 holder.tv_view.setVisibility(View.VISIBLE);
             }else{
                 holder.tv_view.setVisibility(View.GONE);
@@ -122,7 +122,7 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
             @Override
             public void onSafeClick(View view) {
                 if (UtilityClass.isNetworkAvailable(context)) {
-                    if (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag())) {
+                    if (safeParseInt(custListArrayList.get(position).getMaxTag()) > safeParseInt(custListArrayList.get(position).getTag())) {
                         Intent intent = new Intent(context, MapsActivity.class);
                         intent.putExtra("from", "tagging");
                         intent.putExtra("cus_name", custListArrayList.get(position).getName());
@@ -145,7 +145,7 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
         holder.tv_view.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                if (Integer.parseInt(custListArrayList.get(position).getTag()) >= 1) {
+                if (safeParseInt(custListArrayList.get(position).getTag()) >= 1) {
                     /* (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag()))*/
                     // Toast.makeText(context, "First Tag & View", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, MapsActivity.class);
@@ -193,6 +193,14 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
             case "S":
                 holder.tv_category.setVisibility(View.GONE);
                 holder.tv_specialist.setVisibility(View.GONE);
+        }
+    }
+    private int safeParseInt(String value) {
+        if (value == null || value.trim().isEmpty()) return 0;
+        try {
+            return Integer.parseInt(value.trim());
+        } catch (NumberFormatException e) {
+            return 0;
         }
     }
 
