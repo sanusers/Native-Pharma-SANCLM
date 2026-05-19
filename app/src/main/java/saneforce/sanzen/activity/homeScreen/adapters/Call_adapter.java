@@ -401,7 +401,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         Log.v("editCall", jsonObject.toString());
                         Intent intent = new Intent(context, DCRCallActivity.class);
                         JSONArray callData = jsonObject.optJSONArray("DCRDetail");
-                        String selectedHQ = "", mProds = "", townName = "", townCode = "", mobileNumber = "";
+                        String selectedHQ = "", mProds = "", townName = "", townCode = "", mobileNumber = "", countryCode = "";
                         if (callData != null) {
                             JSONObject dcrDetail = callData.optJSONObject(0);
                             if (dcrDetail != null) {
@@ -424,6 +424,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                                                 townName = obj.optString("Town_Name");
                                                 townCode = obj.optString("Town_Code");
                                                 mobileNumber = obj.optString("Mobile");
+                                                countryCode = obj.optString("CountryCode");
                                                 break;
                                             }
                                         }
@@ -436,6 +437,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                                                 townName = obj.optString("Town_Name");
                                                 townCode = obj.optString("Town_Code");
                                                 mobileNumber = obj.optString("Mobile");
+                                                countryCode = obj.optString("CountryCode");
                                                 break;
                                             }
                                         }
@@ -448,6 +450,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         custList.setTown_code(townCode);
                         custList.setTown_name(townName);
                         custList.setMobile(mobileNumber);
+                        custList.setCountryCode(countryCode);
                         CallActivityCustDetails.add(0, custList);
                         intent.putExtra(Constants.DETAILING_REQUIRED, "false");
                         intent.putExtra(Constants.DCR_FROM_ACTIVITY, "edit_online");

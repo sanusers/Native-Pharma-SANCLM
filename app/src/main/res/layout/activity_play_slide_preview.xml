@@ -45,6 +45,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rightLayout"
@@ -58,7 +67,6 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
 
         <RelativeLayout
             android:id="@+id/rl_hand_up"
@@ -79,7 +87,6 @@
                 android:src="@drawable/hand_up" />
         </RelativeLayout>
 
-
         <RelativeLayout
             android:id="@+id/rl_hand_down"
             android:layout_width="@dimen/_22sdp"
@@ -99,7 +106,6 @@
                 android:src="@drawable/hand_down" />
         </RelativeLayout>
 
-
         <RelativeLayout
             android:id="@+id/rl_comments"
             android:layout_width="@dimen/_22sdp"
@@ -118,7 +124,6 @@
                 android:layout_centerInParent="true"
                 android:src="@drawable/comments" />
         </RelativeLayout>
-
 
         <RelativeLayout
             android:id="@+id/rl_share"
@@ -169,9 +174,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintVertical_bias="0.1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.1">
 
         <View
             android:layout_width="wrap_content"
@@ -193,7 +198,6 @@
             android:src="@drawable/arrow_back_white" />
 
     </RelativeLayout>
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomLayout"
@@ -298,7 +302,6 @@
                 android:min="0"
                 android:progressTint="#ACBF60" />
 
-
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -343,8 +346,8 @@
         android:id="@+id/playBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/play_icon"
         android:elevation="10dp"
+        android:src="@drawable/play_icon"
         android:translationZ="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -354,20 +357,20 @@
         app:layout_constraintVertical_bias="0.95"
         app:tint="@color/white" />
 
-<!--    <com.airbnb.lottie.LottieAnimationView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:id="@+id/progress_anim"-->
-<!--        android:visibility="gone"-->
-<!--        app:lottie_autoPlay="true"-->
-<!--        app:lottie_loop="false"-->
-<!--        app:lottie_rawRes="@raw/file_transfer"-->
-<!--        android:padding="@dimen/_20sdp"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        android:background="@color/white"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"/>-->
+    <!--    <com.airbnb.lottie.LottieAnimationView-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:id="@+id/progress_anim"-->
+    <!--        android:visibility="gone"-->
+    <!--        app:lottie_autoPlay="true"-->
+    <!--        app:lottie_loop="false"-->
+    <!--        app:lottie_rawRes="@raw/file_transfer"-->
+    <!--        android:padding="@dimen/_20sdp"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        android:background="@color/white"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"/>-->
 
     <saneforce.sanzen.custom_views.LoadingDotsView
         android:id="@+id/loading_view"

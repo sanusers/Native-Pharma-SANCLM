@@ -147,11 +147,13 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                     if (timer != null) {
                         timer.cancel();
                     }
+                    String fileName = arrayList.get(binding.viewPager.getCurrentItem()).getSlideName();
+                    SupportClass.setThumbnail(PlaySlidePreviewActivity.this, fileName, binding.imageView);
+                    binding.imageView.setVisibility(View.VISIBLE);
                     binding.viewPager.setVisibility(View.GONE);
                     binding.upArrow.setVisibility(View.GONE);
                     binding.bottomLayout.setVisibility(View.GONE);
 
-                    String fileName = arrayList.get(binding.viewPager.getCurrentItem()).getSlideName();
                     File file = new File(PlaySlidePreviewActivity.this.getExternalFilesDir(null) + "/Slides/", fileName);
                     if (file.exists()) {
                         String fileFormat = SupportClass.getFileExtension(fileName);
@@ -175,6 +177,8 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                                 binding.videoView.setVideoURI(uri);
                                 binding.videoView.setMediaController(mediaController);
                                 binding.videoView.setOnPreparedListener(mp -> {
+                                    binding.imageView.setVisibility(View.GONE);
+                                    binding.videoView.setVisibility(View.VISIBLE);
 //                                    binding.loadingView.setVisibility(View.GONE);
 //                                    binding.loadingView.stopLoading();
                                     mp.start();
@@ -225,6 +229,10 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                                     public void onPageFinished(WebView view, String url) {
                                         super.onPageFinished(view, url);
                                         Log.i("webview", "onPageFinished: " + TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+                                        if (!url.equalsIgnoreCase("about:blank")) {
+                                            binding.imageView.setVisibility(View.GONE);
+                                            binding.webView.setVisibility(View.VISIBLE);
+                                        }
 //                                        binding.loadingView.setVisibility(View.GONE);
 //                                        binding.loadingView.stopLoading();
                                     }
@@ -419,6 +427,8 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     public void loadPdf(String fileName) {
         binding.pdfView.fromFile(new File(fileName))
                 .onRender((nbPages) -> {
+                    binding.imageView.setVisibility(View.GONE);
+                    binding.pdfView.setVisibility(View.VISIBLE);
 //                    binding.loadingView.setVisibility(View.GONE);
 //                    binding.loadingView.stopLoading();
                 })

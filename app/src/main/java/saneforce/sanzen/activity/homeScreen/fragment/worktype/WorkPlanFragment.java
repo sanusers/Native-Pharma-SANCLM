@@ -206,28 +206,30 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //        }
         try {
             String savedDate = SharedPref.getLastKnownDate(requireContext());
-            String today = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4);
-            String closeTime = SharedPref.getAutoSubmitTime(requireContext());
-            boolean isEqualOrAfter = false;
-            try {
-                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            if (savedDate != null && !savedDate.isEmpty()) {
+                String today = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4);
+                String closeTime = SharedPref.getAutoSubmitTime(requireContext());
+                boolean isEqualOrAfter = false;
+                try {
+                    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-                LocalDate date = LocalDate.parse(savedDate, dateFormatter);
-                LocalTime time = LocalTime.parse(closeTime, timeFormatter);
+                    LocalDate date = LocalDate.parse(savedDate, dateFormatter);
+                    LocalTime time = LocalTime.parse(closeTime, timeFormatter);
 
-                LocalDateTime mergedDateTime = LocalDateTime.of(date, time);
-                LocalDateTime nextDateTime = mergedDateTime.plusDays(1);
-                LocalDateTime currentDateTime = LocalDateTime.now();
+                    LocalDateTime mergedDateTime = LocalDateTime.of(date, time);
+                    LocalDateTime nextDateTime = mergedDateTime.plusDays(1);
+                    LocalDateTime currentDateTime = LocalDateTime.now();
 
-                isEqualOrAfter = currentDateTime.isEqual(nextDateTime) || currentDateTime.isAfter(nextDateTime);
-                Log.d("Auto Submit", "checkDateChange: " + savedDate + " -> " + nextDateTime.toString() + " -> " + currentDateTime.toString() + " --> " + isEqualOrAfter);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (!savedDate.isEmpty() && !savedDate.equals(today) && isEqualOrAfter) {
-                SharedPref.setLastKnownDate(requireContext(), "");
-                onDateChanged();
+                    isEqualOrAfter = currentDateTime.isEqual(nextDateTime) || currentDateTime.isAfter(nextDateTime);
+                    Log.d("Auto Submit", "checkDateChange: " + savedDate + " -> " + nextDateTime.toString() + " -> " + currentDateTime.toString() + " --> " + isEqualOrAfter);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (!savedDate.isEmpty() && !savedDate.equals(today) && isEqualOrAfter) {
+                    SharedPref.setLastKnownDate(requireContext(), "");
+                    onDateChanged();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -4531,7 +4533,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             mFwFlg = "";
             mHQName = "";
             mFinalRemarks = "";
-            deviation = "";
+            deviation = "0";
             tpWorkType = "";
             tpCluster = "";
             tpDoctor = "";

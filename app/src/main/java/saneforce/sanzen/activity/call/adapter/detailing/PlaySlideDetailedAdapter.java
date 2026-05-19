@@ -114,7 +114,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     private HashMap<Integer, PDFView> pdfViewList = new HashMap<>();
     private HashMap<Integer, VideoView> videoViewList = new HashMap<>();
     private HashMap<Integer, WebView> webViewList = new HashMap<>();
-//    private HashMap<Integer, LottieAnimationView> progressAnimationViewList = new HashMap<>();
+    //    private HashMap<Integer, LottieAnimationView> progressAnimationViewList = new HashMap<>();
     private HashMap<Integer, LoadingDotsView> loadingAnimationViewList = new HashMap<>();
     private MediaController mediaController;
     private boolean isDetailingPaused = false;
@@ -143,7 +143,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             }
         }
 
-       // mandatoryProductList.clear();
+        // mandatoryProductList.clear();
         for (BrandModelClass.Product product : productArrayList) {
             if ("0".equals(product.getMandatorySlide())) {   // mandatory slide
                 mandatoryProductList.add(product);
@@ -307,34 +307,32 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                 LoadingDotsView loadingDotsView = loadingAnimationViewList.get(position);
                 PDFView pdfView = pdfViewList.get(position);
                 String fileName = productArrayList.get(position).getSlideName();
+                if (imageView != null) {
+                    SupportClass.setThumbnail(context, fileName, imageView);
+                    imageView.setVisibility(View.VISIBLE);
+                }
                 File file = new File(context.getExternalFilesDir(null) + "/Slides/", fileName);
                 if (file.exists()) {
                     String fileFormat = SupportClass.getFileExtension(fileName);
                     switch (fileFormat) {
                         case "pdf":
-                            ImageView thumb = imageViewList.get(position);
-                            if (thumb != null) thumb.setVisibility(View.VISIBLE);  // show thumbnail
-
-                            // Make PDF view VISIBLE but fully TRANSPARENT (so it can render without being seen)
                             pdfView.setVisibility(View.VISIBLE);
-                            pdfView.setAlpha(0f);
                             videoView.setVisibility(View.GONE);
                             webView.setVisibility(View.GONE);
-
-                            PDFView finalPdfView = pdfView;  // for use inside callbacks
-
+//                            if (loadingDotsView != null) {
+//                                loadingDotsView.setVisibility(View.VISIBLE);
+//                                loadingDotsView.startLoading();
+//                            }
                             pdfView.fromFile(file)
-                                    .onRender(nbPages -> {
-                                        // PDF is ready – fade in PDF, hide thumbnail
-                                        if (thumb != null) thumb.setVisibility(View.GONE);
-                                        finalPdfView.animate().alpha(1f).setDuration(300).start();
-                                        Log.e("PDF_OK", "Rendered and faded in");
-                                    })
-                                    .onError(e -> {
-                                        // On error, still show PDF (maybe blank, but better than stuck thumbnail)
-                                        if (thumb != null) thumb.setVisibility(View.GONE);
-                                        finalPdfView.setAlpha(1f);
-                                        Log.e("PDF_ERROR", e.getMessage());
+                                    .onRender((nbPages) -> {
+                                        if (imageView != null) {
+                                            imageView.setVisibility(View.GONE);
+                                        }
+                                        pdfView.setVisibility(View.VISIBLE);
+//                                        if (loadingDotsView != null) {
+//                                            loadingDotsView.setVisibility(View.GONE);
+//                                            loadingDotsView.stopLoading();
+//                                        }
                                     })
                                     .defaultPage(0)
                                     .enableAnnotationRendering(true)
@@ -346,19 +344,9 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                                     .pageFling(true)
                                     .spacing(0)
                                     .load();
-
-                            // Fallback: if onRender never fires after 3 seconds, force PDF visible
-                            // The PDF view has been rendering so it should already have content
-                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                                if (thumb != null && thumb.getVisibility() == View.VISIBLE) {
-                                    thumb.setVisibility(View.GONE);
-                                    finalPdfView.setAlpha(1f);
-                                    Log.e("PDF_FALLBACK", "Forced visible after delay");
-                                }
-                            }, 3000);
                             break;
-                            case "mp4":
-                            case "avi":
+                        case "mp4":
+                        case "avi":
                             mediaController = new MediaController(context);
                             mediaController.setAnchorView(videoView);
                             pdfView.setVisibility(View.GONE);
@@ -372,6 +360,10 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                             videoView.setVideoURI(uri);
                             videoView.setMediaController(mediaController);
                             videoView.setOnPreparedListener(mp -> {
+                                if (imageView != null) {
+                                    imageView.setVisibility(View.GONE);
+                                }
+                                videoView.setVisibility(View.VISIBLE);
 //                                if (loadingDotsView != null) {
 //                                    loadingDotsView.setVisibility(View.GONE);
 //                                    loadingDotsView.stopLoading();
@@ -430,6 +422,12 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                                 public void onPageFinished(WebView view, String url) {
                                     super.onPageFinished(view, url);
                                     Log.i("webview", "onPageFinished: " + TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+                                    if (!url.equalsIgnoreCase("about:blank")) {
+                                        if (imageView != null) {
+                                            imageView.setVisibility(View.GONE);
+                                        }
+                                        webView.setVisibility(View.VISIBLE);
+                                    }
 //                                    if (loadingDotsView != null) {
 //                                        loadingDotsView.setVisibility(View.GONE);
 //                                        loadingDotsView.stopLoading();

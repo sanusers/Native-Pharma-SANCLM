@@ -240,6 +240,7 @@ public class OtpVerificationDialog extends Dialog {
                 if (resendAttemptsLeft > 0) {
                     tvResend.setText("Resend");
                     setResendEnabled(true);
+                    showCloseButton();
                 } else {
                     tvResend.setText("No resends left");
                     setResendEnabled(false);
@@ -406,7 +407,6 @@ public class OtpVerificationDialog extends Dialog {
                 jsonObject.addProperty("DCR_Name", customerName);
                 jsonObject.addProperty("Country_Code", countryCode);
                 jsonObject.addProperty("Mobile_No", mobileNumber);
-                jsonObject.addProperty("Mobile_No", "9962754312");
                 jsonObject.addProperty("Is_Resend", "1");
                 jsonObject.addProperty("OTP_UID", otpUID);
                 jsonObject.addProperty("Product_Count", productCount);

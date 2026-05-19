@@ -492,7 +492,9 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     private void changeActivity(CustList custList) {
         JSONObject jsonObject = prepareCheckInJsonObject();
         DCRCallActivity.CallActivityCustDetails = new ArrayList<>();
-        DCRCallActivity.CallActivityCustDetails.add(0, new CustList(custList.getName(), custList.getCode(), custList.getType(), custList.getCategory(), custList.getCategoryCode(), custList.getSpecialist(), custList.getSpecialistCode(), custList.getTown_name(), custList.getTown_code(), custList.getMaxTag(), custList.getTag(), custList.getPosition(), custList.getLatitude(), custList.getLongitude(), custList.getAddress(), custList.getDob(), custList.getWedding_date(), custList.getEmail(), custList.getMobile(), custList.getPhone(), custList.getQualification(), custList.getPriorityPrdCode(), custList.getMappedBrands(), custList.getMappedSlides()));
+        CustList custList1 = new CustList(custList.getName(), custList.getCode(), custList.getType(), custList.getCategory(), custList.getCategoryCode(), custList.getSpecialist(), custList.getSpecialistCode(), custList.getTown_name(), custList.getTown_code(), custList.getMaxTag(), custList.getTag(), custList.getPosition(), custList.getLatitude(), custList.getLongitude(), custList.getAddress(), custList.getDob(), custList.getWedding_date(), custList.getEmail(), custList.getMobile(), custList.getPhone(), custList.getQualification(), custList.getPriorityPrdCode(), custList.getMappedBrands(), custList.getMappedSlides());
+        custList1.setCountryCode(custList.getCountryCode());
+        DCRCallActivity.CallActivityCustDetails.add(0, custList1);
         Intent intent = new Intent(context, CustomerProfile.class);
         if (needCheckInOut.equalsIgnoreCase("0") && HomeDashBoard.selectedDate != null && HomeDashBoard.selectedDate.toString().equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
             intent.putExtra("CheckInJsonObject", jsonObject.toString());

@@ -565,7 +565,7 @@ public class DCRCallActivity extends AppCompatActivity {
     private void requestOTP() {
         try {
             CommonUtilsMethods.showToastMessage(DCRCallActivity.this, "Requesting OTP...", false);
-            String name = CallActivityCustDetails.get(0).getName(), code = CallActivityCustDetails.get(0).getCode(), mobileNumber = CallActivityCustDetails.get(0).getMobile(), countryCode = "91";
+            String name = CallActivityCustDetails.get(0).getName(), code = CallActivityCustDetails.get(0).getCode(), mobileNumber = CallActivityCustDetails.get(0).getMobile(), countryCode = CallActivityCustDetails.get(0).getCountryCode();
             if (mobileNumber == null || mobileNumber.isEmpty()) {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
@@ -599,7 +599,6 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonObject.addProperty("DCR_Name", name);
             jsonObject.addProperty("Country_Code", countryCode);
             jsonObject.addProperty("Mobile_No", mobileNumber);
-            jsonObject.addProperty("Mobile_No", "9962754312");
             jsonObject.addProperty("Is_Resend", "0");
             jsonObject.addProperty("OTP_UID", "");
             jsonObject.addProperty("Product_Count", productCount);
