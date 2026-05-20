@@ -19,7 +19,7 @@ public class ZoomableImageView extends AppCompatImageView {
 
     private float scale = 1f;      // User zoom level
     private float baseScale = 1f;  // Initial fit scale
-    private final float minScale = 1f;
+    private  float minScale = 1f;
     private final float maxScale = 5f;
 
     private ScaleGestureDetector scaleDetector;
@@ -56,7 +56,6 @@ public class ZoomableImageView extends AppCompatImageView {
         super.setImageBitmap(bm);
         post(this::fitImageToView);
     }
-
     private void fitImageToView() {
         Drawable d = getDrawable();
         if (d == null) return;
@@ -71,9 +70,33 @@ public class ZoomableImageView extends AppCompatImageView {
         float scaleX = viewWidth / dw;
         float scaleY = viewHeight / dh;
 
-        // FIT_CENTER behavior
-        baseScale = Math.max(scaleX, scaleY);
+        baseScale = Math.min(scaleX, scaleY);
+        matrix.reset();
+        matrix.postScale(scaleX, scaleY);
+        matrix.postTranslate(0, 0);
 
+        scale = 1f;
+        minScale = 1f;
+        setImageMatrix(matrix);
+    }
+/*    private void fitImageToView() {
+        Drawable d = getDrawable();
+        if (d == null) return;
+
+        float viewWidth = getWidth();
+        float viewHeight = getHeight();
+        float dw = d.getIntrinsicWidth();
+        float dh = d.getIntrinsicHeight();
+
+        if (dw == 0 || dh == 0 || viewWidth == 0 || viewHeight == 0) return;
+
+        float scaleX = viewWidth / dw;
+        float scaleY = viewHeight / dh;
+
+        // FIT_CENTER behavior
+        baseScale = Math.min(scaleX, scaleY);
+        scale = 1f;
+        minScale = 1f;
         matrix.reset();
         matrix.postScale(baseScale, baseScale);
         matrix.postTranslate(
@@ -81,9 +104,8 @@ public class ZoomableImageView extends AppCompatImageView {
                 (viewHeight - dh * baseScale) / 2f
         );
 
-        scale = 1f;
         setImageMatrix(matrix);
-    }
+    }*/
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -164,7 +186,7 @@ public class ZoomableImageView extends AppCompatImageView {
         fitImageToView();
     }
 
-    private void fixTranslation() {
+   /* private void fixTranslation() {
         matrix.getValues(matrixValues);
         float transX = matrixValues[Matrix.MTRANS_X];
         float transY = matrixValues[Matrix.MTRANS_Y];
@@ -194,5 +216,28 @@ public class ZoomableImageView extends AppCompatImageView {
         matrixValues[Matrix.MTRANS_X] = transX;
         matrixValues[Matrix.MTRANS_Y] = transY;
         matrix.setValues(matrixValues);
-    }
+    }*/
+   private void fixTranslation() {
+       matrix.getValues(matrixValues);
+       float transX = matrixValues[Matrix.MTRANS_X];
+       float transY = matrixValues[Matrix.MTRANS_Y];
+       float currentScaleX = matrixValues[Matrix.MSCALE_X]; // ← separate X
+       float currentScaleY = matrixValues[Matrix.MSCALE_Y]; // ← separate Y
+
+       Drawable d = getDrawable();
+       if (d == null) return;
+
+       float width = d.getIntrinsicWidth() * currentScaleX;
+       float height = d.getIntrinsicHeight() * currentScaleY;
+
+       float viewWidth = getWidth();
+       float viewHeight = getHeight();
+
+       transX = Math.max(viewWidth - width, Math.min(transX, 0));
+       transY = Math.max(viewHeight - height, Math.min(transY, 0));
+
+       matrixValues[Matrix.MTRANS_X] = transX;
+       matrixValues[Matrix.MTRANS_Y] = transY;
+       matrix.setValues(matrixValues);
+   }
 }

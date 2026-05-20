@@ -127,10 +127,10 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
                     @Override
                     public void onSafeClick(View view) {
                         if (!TextUtils.isEmpty(ed_remark.getText().toString())) {
-                            callDetailingLists.set(holder.getAbsoluteAdapterPosition(), new CallDetailingList(callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getBrandName(),
-                                                                                                              callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getBrandCode(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getSlideName(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getSlideType(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getSlideUrl(),
-                                                                                                              callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getSt_end_time(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getStartTime(),
-                                                                                                              callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getRating(), ed_remark.getText().toString(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getDate(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getDuration()));
+                            callDetailingLists.set(position, new CallDetailingList(callDetailingLists.get(position).getBrandName(),
+                                                                                                              callDetailingLists.get(position).getBrandCode(), callDetailingLists.get(position).getSlideName(), callDetailingLists.get(position).getSlideType(), callDetailingLists.get(position).getSlideUrl(),
+                                                                                                              callDetailingLists.get(position).getSt_end_time(), callDetailingLists.get(position).getStartTime(),
+                                                                                                              callDetailingLists.get(position).getRating(), ed_remark.getText().toString(), callDetailingLists.get(position).getDate(), callDetailingLists.get(position).getDuration()));
                             dialogFeedback.dismiss();
                             holder.img_feedback.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.img_feedback_red));
                             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
