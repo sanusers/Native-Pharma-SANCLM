@@ -551,38 +551,45 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     }
 
     public ArrayList<SaveCallProductList> getProductList(String products) {
-        //Extract Product Values
         productList = new ArrayList<>();
-        if(!products.isEmpty()) {
-            String str = products.replace(")", "");
-            String[] separated = str.split(",");
-            List<String> resultList = new ArrayList<>();
-            for (String str1 : separated) {
-                str1 = str1.trim();
-                if(!str1.isEmpty()) {
-                    resultList.add(str1);
-                }
-            }
-            String[] newArray = resultList.toArray(new String[0]);
-            for (String s : newArray) {
-                String[] item = s.split("[(]");
-                String Rcpa = "";
-                if(item.length>3) {
-                    Rcpa = item[3];
-                    if(item[3].contains("^")) {
-                        String[] rcpa = item[3].replace("^", ",").split("[,]");
-                        Rcpa = rcpa[1];
+        try {
+            if (!products.isEmpty()) {
+                String str = products.replace(")", "");
+                String[] separated = str.split(",");
+                List<String> resultList = new ArrayList<>();
+                for (String str1 : separated) {
+                    str1 = str1.trim();
+                    if (!str1.isEmpty()) {
+                        resultList.add(str1);
                     }
                 }
-                Log.e("PromotedCode", productPromoted + " ???? " + item[0]);
-                if(productPromoted.contains(item[0].trim())) {
-                    Log.e("PromotedCode", "Yes");
-                    productList.add(new SaveCallProductList(arrayList.get(0).getCode(), item[0], item[1], item[2], Rcpa, "Yes"));
-                }else {
-                    Log.e("PromotedCode", "No");
-                    productList.add(new SaveCallProductList(arrayList.get(0).getCode(), item[0], item[1], item[2], Rcpa, "No"));
+                String[] newArray = resultList.toArray(new String[0]);
+                for (String s : newArray) {
+                    try {
+                        String[] item = s.split("[(]");
+                        String Rcpa = "";
+                        if (item.length > 3) {
+                            Rcpa = item[3];
+                            if (item[3].contains("^")) {
+                                String[] rcpa = item[3].replace("^", ",").split("[,]");
+                                Rcpa = rcpa[1];
+                            }
+                        }
+                        Log.e("PromotedCode", productPromoted + " ???? " + item[0]);
+                        if (productPromoted.contains(item[0].trim())) {
+                            Log.e("PromotedCode", "Yes");
+                            productList.add(new SaveCallProductList(arrayList.get(0).getCode(), item[0], item[1], item[2], Rcpa, "Yes"));
+                        } else {
+                            Log.e("PromotedCode", "No");
+                            productList.add(new SaveCallProductList(arrayList.get(0).getCode(), item[0], item[1], item[2], Rcpa, "No"));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return productList;
     }

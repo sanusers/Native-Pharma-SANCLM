@@ -608,7 +608,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
             if (UtilityClass.isNetworkAvailable(DCRCallActivity.this)) {
                 api_interface = RetrofitClient.getRetrofit(DCRCallActivity.this, SharedPref.getAppUrl(DCRCallActivity.this));
-                Call<JsonElement> call = api_interface.getJsonElement(SharedPref.getAppUrl(DCRCallActivity.this) + "api/DEV/v3/OTP/Send/", jsonObject);
+                Call<JsonElement> call = api_interface.getJsonElement(SharedPref.getAppUrl(DCRCallActivity.this) + "api/" + SharedPref.getSenderId(DCRCallActivity.this) + "/v3/OTP/Send/", jsonObject);
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -1293,7 +1293,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     productCount = CheckProductListAdapter.saveCallProductListArrayList.size();
                     if (CheckProductListAdapter.noProductSelected && (productCount != 0)) productCount--;
                     try {
-                        if (SharedPref.getEditCallOtpNeed(DCRCallActivity.this).equalsIgnoreCase("0") && isFromActivity.equalsIgnoreCase("edit_online")) {
+                        if (SharedPref.getEditCallOtpNeed(DCRCallActivity.this).equalsIgnoreCase("0") && isFromActivity.equalsIgnoreCase("edit_online") && SharedPref.getProductOtpNeed(DCRCallActivity.this).equalsIgnoreCase("0")) {
                             for (int i = 0; i < CheckProductListAdapter.saveCallProductListArrayList.size(); i++) {
                                 SaveCallProductList product = CheckProductListAdapter.saveCallProductListArrayList.get(i);
                                 int sampleQty = (product.getSample_qty() == null ||product.getSample_qty().isEmpty()) ? 0 : Integer.parseInt(product.getSample_qty());
@@ -1398,7 +1398,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     inputCount = CheckInputListAdapter.saveCallInputListArrayList.size();
                     if (CheckInputListAdapter.noInputSelected && (inputCount != 0)) inputCount--;
                     try {
-                        if (SharedPref.getEditCallOtpNeed(DCRCallActivity.this).equalsIgnoreCase("0") && isFromActivity.equalsIgnoreCase("edit_online")) {
+                        if (SharedPref.getEditCallOtpNeed(DCRCallActivity.this).equalsIgnoreCase("0") && isFromActivity.equalsIgnoreCase("edit_online") && SharedPref.getInputOtpNeed(DCRCallActivity.this).equalsIgnoreCase("0")) {
                             for (int i = 0; i < CheckInputListAdapter.saveCallInputListArrayList.size(); i++) {
                                 SaveCallInputList input = CheckInputListAdapter.saveCallInputListArrayList.get(i);
                                 int inputQty = (input.getInp_qty() == null || input.getInp_qty().isEmpty()) ? 0 : Integer.parseInt(input.getInp_qty());

@@ -480,6 +480,7 @@ public class SettingsActivity extends AppCompatActivity {
                                         String UploadUrl = urlData.substring(0, urlData.indexOf('?')) + "/";
 
                                         SharedPref.setAppUrl(getApplicationContext(), appURL);
+                                        SharedPref.setSenderId(getApplicationContext(), senderID);
                                         SharedPref.setTagImageUrl(getApplicationContext(), web_url_getText);
                                         SharedPref.setTagApiImageUrl(getApplicationContext(), UploadUrl);
 

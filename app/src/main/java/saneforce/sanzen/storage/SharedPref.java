@@ -50,6 +50,7 @@ public class SharedPref {
     public static final String TAG_IMAGE_URL = "tag_image_url";
     public static final String TAG_API_IMAGE_URL = "tag_api_image_url";
     public static final String APP_URL = "appurl";
+    public static final String SENDER_ID = "senderID";
 
 
 // LogIN Data
@@ -2480,6 +2481,16 @@ public class SharedPref {
 
     public static String getAppUrl(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(APP_URL, "");
+    }
+
+    public static void setSenderId(Context context, String token) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SENDER_ID, token).apply();
+    }
+
+    public static String getSenderId(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SENDER_ID, "");
     }
 
     public static void setTagApiImageUrl(Context context, String token) {

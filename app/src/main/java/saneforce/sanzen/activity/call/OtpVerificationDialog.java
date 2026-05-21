@@ -143,7 +143,7 @@ public class OtpVerificationDialog extends Dialog {
         if (mobileNumber.length() > 3) {
             last2Digit = mobileNumber.substring(mobileNumber.length() - 2);
         }
-        tvContent.setText(String.format("One-Time Password sent to ********%s (%s)", last2Digit, customerName));
+        tvContent.setText(String.format("One-Time Password sent to ********%s (%s)", last2Digit, SharedPref.getDrCap(context)+" "+customerName));
     }
 
     private void setupOtpNavigation() {
@@ -286,7 +286,7 @@ public class OtpVerificationDialog extends Dialog {
 
             if (UtilityClass.isNetworkAvailable(context)) {
                 api_interface = RetrofitClient.getRetrofit(context, SharedPref.getAppUrl(context));
-                Call<JsonElement> call = api_interface.getJsonElement(SharedPref.getAppUrl(context) + "api/DEV/v3/OTP/Validate/", jsonObject);
+                Call<JsonElement> call = api_interface.getJsonElement(SharedPref.getAppUrl(context) + "api/" + SharedPref.getSenderId(context) + "/v3/OTP/Validate/", jsonObject);
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -416,7 +416,7 @@ public class OtpVerificationDialog extends Dialog {
 
                 if (UtilityClass.isNetworkAvailable(context)) {
                     api_interface = RetrofitClient.getRetrofit(context, SharedPref.getAppUrl(context));
-                    Call<JsonElement> call = api_interface.getJsonElement(SharedPref.getAppUrl(context) + "api/DEV/v3/OTP/Send/", jsonObject);
+                    Call<JsonElement> call = api_interface.getJsonElement(SharedPref.getAppUrl(context) + "api/" + SharedPref.getSenderId(context) + "/v3/OTP/Send/", jsonObject);
                     call.enqueue(new Callback<JsonElement>() {
                         @Override
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
