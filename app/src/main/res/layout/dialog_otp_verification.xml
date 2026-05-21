@@ -23,6 +23,8 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/satoshi_bold"
         android:text="@string/otp_verification"
+        android:paddingStart="@dimen/_15sdp"
+        android:paddingEnd="@dimen/_15sdp"
         android:textColor="@color/text_dark"
         android:textSize="@dimen/_12ssp"
         android:textStyle="bold"

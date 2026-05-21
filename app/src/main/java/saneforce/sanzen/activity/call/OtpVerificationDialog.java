@@ -47,7 +47,7 @@ import saneforce.sanzen.utility.TimeUtils;
 
 public class OtpVerificationDialog extends Dialog {
     private final Context context;
-    private TextView tvContent;
+    private TextView tvContent,tvTitle;
     private EditText etOtp1, etOtp2, etOtp3, etOtp4;
     private Button btnSubmit;
     private TextView tvResend, tvError, tvResendAttemptsLeft;
@@ -114,6 +114,7 @@ public class OtpVerificationDialog extends Dialog {
     }
 
     private void bindViews() {
+        tvTitle = findViewById(R.id.tvOTPTitle);
         tvContent = findViewById(R.id.tvOTPContent);
         etOtp1 = findViewById(R.id.etOtp1);
         etOtp2 = findViewById(R.id.etOtp2);
@@ -139,11 +140,22 @@ public class OtpVerificationDialog extends Dialog {
     }
 
     private void setData() {
+       if(SharedPref.getProductOtpNeed(context).equalsIgnoreCase("0") && SharedPref.getInputOtpNeed(context).equalsIgnoreCase("1")){
+           tvTitle.setText(SharedPref.getDocProductCaption(context) + " "+context.getString(R.string.otp_verification));
+       } else if (SharedPref.getProductOtpNeed(context).equalsIgnoreCase("1") && SharedPref.getInputOtpNeed(context).equalsIgnoreCase("0")) {
+           tvTitle.setText(SharedPref.getDocInputCaption(context) + " "+context.getString(R.string.otp_verification));
+       } else if (SharedPref.getProductOtpNeed(context).equalsIgnoreCase("0") && SharedPref.getInputOtpNeed(context).equalsIgnoreCase("0")) {
+           tvTitle.setText(SharedPref.getDocProductCaption(context)+ " / "+ SharedPref.getDocInputCaption(context) + " "+context.getString(R.string.otp_verification));
+       }
         String last2Digit = "";
         if (mobileNumber.length() > 3) {
             last2Digit = mobileNumber.substring(mobileNumber.length() - 2);
         }
-        tvContent.setText(String.format("One-Time Password sent to ********%s (%s)", last2Digit, SharedPref.getDrCap(context)+" "+customerName));
+        if(!SharedPref.getDetDrCap(context).isEmpty()){
+            tvContent.setText(String.format("One-Time Password sent to ********%s (%s)", last2Digit, SharedPref.getDetDrCap(context)+" "+customerName));
+        }else{
+            tvContent.setText(String.format("One-Time Password sent to ********%s (%s)", last2Digit, "Doctor"+" "+customerName));
+        }
     }
 
     private void setupOtpNavigation() {
