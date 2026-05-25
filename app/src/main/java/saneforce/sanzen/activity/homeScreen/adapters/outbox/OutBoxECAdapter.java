@@ -64,6 +64,7 @@ import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.sanzen.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.sanzen.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
+import saneforce.sanzen.roomdatabase.OutboxUtil;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
 
@@ -78,6 +79,7 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
     private final CallOfflineDataDao callOfflineDataDao;
     private final OfflineDaySubmitDao offlineDaySubmitDao;
     Util util;
+    private OutboxUtil outboxUtil;
 
     public OutBoxECAdapter(Activity activity, Context context, ArrayList<EcModelClass> ecModelClasses) {
         this.activity = activity;
@@ -89,6 +91,7 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         callOfflineDataDao = roomDB.callOfflineDataDao();
         offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
         util = new Util();
+        outboxUtil = new OutboxUtil(context);
     }
 
     @NonNull
@@ -302,7 +305,6 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
     private void CallImageApiS3(EcModelClass ecModelClass, String jsonValues, String filePath, String id) {
         Log.d("CallImageApi", "filePath received: " + filePath);
         try {
-
             /*String accessKey = Keys.ACCESS_KEY;
             String secretKey = Keys.SECRET_KEY;
             Regions region = Regions.EU_NORTH_1;
@@ -316,14 +318,11 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
 //            String bucketName = "san-edet";
             String bucketName = "san-one";
 
-
             File fileToUpload = new File(filePath);
             Log.d("fileToUpload", "CallImageAPI: " + fileToUpload.getAbsolutePath());
             if (!fileToUpload.exists()) {
                 Log.d("fileToUpload", "not exists: " + filePath);
             } else {
-
-
 //                String s3Key = SharedPref.getDivisionCode(context).replace(",","/")+"Event_Capture"+"/" + fileToUpload.getName();
                 String s3Key = "uploads/" + SharedPref.getDivisionSname(context) + SharedPref.getDivisionCode(context).replace(",", "/") + "event_capture" + "/" + fileToUpload.getName();
                 Log.d("TAG", "CallSendAPIImage: " + s3Key);
@@ -347,9 +346,8 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                             Log.d("TAG", "ecModelClass: " + filePath);
                             InsertImage(ecModelClass.getFilePath(), context);
                             Log.d("S3 Upload", "Upload Successful: " + s3Key);
-
+                            DeleteCacheFile(filePath, id);
                         } else if (state == TransferState.FAILED) {
-
                             Log.e("S3 Upload", "Upload Failed");
                             InsertImage(ecModelClass.getFilePath(), context);
                             ecModelClass.setSynced(1);
@@ -377,9 +375,8 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                     public void onError(int idInt, Exception ex) {
                         Log.e("S3 Upload", "Error: " + ex.getMessage());
                         ecModelClass.setSynced(1);
-                        ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-                        callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
-
+                        ecModelClass.setSync_status(Constants.CALL_FAILED);
+                        callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
                     }
                 });
 
@@ -387,9 +384,8 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         } catch (Exception e) {
             Log.v("img_tag", e.toString());
             ecModelClass.setSynced(1);
-            ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-            callOfflineECDataDao.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
-
+            ecModelClass.setSync_status(Constants.CALL_FAILED);
+            callOfflineECDataDao.updateECStatus(id, Constants.CALL_FAILED, 1);
         }
 
     }

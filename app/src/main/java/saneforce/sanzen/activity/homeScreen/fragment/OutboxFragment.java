@@ -139,13 +139,17 @@ public class OutboxFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     public static void SetupOutBoxAdapter(Activity activity, Context context) {
-        listDates = outboxUtil.getOutBoxDatesWithData(context);
-        outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
-        OutboxFragment.context = context;
-        outBoxBinding.rvOutBoxHead.setLayoutManager(mLayoutManager);
-        outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
-        notifyedmethod();
+        try {
+            listDates = outboxUtil.getOutBoxDatesWithData(context);
+            outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+            OutboxFragment.context = context;
+            outBoxBinding.rvOutBoxHead.setLayoutManager(mLayoutManager);
+            outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
+            notifyedmethod();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 //        if(callsUtil.getOutboxDates().isEmpty()) {
 //            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC_DUP, "[]", 0));
 //        }
@@ -262,9 +266,9 @@ public class OutboxFragment extends Fragment {
             if (HomeDashBoard.selectedDate != null && offlineWorkTypeDataDao.getAllCallOfflineWTDates().contains(HomeDashBoard.selectedDate.toString())) {
                 Log.e("outbox workplan", "clearCalls: date found");
                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.WORK_PLAN, "[]", 0));
-                SharedPref.setDayPlanStartedDate(requireContext(), "");
-                if (!SharedPref.getDcrSequential(requireContext()).equals("0")) {
-                    SharedPref.setSelectedDateCal(requireContext(), "");
+                SharedPref.setDayPlanStartedDate(context, "");
+                if (!SharedPref.getDcrSequential(context).equals("0")) {
+                    SharedPref.setSelectedDateCal(context, "");
                 }
             }
             if (!dates.isEmpty()) {
@@ -286,10 +290,10 @@ public class OutboxFragment extends Fragment {
                 } else {
                     masterDataDao.insert(data);
                 }
-                CallDataRestClass.resetcallValues(requireContext());
+                CallDataRestClass.resetcallValues(context);
 
                 if (HomeDashBoard.selectedDate != null) {
-                    JSONArray jsonArrayCalls = new JSONArray(SharedPref.getTodayCallList(requireContext()));
+                    JSONArray jsonArrayCalls = new JSONArray(SharedPref.getTodayCallList(context));
                     boolean callsAvailable = false;
                     for (int i = 0; i < jsonArrayCalls.length(); i++) {
                         JSONObject json = jsonArrayCalls.getJSONObject(i);
@@ -298,9 +302,9 @@ public class OutboxFragment extends Fragment {
                         }
                     }
                     if (!callsAvailable) {
-                        SharedPref.setLastCallDate(requireContext(), "");
+                        SharedPref.setLastCallDate(context, "");
                     } else {
-                        SharedPref.setLastCallDate(requireContext(), HomeDashBoard.selectedDate.toString());
+                        SharedPref.setLastCallDate(context, HomeDashBoard.selectedDate.toString());
                     }
                 }
             }
@@ -309,10 +313,10 @@ public class OutboxFragment extends Fragment {
             e.printStackTrace();
         }
 
-        if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+        if (SharedPref.getSrtNd(context).equalsIgnoreCase("0")) {
             if (offlineCheckInOutDataDao.getCheckInOutCount(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) > 0) {
-                SharedPref.setCheckInTime(requireContext(), "");
-                SharedPref.setCheckDateTodayPlan(requireContext(), "");
+                SharedPref.setCheckInTime(context, "");
+                SharedPref.setCheckDateTodayPlan(context, "");
             }
         }
 
@@ -328,10 +332,16 @@ public class OutboxFragment extends Fragment {
 
         outboxUtil.deleteOfflineCalls();
         listDates.clear();
-        outBoxHeaderAdapter = new OutBoxHeaderAdapter(requireActivity(), requireContext(), listDates);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(requireContext());
-        outBoxBinding.rvOutBoxHead.setLayoutManager(mLayoutManager);
-        outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
+//        outBoxHeaderAdapter = new OutBoxHeaderAdapter(requireActivity(), requireContext(), listDates);
+//        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(requireContext());
+//        outBoxBinding.rvOutBoxHead.setLayoutManager(mLayoutManager);
+//        outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
+        runIfAttached(() -> {
+            outBoxHeaderAdapter = new OutBoxHeaderAdapter(requireActivity(), requireContext(), listDates);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(requireContext());
+            outBoxBinding.rvOutBoxHead.setLayoutManager(mLayoutManager);
+            outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
+        });
     }
 
     private void refreshPendingFunction() {
@@ -434,16 +444,26 @@ public class OutboxFragment extends Fragment {
 //        }
     }
 
+    private void runIfAttached(Runnable action) {
+        Activity activity = getActivity();
+        if (activity == null || !isAdded() || isDetached() || activity.isFinishing()) return;
+        activity.runOnUiThread(() -> {
+            Activity act = getActivity();
+            if (act != null && isAdded() && !isDetached() && !act.isFinishing()) {
+                action.run();
+            }
+        });
+    }
+
     private void processDatesSequentially(ArrayList<GroupModelClass> datesList, int dateIndex) {
         if (dateIndex >= datesList.size()) {
             if (callSyncCount > 0) {
                 CallsFragment.syncCalls();
                 callSyncCount = 0;
             }
-            SetupOutBoxAdapter(requireActivity(), requireContext());
+            runIfAttached(() -> SetupOutBoxAdapter(requireActivity(), requireContext()));
             return;
         }
-
         GroupModelClass dateGroup = datesList.get(dateIndex);
         Log.d(TAG, "processDatesSequentially: " + dateIndex + " -> " + dateGroup.getGroupName());
         processApisForDate(dateGroup, 0, new ApiCallback() {
@@ -451,7 +471,6 @@ public class OutboxFragment extends Fragment {
             public void onSuccess() {
                 processDatesSequentially(datesList, dateIndex + 1);
             }
-
             @Override
             public void onFailure() {
                 stopSync();
@@ -465,7 +484,7 @@ public class OutboxFragment extends Fragment {
             CallsFragment.syncCalls();
             callSyncCount = 0;
         }
-        SetupOutBoxAdapter(requireActivity(), requireContext());
+        runIfAttached(() -> SetupOutBoxAdapter(requireActivity(), requireContext()));
     }
 
     private void processApisForDate(GroupModelClass dateGroup, int apiIndex, ApiCallback callback) {
@@ -552,6 +571,8 @@ public class OutboxFragment extends Fragment {
             } else {
                 obj = new JSONObject(checkInOutModelClass.getJsonOutValues());
             }
+            Activity act = getActivity();
+            if (act == null || !isAdded()) { callback.onFailure(); return; }
             address = CommonUtilsMethods.gettingAddress(requireActivity(), Double.parseDouble(obj.getString("lat")), Double.parseDouble(obj.getString("long")), false);
             obj.put("address", address);
         } catch (JSONException e) {
@@ -624,7 +645,7 @@ public class OutboxFragment extends Fragment {
             return;
         }
         Map<String, String> mapString = new HashMap<>();
-        if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1") || SharedPref.getOneBuild(requireContext()).equalsIgnoreCase("0")) {
+        if (SharedPref.getSfType(context).equalsIgnoreCase("1") || SharedPref.getOneBuild(context).equalsIgnoreCase("0")) {
             mapString.put("axn", "edetsave/dayplan");
         } else {
             mapString.put("axn", "multihqsave/dayplan");
@@ -845,7 +866,8 @@ public class OutboxFragment extends Fragment {
                             ecModelClass.setSync_status(Constants.CALL_FAILED);
                             callOfflineECDataDao.updateECStatus(String.valueOf(ecModelClass.getId()), Constants.CALL_FAILED, 1);
                             //notifyedmethod();
-                            callback.onFailure();
+//                            callback.onFailure();
+                            runIfAttached(callback::onFailure);
                         }
 
                     }
@@ -864,9 +886,11 @@ public class OutboxFragment extends Fragment {
                         callOfflineECDataDao.updateECStatus(String.valueOf(ecModelClass.getId()), Constants.EXCEPTION_ERROR, 1);
                         //notifyedmethod();
                         if (attempt != 5) {
-                            CallSendAPIImageS3(child, index, attempt + 1, ecModelClass, callback);
+//                            CallSendAPIImageS3(child, index, attempt + 1, ecModelClass, callback);
+                            runIfAttached(() -> CallSendAPIImageS3(child, index, attempt + 1, ecModelClass, callback));
                         } else {
-                            callback.onFailure();
+//                            callback.onFailure();
+                            runIfAttached(callback::onFailure);
                         }
                     }
                 });
@@ -878,7 +902,8 @@ public class OutboxFragment extends Fragment {
             ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
             callOfflineECDataDao.updateECStatus(String.valueOf(ecModelClass.getId()), Constants.EXCEPTION_ERROR, 1);
             //notifyedmethod();
-            callback.onFailure();
+//            callback.onFailure();
+            runIfAttached(callback::onFailure);
         }
     }
 
@@ -1017,7 +1042,8 @@ public class OutboxFragment extends Fragment {
                                 signModelClass.setSync_status(Constants.CALL_FAILED);
                                 callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.CALL_FAILED, 1);
                                 //notifyedmethod();
-                                callback.onFailure();
+//                                callback.onFailure();
+                                runIfAttached(callback::onFailure);
                             }
 
                         }
@@ -1036,9 +1062,11 @@ public class OutboxFragment extends Fragment {
                             callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.UPLOAD_FAILED, 1);
                             //notifyedmethod();
                             if (attempt != 5) {
-                                CallSendAPIImageS3(child, index, attempt + 1, signModelClass, callback);
+//                                CallSendAPIImageS3(child, index, attempt + 1, signModelClass, callback);
+                                runIfAttached(()-> CallSendAPIImageS3(child, index, attempt + 1, signModelClass, callback));
                             } else {
-                                callback.onFailure();
+//                                callback.onFailure();
+                                runIfAttached(callback::onFailure);
                             }
                         }
                     });
@@ -1051,7 +1079,8 @@ public class OutboxFragment extends Fragment {
             signModelClass.setSync_status(Constants.UPLOAD_FAILED);
             callOfflineSignDataDao.updateSignStatus(String.valueOf(signModelClass.getId()), Constants.UPLOAD_FAILED, 1);
             //notifyedmethod();
-            callback.onFailure();
+//            callback.onFailure();
+            runIfAttached(callback::onFailure);
         }
     }
 
@@ -2462,7 +2491,7 @@ public class OutboxFragment extends Fragment {
             OutboxFragment.NetworkConnectCallHomeDashBoard(status);
             IsFromDCR = false;
         }
-
+        SetupOutBoxAdapter(requireActivity(), requireContext());
 
 //        new Handler().postDelayed(this::refreshPendingFunction, 200);
     }

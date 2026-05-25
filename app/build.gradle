@@ -14,8 +14,8 @@ android {
         applicationId "saneforce.sanzen"
         minSdk 23
         targetSdk 36
-        versionCode 84
-        versionName "1.6.2"
+        versionCode 87
+        versionName "1.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         def props = new Properties()

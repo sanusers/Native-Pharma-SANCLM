@@ -744,7 +744,7 @@ public class DCRCallActivity extends AppCompatActivity {
             Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            finish();
+//            finish();
             if (!UtilityClass.isNetworkAvailable(getApplicationContext())) {
 //                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_locally));
                 Toast.makeText(DCRCallActivity.this, getString(R.string.call_saved_locally), Toast.LENGTH_LONG).show();

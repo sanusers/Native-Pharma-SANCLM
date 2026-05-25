@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
@@ -103,7 +104,7 @@ public class RetrofitClient {
      * @return Configured ApiInterface ready to make API calls
      */
     public static ApiInterface getRetrofit(Context context, String baseUrl) {
-        return getClient(context, baseUrl).create(ApiInterface.class);
+        return Objects.requireNonNull(getClient(context, baseUrl)).create(ApiInterface.class);
     }
 
     // ============================================================

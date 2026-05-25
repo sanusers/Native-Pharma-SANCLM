@@ -1387,8 +1387,9 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                     isCallAvailable = true;
                     if (SharedPref.getS3BucketNeed(context).equalsIgnoreCase("0")) {
                         CallSendSignImageS3(groupModelClass, signModelClass, childPos, i, signModelClass.getJson_values(), signModelClass.getFilePath(), String.valueOf(signModelClass.getId()));
+                    } else {
+                        CallSendSignImage(groupModelClass, signModelClass, childPos, i, signModelClass.getJson_values(), signModelClass.getFilePath(), String.valueOf(signModelClass.getId()));
                     }
-                    CallSendSignImage(groupModelClass, signModelClass, childPos, i, signModelClass.getJson_values(), signModelClass.getFilePath(), String.valueOf(signModelClass.getId()));
                     break;
                 }
             }

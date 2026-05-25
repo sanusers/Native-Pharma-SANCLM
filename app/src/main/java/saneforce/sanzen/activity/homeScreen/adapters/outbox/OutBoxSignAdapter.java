@@ -306,7 +306,7 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
         outBoxHeaderAdapter.notifyDataSetChanged();
     }
 
-    private void CallSignImageApiS3(String id, SignModelClass signModelClass, String filePath, String jsonValues) {
+    private void CallSignImageApiS3(String signID, SignModelClass signModelClass, String filePath, String jsonValues) {
         try {
             util.getS3Client(context);
             String bucketName = "san-one";
@@ -319,7 +319,6 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
 //                    String s3Key = SharedPref.getDivisionCode(context).replace(",", "/") + "Signature" + "/" + fileToUpload.getName();
                     String s3Key = "uploads/"+SharedPref.getDivisionSname(context)+SharedPref.getDivisionCode(context).replace(",", "/") + "signature" + "/" + fileToUpload.getName();
                     Log.d("TAG", "CallSendAPIImage: " + s3Key);
-
 
                     TransferNetworkLossHandler.getInstance(context);
 
@@ -338,8 +337,8 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
                             if (state == TransferState.COMPLETED) {
                                 Log.d("TAG", "signModelClass: " + signModelClass.getFilePath());
                                 InsertImageSign(signModelClass.getFilePath(), context);
+                                DeleteCacheFileSign(signModelClass.getFilePath(), signID, signModelClass);
                                 Log.d("S3 Upload", "Upload Successful: " + s3Key);
-
 
                             } else if (state == TransferState.FAILED) {
 
@@ -366,8 +365,8 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
                         public void onError(int id, Exception ex) {
                             Log.e("S3 Upload", "Error: " + ex.getMessage());
                             signModelClass.setSynced(1);
-                            signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-                            callOfflineSignDataDao.updateSignStatus(String.valueOf(id), Constants.EXCEPTION_ERROR, 1);
+                            signModelClass.setSync_status(Constants.CALL_FAILED);
+                            callOfflineSignDataDao.updateSignStatus(String.valueOf(id), Constants.CALL_FAILED, 1);
                         }
                     });
                 }
@@ -375,8 +374,8 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
         } catch (Exception e) {
             Log.v("img_tagOSA", e.toString());
             signModelClass.setSynced(1);
-            signModelClass.setSync_status(Constants.EXCEPTION_ERROR);
-            callOfflineSignDataDao.updateSignStatus(id, Constants.EXCEPTION_ERROR, 1);
+            signModelClass.setSync_status(Constants.CALL_FAILED);
+            callOfflineSignDataDao.updateSignStatus(signID, Constants.CALL_FAILED, 1);
         }
     }
 
@@ -386,7 +385,6 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
         String fileName = new File(ImageUrl).getName();
         new AWSBucketsSign(context, fileName, imageFile, "");
     }
-
 
     @Override
     public int getItemCount() {
@@ -422,7 +420,6 @@ public class OutBoxSignAdapter extends RecyclerView.Adapter<OutBoxSignAdapter.Vi
         }
         return yy;
     }
-
 
     public void showImage(Bitmap img_view) {
         Dialog builder = new Dialog(context);
