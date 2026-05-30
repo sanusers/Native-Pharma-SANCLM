@@ -61,10 +61,13 @@ import java.util.List;
 import java.util.Objects;
 
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.DCRCallActivity;
+import saneforce.sanzen.activity.call.pojo.detailing.HtmlViewSession;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanzen.activity.presentation.playPreview.PlaySlidePreviewActivity;
+import saneforce.sanzen.activity.previewPresentation.PreviewActivity;
 import saneforce.sanzen.activity.previewPresentation.fragment.CustomPresentationFragment;
 import saneforce.sanzen.commonClasses.CommonSharedPreference;
 import saneforce.sanzen.commonClasses.Constants;
@@ -97,6 +100,9 @@ public class PlaySlideDetailing extends AppCompatActivity {
     CommonSharedPreference mCommonSharedPreference;
     Dialog dialogPopUp;
     String defaultTime = "00:00:00";
+    private final List<HtmlViewSession> htmlViewSessions = new ArrayList<>();
+    private long currentStartTime = 0L;
+    private String currentUrl = "";
 
     public static void populateViewPagerAdapterNew(ArrayList<BrandModelClass.Product> productsList) {
         itemsPagerAdapter = new PlaySlideDetailedAdapter((PlaySlideDetailing) context, productsList, mandatoryProductList);
@@ -308,6 +314,15 @@ public class PlaySlideDetailing extends AppCompatActivity {
                                 }
                                 binding.webView.setWebViewClient(new WebViewClient() {
                                     @Override
+                                    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                                        super.onPageStarted(view, url, favicon);
+                                        saveCurrentSession();
+                                        currentUrl = url;
+                                        currentStartTime = System.currentTimeMillis();
+                                        Log.i("TRACK", "START : " + currentUrl + "\nTime : " + currentStartTime);
+                                    }
+
+                                    @Override
                                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
                                         Log.v("Slides", " ---- " + url + " ---- " + view.getTitle() + " ---- " + view.getOriginalUrl());
                                         if (!url.isEmpty()) {
@@ -347,6 +362,20 @@ public class PlaySlideDetailing extends AppCompatActivity {
                     binding.videoView.setVisibility(View.GONE);
                     binding.webView.setVisibility(View.GONE);
                     binding.upArrow.setVisibility(View.VISIBLE);
+                    currentStartTime = 0L;
+                    currentUrl = "";
+                    String fileName = arrayList.get(binding.viewPager.getCurrentItem()).getSlideName();
+                    String fileFormat = SupportClass.getFileExtension(fileName);
+                    if (fileFormat.equalsIgnoreCase("zip")) {
+                        for (HtmlViewSession htmlViewSession : htmlViewSessions) {
+                            Log.v("TRACK final", "FILE : " + htmlViewSession.getFileName() + "\nSTART : " + htmlViewSession.getStartTime() + "\nEND : " + htmlViewSession.getEndTime() + "\nDURATION : " + TimeUtils.getMillisToFormattedTime(htmlViewSession.getDuration(), TimeUtils.FORMAT_32));
+                        }
+                    }
+                    List<HtmlViewSession> htmlViewSessionList = PreviewActivity.htmlDataMap.get(fileName);
+                    if (htmlViewSessionList == null) htmlViewSessionList = new ArrayList<>();
+                    htmlViewSessionList.addAll(htmlViewSessions);
+                    PreviewActivity.htmlDataMap.put(fileName, htmlViewSessionList);
+
 //                    binding.loadingView.setVisibility(View.GONE);
 //                    binding.loadingView.stopLoading();
                 }
@@ -680,6 +709,18 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void saveCurrentSession() {
+        if (currentUrl == null || currentUrl.isEmpty()) {
+            return;
+        }
+        long endTime = System.currentTimeMillis();
+        long duration = endTime - currentStartTime;
+        String fileName = Uri.parse(currentUrl).getLastPathSegment();
+        HtmlViewSession session = new HtmlViewSession(fileName, currentStartTime, endTime, duration);
+        htmlViewSessions.add(session);
+        Log.i("TRACK", "FILE : " + fileName + "\nSTART : " + currentStartTime + "\nEND : " + endTime + "\nDURATION : " + TimeUtils.getMillisToFormattedTime(duration, TimeUtils.FORMAT_32));
     }
 
     private void snapToSide(View view) {

@@ -55,6 +55,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -65,6 +66,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.BuildConfig;
 import saneforce.sanzen.R;
+import saneforce.sanzen.activity.call.pojo.detailing.HtmlViewSession;
 import saneforce.sanzen.activity.call.pojo.detailing.LoadBitmap;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.presentation.SupportClass;
@@ -118,6 +120,9 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     private HashMap<Integer, LoadingDotsView> loadingAnimationViewList = new HashMap<>();
     private MediaController mediaController;
     private boolean isDetailingPaused = false;
+    private List<HtmlViewSession> htmlViewSessions = new ArrayList<>();
+    private long currentStartTime = 0L;
+    private String currentUrl = "";
 
     public PlaySlideDetailedAdapter(PlaySlideDetailing context, ArrayList<BrandModelClass.Product> productArrayList,ArrayList<BrandModelClass.Product>mandatoryProductList) {
         this.context = context;
@@ -133,11 +138,12 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
 //        progressAnimationViewList = new HashMap<>();
         loadingAnimationViewList = new HashMap<>();
         commonUtilsMethods = new CommonUtilsMethods(context);
+        htmlViewSessions = new ArrayList<>();
         for (int i = 0; i < productArrayList.size(); i++) {
             File file = new File(context.getExternalFilesDir(null) + "/Slides/", productArrayList.get(i).getSlideName());
             if (file.exists()) {
-                String fileFormat = SupportClass.getFileExtension(productArrayList.get(i).getSlideName());
-                slideDescribe.add(new StoreImageTypeUrl("", productArrayList.get(i).getSlideName(), fileFormat, file.toString(), "", productArrayList.get(i).getSlideId(), productArrayList.get(i).getBrandName(), productArrayList.get(i).getBrandCode(), productArrayList.get(i).getProductCode()));
+//                String fileFormat = SupportClass.getFileExtension(productArrayList.get(i).getSlideName());
+                slideDescribe.add(new StoreImageTypeUrl("", productArrayList.get(i).getSlideName(), getFileType(productArrayList.get(i).getSlideName()), file.toString(), "", productArrayList.get(i).getSlideId(), productArrayList.get(i).getBrandName(), productArrayList.get(i).getBrandCode(), productArrayList.get(i).getProductCode()));
             } else {
                 slideDescribe.add(new StoreImageTypeUrl("", productArrayList.get(i).getSlideName(), "", "", "", productArrayList.get(i).getSlideId(), productArrayList.get(i).getBrandName(), productArrayList.get(i).getBrandCode(), productArrayList.get(i).getProductCode()));
             }
@@ -149,6 +155,31 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                 mandatoryProductList.add(product);
             }
         }
+    }
+
+    private String getFileType(String fileName) {
+        if (fileName == null) {
+            return "";
+        }
+        fileName = fileName.toLowerCase();
+        if (fileName.endsWith(".jpg")
+                || fileName.endsWith(".jpeg")
+                || fileName.endsWith(".png")
+                || fileName.endsWith(".webp")
+                || fileName.endsWith(".gif")) {
+            return "I";
+        } else if (fileName.endsWith(".mp4")
+                || fileName.endsWith(".mkv")
+                || fileName.endsWith(".avi")
+                || fileName.endsWith(".mov")
+                || fileName.endsWith(".3gp")) {
+            return "V";
+        } else if (fileName.endsWith(".pdf")) {
+            return "P";
+        } else if (fileName.endsWith(".zip")) {
+            return "H";
+        }
+        return "";
     }
 
     public String getSlideNameAt(int position) {
@@ -311,9 +342,23 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     SupportClass.setThumbnail(context, fileName, imageView);
                     imageView.setVisibility(View.VISIBLE);
                 }
+
+                currentStartTime = 0L;
+                currentUrl = "";
+                String fileFormat = SupportClass.getFileExtension(fileName);
+                if (fileFormat.equalsIgnoreCase("zip")) {
+                    for (HtmlViewSession htmlViewSession : htmlViewSessions) {
+                        Log.v("TRACK final", "FILE : " + htmlViewSession.getFileName() + "\nSTART : " + htmlViewSession.getStartTime() + "\nEND : " + htmlViewSession.getEndTime() + "\nDURATION : " + TimeUtils.getMillisToFormattedTime(htmlViewSession.getDuration(), TimeUtils.FORMAT_32));
+                    }
+                }
+                List<HtmlViewSession> htmlViewSessionList = PreviewActivity.htmlDataMap.get(fileName);
+                if (htmlViewSessionList == null) htmlViewSessionList = new ArrayList<>();
+                htmlViewSessionList.addAll(htmlViewSessions);
+                PreviewActivity.htmlDataMap.put(fileName, htmlViewSessionList);
+
                 File file = new File(context.getExternalFilesDir(null) + "/Slides/", fileName);
                 if (file.exists()) {
-                    String fileFormat = SupportClass.getFileExtension(fileName);
+//                    String fileFormat = SupportClass.getFileExtension(fileName);
                     switch (fileFormat) {
                         case "pdf":
                             pdfView.setVisibility(View.VISIBLE);
@@ -410,6 +455,15 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                             }
                             webView.setWebViewClient(new WebViewClient() {
                                 @Override
+                                public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                                    super.onPageStarted(view, url, favicon);
+                                    saveCurrentSession();
+                                    currentUrl = url;
+                                    currentStartTime = System.currentTimeMillis();
+                                    Log.i("TRACK", "START : " + currentUrl + "\nTime : " + currentStartTime);
+                                }
+
+                                @Override
                                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
                                     Log.v("Slides", " ---- " + url + " ---- " + view.getTitle() + " ---- " + view.getOriginalUrl());
                                     if (!url.isEmpty()) {
@@ -453,6 +507,18 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                 }
             }
         }
+    }
+
+    private void saveCurrentSession() {
+        if (currentUrl == null || currentUrl.isEmpty()) {
+            return;
+        }
+        long endTime = System.currentTimeMillis();
+        long duration = endTime - currentStartTime;
+        String fileName = Uri.parse(currentUrl).getLastPathSegment();
+        HtmlViewSession session = new HtmlViewSession(fileName, currentStartTime, endTime, duration);
+        htmlViewSessions.add(session);
+        Log.i("TRACK", "FILE : " + fileName + "\nSTART : " + currentStartTime + "\nEND : " + endTime + "\nDURATION : " + TimeUtils.getMillisToFormattedTime(duration, TimeUtils.FORMAT_32));
     }
 
     public void logCurrentPageEndIfNeeded() {

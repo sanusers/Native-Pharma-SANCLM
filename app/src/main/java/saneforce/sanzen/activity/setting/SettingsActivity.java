@@ -449,7 +449,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 JSONObject jsonObject = new JSONObject(raw);
                                 String encrypted = jsonObject.getString("response");
                                 String decrypt = ConfigEncryptDecrypt.decrypt(encrypted);
-                                Log.d("TAG", "decrypt: "+decrypt);
+//                                Log.d("TAG", "decrypt: "+decrypt);
                                 jsonArray = new JSONArray(decrypt);
                                 boolean licenseKeyValid = false;
                                 for (int i = 0; i < jsonArray.length(); i++) {

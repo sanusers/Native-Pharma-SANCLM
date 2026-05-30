@@ -418,7 +418,7 @@ public class OtpVerificationDialog extends Dialog {
                 jsonObject.addProperty("DCR_Code", customerCode);
                 jsonObject.addProperty("DCR_Name", customerName);
                 jsonObject.addProperty("Country_Code", countryCode);
-                jsonObject.addProperty("Mobile_No", mobileNumber);
+                jsonObject.addProperty("Mobile_No", countryCode + mobileNumber);
                 jsonObject.addProperty("Is_Resend", "1");
                 jsonObject.addProperty("OTP_UID", otpUID);
                 jsonObject.addProperty("Product_Count", productCount);

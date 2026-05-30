@@ -49,6 +49,7 @@ import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailedAdapter;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanzen.activity.call.pojo.detailing.CallDetailingList;
+import saneforce.sanzen.activity.call.pojo.detailing.HtmlViewSession;
 import saneforce.sanzen.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.presentation.createPresentation.BrandModelClass;
@@ -94,6 +95,7 @@ public class PreviewActivity extends AppCompatActivity {
     private SideScreenAdapter sideScreenAdapter;
     private JSONObject checkInJsonObject = new JSONObject();
     public static boolean isTimerEnd = false;
+    public static HashMap<String, List<HtmlViewSession>> htmlDataMap = new HashMap<>();
     // String mandatorySlide ="0";
 
     @SuppressLint("MissingSuperCall")
@@ -147,6 +149,7 @@ public class PreviewActivity extends AppCompatActivity {
         previewBinding = saneforce.sanzen.databinding.ActivityPreviewBinding.inflate(getLayoutInflater());
         setContentView(previewBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        htmlDataMap = new HashMap<>();
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();

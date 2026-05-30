@@ -425,6 +425,11 @@ public class TimeUtils {
         return millis;
     }
 
+    public static String millisToDateTime(Long millis, String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
+        return sdf.format(new Date(millis));
+    }
+
     public static String getMillisToFormattedTime(long millis, String format) {
         String time = "";
         int hours = (int) (millis / 1000) / 3600;
