@@ -122,7 +122,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     private boolean isDetailingPaused = false;
     private List<HtmlViewSession> htmlViewSessions = new ArrayList<>();
     private long currentStartTime = 0L;
-    private String currentUrl = "";
+    private String currentUrl = "", previousFileName = "";
 
     public PlaySlideDetailedAdapter(PlaySlideDetailing context, ArrayList<BrandModelClass.Product> productArrayList,ArrayList<BrandModelClass.Product>mandatoryProductList) {
         this.context = context;
@@ -343,19 +343,21 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     imageView.setVisibility(View.VISIBLE);
                 }
 
-                currentStartTime = 0L;
-                currentUrl = "";
+//                currentStartTime = 0L;
+//                currentUrl = "";
                 String fileFormat = SupportClass.getFileExtension(fileName);
                 if (fileFormat.equalsIgnoreCase("zip")) {
                     for (HtmlViewSession htmlViewSession : htmlViewSessions) {
                         Log.v("TRACK final", "FILE : " + htmlViewSession.getFileName() + "\nSTART : " + htmlViewSession.getStartTime() + "\nEND : " + htmlViewSession.getEndTime() + "\nDURATION : " + TimeUtils.getMillisToFormattedTime(htmlViewSession.getDuration(), TimeUtils.FORMAT_32));
                     }
                 }
-                List<HtmlViewSession> htmlViewSessionList = PreviewActivity.htmlDataMap.get(fileName);
+                saveCurrentSession();
+                List<HtmlViewSession> htmlViewSessionList = PreviewActivity.htmlDataMap.get(previousFileName);
                 if (htmlViewSessionList == null) htmlViewSessionList = new ArrayList<>();
                 htmlViewSessionList.addAll(htmlViewSessions);
-                PreviewActivity.htmlDataMap.put(fileName, htmlViewSessionList);
-
+                PreviewActivity.htmlDataMap.put(previousFileName, htmlViewSessionList);
+                htmlViewSessions = new ArrayList<>();
+                previousFileName = fileName;
                 File file = new File(context.getExternalFilesDir(null) + "/Slides/", fileName);
                 if (file.exists()) {
 //                    String fileFormat = SupportClass.getFileExtension(fileName);
@@ -510,7 +512,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     }
 
     private void saveCurrentSession() {
-        if (currentUrl == null || currentUrl.isEmpty()) {
+        if (currentUrl == null || currentUrl.isEmpty() || currentUrl.equalsIgnoreCase("about:blank")) {
             return;
         }
         long endTime = System.currentTimeMillis();
@@ -519,6 +521,9 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         HtmlViewSession session = new HtmlViewSession(fileName, currentStartTime, endTime, duration);
         htmlViewSessions.add(session);
         Log.i("TRACK", "FILE : " + fileName + "\nSTART : " + currentStartTime + "\nEND : " + endTime + "\nDURATION : " + TimeUtils.getMillisToFormattedTime(duration, TimeUtils.FORMAT_32));
+
+        currentUrl = "";
+        currentStartTime = 0L;
     }
 
     public void logCurrentPageEndIfNeeded() {
@@ -1055,6 +1060,17 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     }
 
     private void handleStopDetailing() {
+        try {
+            saveCurrentSession();
+
+            List<HtmlViewSession> htmlViewSessionList = PreviewActivity.htmlDataMap.get(previousFileName);
+            if (htmlViewSessionList == null) htmlViewSessionList = new ArrayList<>();
+            htmlViewSessionList.addAll(htmlViewSessions);
+            PreviewActivity.htmlDataMap.put(previousFileName, htmlViewSessionList);
+            htmlViewSessions = new ArrayList<>();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (dialogPopUp != null && dialogPopUp.isShowing()) {
             dialogPopUp.dismiss();
         }
