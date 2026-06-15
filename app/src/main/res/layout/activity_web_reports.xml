@@ -72,6 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:indeterminateTint="@color/text_dark"
+        android:elevation="@dimen/_5sdp"
         android:visibility="gone" />
 
     <ProgressBar
@@ -79,6 +80,10 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="6dp"
+        android:layout_margin="@dimen/_5sdp"
+        android:elevation="@dimen/_5sdp"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/progressBar"
         android:max="100"
         android:visibility="gone"/>
 

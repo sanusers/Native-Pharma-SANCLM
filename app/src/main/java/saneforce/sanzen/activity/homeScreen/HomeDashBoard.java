@@ -312,7 +312,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         if (SharedPref.getSfType(HomeDashBoard.this).equalsIgnoreCase("1") /*&& !lastShownDate.isEmpty()*/ && !today.equals(lastShownDate) && currentTimeInt >= remainderTimeInt) {
                             checkAndShowDoctorPopup();
                         }else{
-                            Log.d("run", "checkAndShowDoctorPopup: "+"condition Skipped (run)");
+//                            Log.d("run", "checkAndShowDoctorPopup: "+"condition Skipped (run)");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
