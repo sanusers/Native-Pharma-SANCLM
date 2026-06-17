@@ -77,6 +77,7 @@ public class ReportWebActivity extends AppCompatActivity {
 
     private String url;
     private String lastPostData = null;
+    private String lastPostDataAction = null;
     private CommonUtilsMethods commonUtilsMethods;
     private static ValueCallback<Uri[]> mUploadMessage;
     private boolean isDownloadInProgress = false;
@@ -174,122 +175,130 @@ public class ReportWebActivity extends AppCompatActivity {
                 return false;
             }
 
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                if (!request.getMethod().equals("POST")) return null;
-
-                String postData = lastPostData;
-                if (postData == null) return null;
-
-                String requestUrl = request.getUrl().toString();
-
-                try {
-                    CookieManager.getInstance().flush();
-                    String cookies = CookieManager.getInstance().getCookie(requestUrl);
-
-                    Log.e(TAG, "shouldIntercept POST url: " + requestUrl);
-                    Log.e(TAG, "shouldIntercept cookies: " + cookies);
-                    Log.e(TAG, "shouldIntercept postData length: " + postData.length());
-
-                    OkHttpClient client = new OkHttpClient.Builder()
-                            .connectTimeout(30, TimeUnit.SECONDS)
-                            .readTimeout(120, TimeUnit.SECONDS)
-                            .protocols(Arrays.asList(okhttp3.Protocol.HTTP_1_1))
-                            .build();
-
-                    RequestBody body = RequestBody.create(postData, MediaType.parse("application/x-www-form-urlencoded"));
-
-                    Request.Builder requestBuilder = new Request.Builder()
-                            .url(requestUrl)
-                            .post(body)
-                            .addHeader("Content-Type", "application/x-www-form-urlencoded");
-
-                    for (Map.Entry<String, String> header : request.getRequestHeaders().entrySet()) {
-                        String key = header.getKey();
-                        if (key.equalsIgnoreCase("Content-Type")) continue;
-                        if (key.equalsIgnoreCase("Content-Length")) continue;
-                        requestBuilder.addHeader(key, header.getValue());
-                    }
-
-                    if (cookies != null) {
-                        requestBuilder.header("Cookie", cookies);
-                    }
-
-                    Response response = client.newCall(requestBuilder.build()).execute();
-                    String contentType = response.header("Content-Type", "");
-                    String contentDisposition = response.header("Content-Disposition", "");
-
-                    Log.e(TAG, "shouldIntercept response code: " + response.code());
-                    Log.e(TAG, "shouldIntercept Content-Type: " + contentType);
-                    Log.e(TAG, "shouldIntercept Content-Length: " + response.header("Content-Length"));
-                    Log.e(TAG, "shouldIntercept Content-Disposition: " + contentDisposition);
-
-                    if (contentType.contains("text/html") || !contentDisposition.toLowerCase().contains("attachment")) {
-                        response.body().close();
-                        return null;
-                    }
-
-                    if (isDownloadInProgress) {
-                        response.body().close();
-                        return null;
-                    }
-                    isDownloadInProgress = true;
-                    lastPostData = null;
-
-                    byte[] fileBytes = response.body().bytes();
-                    response.body().close();
-
-                    String fileName = extractFileName(contentDisposition, postData, contentType);
-                    Log.e(TAG, "shouldIntercept saving: " + fileName);
-
-                    final String finalContentType = contentType;
-                    final String finalFileName = fileName;
-                    final byte[] finalBytes = fileBytes;
-
-                    Executors.newSingleThreadExecutor().execute(() -> {
-                        try {
-                            runOnUiThread(() -> {
-                                binding.downloadProgress.setProgress(0);
-                                binding.downloadProgress.setVisibility(View.VISIBLE);
-                                CommonUtilsMethods.showToastMessage(ReportWebActivity.this, getString(R.string.downloading), true);
-                            });
-
-                            Uri savedUri;
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                savedUri = saveFileToDownloads(finalBytes, finalFileName, finalContentType);
-                            } else {
-                                savedUri = saveFileToDownloadsLegacy(finalBytes, finalFileName);
-                            }
-
-                            final Uri finalUri = savedUri;
-                            runOnUiThread(() -> {
-                                isDownloadInProgress = false;
-                                binding.downloadProgress.setProgress(100);
-                                binding.downloadProgress.setVisibility(View.GONE);
-                                showFileDownloadNotification(finalUri, finalContentType, finalFileName);
-                            });
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            runOnUiThread(() -> {
-                                isDownloadInProgress = false;
-                                binding.downloadProgress.setVisibility(View.GONE);
-                                CommonUtilsMethods.showToastMessage(ReportWebActivity.this, "Download failed: " + e.getMessage(), true);
-                            });
-                        }
-                    });
-
-                    return null;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    runOnUiThread(() -> {
-                        isDownloadInProgress = false;
-                        binding.downloadProgress.setVisibility(View.GONE);
-                        CommonUtilsMethods.showToastMessage(ReportWebActivity.this, "Download failed: " + e.getMessage(), true);
-                    });
-                    return null;
-                }
-            }
+//            @Override
+//            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+//                if (!request.getMethod().equals("POST")) return null;
+//
+//                String postData = lastPostData;
+//                if (postData == null) return null;
+//
+//                String requestUrl = request.getUrl().toString();
+//
+//                String lastAction = lastPostDataAction;
+//                if (lastAction == null || !requestUrl.equals(lastAction)) {
+//                    Log.e(TAG, "shouldIntercept skipped — URL mismatch: " + requestUrl);
+//                    return null;
+//                }
+//                lastPostData = null;
+//                lastPostDataAction = null;
+//
+//                try {
+//                    CookieManager.getInstance().flush();
+//                    String cookies = CookieManager.getInstance().getCookie(requestUrl);
+//
+//                    Log.e(TAG, "shouldIntercept POST url: " + requestUrl);
+//                    Log.e(TAG, "shouldIntercept cookies: " + cookies);
+//                    Log.e(TAG, "shouldIntercept postData length: " + postData.length());
+//
+//                    OkHttpClient client = new OkHttpClient.Builder()
+//                            .connectTimeout(30, TimeUnit.SECONDS)
+//                            .readTimeout(120, TimeUnit.SECONDS)
+//                            .protocols(Arrays.asList(okhttp3.Protocol.HTTP_1_1))
+//                            .build();
+//
+//                    RequestBody body = RequestBody.create(postData, MediaType.parse("application/x-www-form-urlencoded"));
+//
+//                    Request.Builder requestBuilder = new Request.Builder()
+//                            .url(requestUrl)
+//                            .post(body)
+//                            .addHeader("Content-Type", "application/x-www-form-urlencoded");
+//
+//                    for (Map.Entry<String, String> header : request.getRequestHeaders().entrySet()) {
+//                        String key = header.getKey();
+//                        if (key.equalsIgnoreCase("Content-Type")) continue;
+//                        if (key.equalsIgnoreCase("Content-Length")) continue;
+//                        requestBuilder.addHeader(key, header.getValue());
+//                    }
+//
+//                    if (cookies != null) {
+//                        requestBuilder.header("Cookie", cookies);
+//                    }
+//
+//                    Response response = client.newCall(requestBuilder.build()).execute();
+//                    String contentType = response.header("Content-Type", "");
+//                    String contentDisposition = response.header("Content-Disposition", "");
+//
+//                    Log.e(TAG, "shouldIntercept response code: " + response.code());
+//                    Log.e(TAG, "shouldIntercept Content-Type: " + contentType);
+//                    Log.e(TAG, "shouldIntercept Content-Length: " + response.header("Content-Length"));
+//                    Log.e(TAG, "shouldIntercept Content-Disposition: " + contentDisposition);
+//
+//                    if (contentType.contains("text/html") || !contentDisposition.toLowerCase().contains("attachment")) {
+//                        response.body().close();
+//                        return null;
+//                    }
+//
+//                    if (isDownloadInProgress) {
+//                        response.body().close();
+//                        return null;
+//                    }
+//                    isDownloadInProgress = true;
+//                    lastPostData = null;
+//
+//                    byte[] fileBytes = response.body().bytes();
+//                    response.body().close();
+//
+//                    String fileName = extractFileName(contentDisposition, postData, contentType);
+//                    Log.e(TAG, "shouldIntercept saving: " + fileName);
+//
+//                    final String finalContentType = contentType;
+//                    final String finalFileName = fileName;
+//                    final byte[] finalBytes = fileBytes;
+//
+//                    Executors.newSingleThreadExecutor().execute(() -> {
+//                        try {
+//                            runOnUiThread(() -> {
+//                                binding.downloadProgress.setProgress(0);
+//                                binding.downloadProgress.setVisibility(View.VISIBLE);
+//                                CommonUtilsMethods.showToastMessage(ReportWebActivity.this, getString(R.string.downloading), true);
+//                            });
+//
+//                            Uri savedUri;
+//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//                                savedUri = saveFileToDownloads(finalBytes, finalFileName, finalContentType);
+//                            } else {
+//                                savedUri = saveFileToDownloadsLegacy(finalBytes, finalFileName);
+//                            }
+//
+//                            final Uri finalUri = savedUri;
+//                            runOnUiThread(() -> {
+//                                isDownloadInProgress = false;
+//                                binding.downloadProgress.setProgress(100);
+//                                binding.downloadProgress.setVisibility(View.GONE);
+//                                showFileDownloadNotification(finalUri, finalContentType, finalFileName);
+//                            });
+//
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                            runOnUiThread(() -> {
+//                                isDownloadInProgress = false;
+//                                binding.downloadProgress.setVisibility(View.GONE);
+//                                CommonUtilsMethods.showToastMessage(ReportWebActivity.this, "Download failed: " + e.getMessage(), true);
+//                            });
+//                        }
+//                    });
+//
+//                    return null;
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    runOnUiThread(() -> {
+//                        isDownloadInProgress = false;
+//                        binding.downloadProgress.setVisibility(View.GONE);
+//                        CommonUtilsMethods.showToastMessage(ReportWebActivity.this, "Download failed: " + e.getMessage(), true);
+//                    });
+//                    return null;
+//                }
+//            }
 
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -297,6 +306,7 @@ public class ReportWebActivity extends AppCompatActivity {
 
                 isDownloadInProgress = false;
                 lastPostData = null;
+                lastPostDataAction = null;
 
                 String js = "(function() {"
                         + "  if (window.__downloadListenerAttached) return;"
@@ -360,10 +370,22 @@ public class ReportWebActivity extends AppCompatActivity {
                         fetchBlobViaJs(downloadUrl, mimeType);
                     } else if (downloadUrl.startsWith("data:image")) {
                         handleBase64Image(downloadUrl, false);
-                    } else if (isDownloadInProgress || lastPostData == null) {
-                        Log.e(TAG, "DownloadListener skipped — already handled by shouldInterceptRequest");
+//                    } else if (isDownloadInProgress || lastPostData == null) {
+//                        Log.e(TAG, "DownloadListener skipped — already handled by shouldInterceptRequest");
+//                    } else {
+//                        downloadUsingDownloadManager(downloadUrl, userAgent, contentDisposition, mimeType);
+//                    }
+                    } else if (!isDownloadInProgress) {
+                        isDownloadInProgress = true;
+                        CookieManager.getInstance().flush();
+                        String cookies = CookieManager.getInstance().getCookie(downloadUrl);
+                        if (lastPostData != null) {
+                            downloadViaPost(downloadUrl, lastPostData, cookies);
+                        } else {
+                            downloadUsingDownloadManager(downloadUrl, userAgent, contentDisposition, mimeType);
+                        }
                     } else {
-                        downloadUsingDownloadManager(downloadUrl, userAgent, contentDisposition, mimeType);
+                        Log.e(TAG, "DownloadListener skipped — download already in progress");
                     }
                 }
         );
@@ -376,6 +398,7 @@ public class ReportWebActivity extends AppCompatActivity {
                         Log.e(TAG, "onCapturePostData action: " + formAction);
                         Log.e(TAG, "onCapturePostData length: " + formData.length());
                         lastPostData = formData;
+                        lastPostDataAction = formAction;
                     }
 
                     @JavascriptInterface
@@ -447,6 +470,79 @@ public class ReportWebActivity extends AppCompatActivity {
                 + "})();";
 
         binding.webView.evaluateJavascript(js, null);
+    }
+
+    private void downloadViaPost(String postUrl, String formData, String cookies) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                Log.e(TAG, "downloadViaPost url: " + postUrl);
+                Log.e(TAG, "downloadViaPost cookies: " + cookies);
+
+                OkHttpClient client = new OkHttpClient.Builder()
+                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .readTimeout(120, TimeUnit.SECONDS)
+                        .protocols(Arrays.asList(okhttp3.Protocol.HTTP_1_1))
+                        .build();
+
+                RequestBody body = RequestBody.create(formData, MediaType.parse("application/x-www-form-urlencoded"));
+
+                Request.Builder requestBuilder = new Request.Builder()
+                        .url(postUrl)
+                        .post(body)
+                        .addHeader("User-Agent", System.getProperty("http.agent"))
+                        .addHeader("Referer", postUrl)
+                        .addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+                if (cookies != null) requestBuilder.addHeader("Cookie", cookies);
+
+                Response response = client.newCall(requestBuilder.build()).execute();
+
+                String contentType = response.header("Content-Type", "");
+                String contentDisposition = response.header("Content-Disposition", "");
+                long contentLength = response.body().contentLength();
+
+                Log.e(TAG, "downloadViaPost response code: " + response.code());
+                Log.e(TAG, "downloadViaPost Content-Type: " + contentType);
+                Log.e(TAG, "downloadViaPost Content-Length: " + contentLength);
+                Log.e(TAG, "downloadViaPost Content-Disposition: " + contentDisposition);
+
+                if (contentType.contains("text/html") || !contentDisposition.toLowerCase().contains("attachment")) {
+                    response.body().close();
+                    runOnUiThread(() -> isDownloadInProgress = false);
+                    return;
+                }
+
+                String fileName = extractFileName(contentDisposition, formData, contentType);
+                Log.e(TAG, "Saving as: " + fileName);
+
+                runOnUiThread(() -> {
+                    binding.downloadProgress.setProgress(0);
+                    binding.downloadProgress.setVisibility(View.VISIBLE);
+                    CommonUtilsMethods.showToastMessage(ReportWebActivity.this, getString(R.string.downloading), true);
+                });
+
+                Uri savedUri = streamToDownloads(response.body().byteStream(), fileName, contentType, contentLength);
+                response.body().close();
+
+                final Uri finalUri = savedUri;
+                final String finalMime = contentType;
+                final String finalFileName = fileName;
+                runOnUiThread(() -> {
+                    isDownloadInProgress = false;
+                    binding.downloadProgress.setProgress(100);
+                    binding.downloadProgress.setVisibility(View.GONE);
+                    showFileDownloadNotification(finalUri, finalMime, finalFileName);
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() -> {
+                    isDownloadInProgress = false;
+                    binding.downloadProgress.setVisibility(View.GONE);
+                    CommonUtilsMethods.showToastMessage(ReportWebActivity.this, "Download failed: " + e.getMessage(), true);
+                });
+            }
+        });
     }
 
     private Uri streamToDownloads(InputStream inputStream, String fileName, String mimeType, long contentLength) throws IOException {
