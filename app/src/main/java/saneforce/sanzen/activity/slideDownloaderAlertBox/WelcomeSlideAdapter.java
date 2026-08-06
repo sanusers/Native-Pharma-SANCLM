@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
@@ -145,8 +146,11 @@ public class WelcomeSlideAdapter extends RecyclerView.Adapter<WelcomeSlideAdapte
                         OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(WelcomeSlideDownloadWorker.class)
                                 .setInputData(inputData)
                                 .build();
-                        WorkManager workManager = WorkManager.getInstance(activity);
-                        workManager.enqueue(fileDownloadRequest);
+                        WorkManager.getInstance(activity).enqueueUniqueWork(
+                                "slide_download_" + list.get(position).getName(),
+                                ExistingWorkPolicy.REPLACE,
+                                fileDownloadRequest
+                        );
                     } else {
                         commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network), true);
                     }

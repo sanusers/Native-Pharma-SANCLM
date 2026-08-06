@@ -59,7 +59,7 @@ public class SupportClass {
 
     private static Bitmap getBitmapFromZip(Context context, String filePath) {
         Bitmap bitmap = null;
-        String path = filePath.replaceAll(".zip", "");
+        String path = filePath.replaceAll("\\.zip", "");
         File file = new File(path);
         File[] imgFiles = file.listFiles(((dir, filename) -> filename.contains(".png") || filename.contains(".jpg") || filename.contains(".jpeg")));
         File[] mp4Files = file.listFiles(((dir, filename) -> filename.contains(".mp4") || filename.contains(".avi")));
@@ -79,7 +79,7 @@ public class SupportClass {
     }
 
     public static String getFileFromZip(String filePath, String fileType) {
-        String path = filePath.replaceAll(".zip", "");
+        String path = filePath.replaceAll("\\.zip", "");
         File file = new File(path);
         File[] files = file.listFiles(new FilenameFilter() {
             @Override

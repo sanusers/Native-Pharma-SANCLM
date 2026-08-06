@@ -2655,17 +2655,19 @@ public class MasterSyncActivity extends AppCompatActivity {
     }
 
     private ArrayList<ModelClass.SessionList.SubClass> addExtraData(String Name, String Code) {
-        String[] arrName = Name.split(",");
-        String[] arrCode = Code.split(",");
-        ArrayList<String> dummyName = new ArrayList<>(Arrays.asList(arrName));
-        ArrayList<String> dummyCode = new ArrayList<>(Arrays.asList(arrCode));
         ArrayList<ModelClass.SessionList.SubClass> Array = new ArrayList<>();
+        try {
+            String[] arrName = Name.split(",");
+            String[] arrCode = Code.split(",");
+            ArrayList<String> dummyName = new ArrayList<>(Arrays.asList(arrName));
+            ArrayList<String> dummyCode = new ArrayList<>(Arrays.asList(arrCode));
 
-
-        for (int i = 0; i < dummyName.size(); i++) {
-            Array.add(new ModelClass.SessionList.SubClass(dummyName.get(i), dummyCode.get(i)));
+            for (int i = 0; i < dummyName.size(); i++) {
+                Array.add(new ModelClass.SessionList.SubClass(dummyName.get(i), dummyCode.get(i)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
         return Array;
     }
 
@@ -3593,14 +3595,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         slideDialog.setCancelable(false);
         if (!isFinishing()) {
             slideDialog.show();
-        }/*else{
-            slideDialog.dismiss();
-        }*/
-
-//        cancel_img.setOnClickListener(view -> {
-//            slideDialog.dismiss();
-//            navigateFrom = "Slide";
-//        });
+        }
 
         SlidesViewModel slidesViewModel = new ViewModelProvider(this).get(SlidesViewModel.class);
         slidesViewModel.getAllSlides().observe(this, slides -> {
@@ -3615,14 +3610,12 @@ public class MasterSyncActivity extends AppCompatActivity {
         txt_total.setText(String.valueOf(SlidesDao.TotalSlidecount()));
 
         slidesViewModel.getCountOfDownloadingProcessDone().observe(this, integer -> {
-            if (integer == (Integer.valueOf(SlidesDao.TotalSlidecount()))) {
+            if (integer.intValue() == SlidesDao.TotalSlidecount()) {
                 SharedPref.putSlidestatus(MasterSyncActivity.this, true);
                 if (isSingleSlideDowloaingStaus) {
                     isSingleSlideDowloaingStaus = false;
-                    //  commonUtilsMethods.showToastMessage(this, "Slide Updated ");
                     commonUtilsMethods.showToastMessage(this, getString(R.string.slide_updated), true);
                 } else {
-//                    commonUtilsMethods.showToastMessage(this, " Slides Downloading Completed ");
                     commonUtilsMethods.showToastMessage(this, getString(R.string.slides_downloading_completed), true);
                 }
 

@@ -57,6 +57,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.PermissionChecker;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.gson.JsonArray;
@@ -82,10 +83,12 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import id.zelory.compressor.Compressor;
 import okhttp3.MultipartBody;
@@ -170,6 +173,7 @@ public class DynamicActivity extends AppCompatActivity {
         fontmedium = ResourcesCompat.getFont(this, R.font.satoshi_medium);
         fontregular = ResourcesCompat.getFont(this, R.font.satoshi_regular);
         binding.title.setText(SharedPref.getActivityCap(this));
+        binding.mainLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
        // binding.listTitle.setText(String.format("List of %s", SharedPref.getActivityCap(this)));
         binding.listTitle.setText(getString(R.string.list_of)+ " " + SharedPref.getActivityCap(this));
         binding.namechooseActivity.setText(getString(R.string.choose)+ " " + SharedPref.getActivityCap(this));
@@ -2508,9 +2512,17 @@ public class DynamicActivity extends AppCompatActivity {
             binding.slideScreen.txtClDone.setVisibility(View.GONE);
         }
 
-        List<String> mListName = new ArrayList<>();
-        List<String> mListId = new ArrayList<>();
+        Set<String> mListName = new HashSet<>();
+        Set<String> mListId = new HashSet<>();
+        for (ActivityModelClass item : List) {
+            if (item.getIscheck()) {
+                mListName.add(item.getName());
+                mListId.add(item.getCode());
+            }
+        }
+        binding.mainLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.RIGHT);
         binding.mainLayout.openDrawer(Gravity.RIGHT);
+        binding.mainLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, Gravity.RIGHT);
         binding.slideScreen.etSearch.setText("");
         binding.slideScreen.tvSearchheader.setText("Select " + name);
         binding.slideScreen.etSearch.setHint("Search " + name);
@@ -2557,14 +2569,15 @@ public class DynamicActivity extends AppCompatActivity {
             @Override
             public void onSafeClick(View view) {
                 if (isMultipleCheck) {
-                    String lids = "";
-                    for (int i = 0; i < mListId.size(); i++) {
-                        lids = lids + mListId.get(i) + ",";
+                    StringBuilder lids = new StringBuilder();
+                    for (String id: mListId) {
+                        lids.append(id).append(",");
                     }
                     NameView.setText(mListName.toString().replaceAll("[\\[\\]]", ""));
-                    IdView.setText(lids);
-                    binding.mainLayout.closeDrawer(Gravity.RIGHT);
+                    IdView.setText(lids.toString());
                 }
+                binding.mainLayout.closeDrawer(Gravity.RIGHT);
+                binding.mainLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
             }
         });
 
@@ -2572,6 +2585,7 @@ public class DynamicActivity extends AppCompatActivity {
             @Override
             public void onSafeClick(View view) {
                 binding.mainLayout.closeDrawer(Gravity.RIGHT);
+                binding.mainLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
             }
         });
     }

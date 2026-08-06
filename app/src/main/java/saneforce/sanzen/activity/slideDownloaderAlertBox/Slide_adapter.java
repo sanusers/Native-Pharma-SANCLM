@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
@@ -56,42 +57,42 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
         holder.setIsRecyclable(false);
         // 0- failure,1-New, 2-Processing, 3- Success
         holder.txt_imagename.setText(list.get(position).getSlideName());
-        if(list.get(position).getDownloadingStaus().equalsIgnoreCase("3")) {
+        if (list.get(position).getDownloadingStaus().equalsIgnoreCase("3")) {
             holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
             String size = list.get(position).getSlideSize().substring(list.get(position).getSlideSize().indexOf("of") + 3);
             holder.text_download_size.setText(holder.itemView.getContext().getString(R.string.downloading_completed, size));
-        }else if(list.get(position).getDownloadingStaus().equalsIgnoreCase("2")) {
+        } else if (list.get(position).getDownloadingStaus().equalsIgnoreCase("2")) {
             holder.text_download_size.setText(list.get(position).getSlideSize());
             holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
-        }else if(list.get(position).getDownloadingStaus().equalsIgnoreCase("1")) {
+        } else if (list.get(position).getDownloadingStaus().equalsIgnoreCase("1")) {
             holder.text_download_size.setText("");
             holder.progressBar.setProgress(0);
-        }else {
+        } else {
             holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
             holder.text_download_size.setText(holder.itemView.getContext().getString(R.string.downloading_failed));
             holder.progressBar.setProgress(0);
         }
 
-        if(list.get(position).getDownloadingStaus().equalsIgnoreCase("0")) {
+        if (list.get(position).getDownloadingStaus().equalsIgnoreCase("0")) {
             int redColor = Color.RED;
             ColorStateList colorStateList = ColorStateList.valueOf(redColor);
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 holder.progressBar.setProgressTintList(colorStateList);
             }
-        }else {
+        } else {
             int greencolor = activity.getResources().getColor(R.color.Green_45);
             ColorStateList colorStateList = ColorStateList.valueOf(greencolor);
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 holder.progressBar.setProgressTintList(colorStateList);
             }
         }
 
-        if(!SharedPref.getSlideDowloadingStatus(activity)) {
+        if (!SharedPref.getSlideDowloadingStatus(activity)) {
             holder.reload_img.setVisibility(View.GONE);
-        }else {
-            if(roomDB.slidesDao().getInProcessCount() != 0) {
+        } else {
+            if (roomDB.slidesDao().getInProcessCount() != 0) {
                 holder.reload_img.setVisibility(View.GONE);
-            }else {
+            } else {
                 holder.reload_img.setVisibility(View.VISIBLE);
             }
         }
@@ -124,31 +125,31 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
             reload_img = itemView.findViewById(R.id.reload_img);
             rl_title_layout = itemView.findViewById(R.id.rl_calender_syn);
 
-            reload_img.setOnClickListener(new SafeClickListener() {
-                @Override
-                public void onSafeClick(View view) {
-                    int position = getAdapterPosition();
-                    if (UtilityClass.isNetworkAvailable(activity)) {
-                        MasterSyncActivity.isSingleSlideDowloaingStaus = true;
-                        text_download_size.setText(itemView.getContext().getString(R.string.downloading));
-                        String url = "https://" + SharedPref.getBaseUrl(activity) + "/" + SharedPref.getSlideUrl(activity) + list.get(position).getSlideName();
-                        Log.e("DownloadingAPI", "" + url);
-                        Data inputData = new Data.Builder()
-                                .putString("Flag", "2")
-                                .putString("file_url", url)
-                                .putString("Slide_id", list.get(position).getSlideId())
-                                .putString("Slide_name", list.get(position).getSlideName())
-                                .putString("FilePosition", list.get(position).getListSlidePosition())
-                                .build();
+            reload_img.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (UtilityClass.isNetworkAvailable(activity)) {
+                    MasterSyncActivity.isSingleSlideDowloaingStaus = true;
+                    text_download_size.setText(itemView.getContext().getString(R.string.downloading));
+                    String url = "https://" + SharedPref.getBaseUrl(activity) + "/" + SharedPref.getSlideUrl(activity) + list.get(position).getSlideName();
+                    Log.e("DownloadingAPI", "" + url);
+                    Data inputData = new Data.Builder()
+                            .putString("Flag", "2")
+                            .putString("file_url", url)
+                            .putString("Slide_id", list.get(position).getSlideId())
+                            .putString("Slide_name", list.get(position).getSlideName())
+                            .putString("FilePosition", list.get(position).getListSlidePosition())
+                            .build();
 
-                        OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(FileDownloadWorker.class)
-                                .setInputData(inputData)
-                                .build();
-                        WorkManager workManager = WorkManager.getInstance(activity);
-                        workManager.enqueue(fileDownloadRequest);
-                    } else {
-                        commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network), true);
-                    }
+                    OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(FileDownloadWorker.class)
+                            .setInputData(inputData)
+                            .build();
+                    WorkManager.getInstance(activity).enqueueUniqueWork(
+                            "slide_download_" + list.get(position).getSlideId(),
+                            ExistingWorkPolicy.REPLACE,
+                            fileDownloadRequest
+                    );
+                } else {
+                    commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network), true);
                 }
             });
         }

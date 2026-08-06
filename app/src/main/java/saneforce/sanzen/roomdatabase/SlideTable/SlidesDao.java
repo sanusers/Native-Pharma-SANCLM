@@ -2,6 +2,7 @@ package saneforce.sanzen.roomdatabase.SlideTable;
 
 import android.annotation.SuppressLint;
 import android.database.Cursor;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -9,10 +10,9 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
+
 import java.util.ArrayList;
 import java.util.List;
-
-
 
 @Dao
 public interface SlidesDao {
@@ -24,43 +24,48 @@ public interface SlidesDao {
 
     @Delete
     void delete(SlidesTableDeatils SlidesTableDeatils);
+
     @Query("DELETE FROM `SlidesTableDeatils`")
     void deleteAllData();
 
     @Query("SELECT * FROM SlidesTableDeatils")
     Cursor getAllSlides();
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void saveSlideData(SlidesTableDeatils SlidesTableDeatils);
 
     @Query("SELECT * FROM SlidesTableDeatils")
     LiveData<List<SlidesTableDeatils>> getAllSlides1();
 
-
     @Query("SELECT COUNT(*) FROM SlidesTableDeatils WHERE DownloadingStaus = '3'")
     LiveData<Integer> getCountOfSlidesWithDownloadingStatus();
+
     @Query("SELECT COUNT(*) FROM SlidesTableDeatils WHERE DownloadingStaus = '3' OR DownloadingStaus = '0'")
     LiveData<Integer> getCountOfDownloadingProcessDone();
+
     @Query("SELECT COUNT(*) FROM SlidesTableDeatils WHERE DownloadingStaus = '1'")
     LiveData<Integer> getCountNewStatus();
+
     @Query("SELECT COUNT(*) FROM SlidesTableDeatils WHERE DownloadingStaus = '2'")
     int getInProcessCount();
 
     @Query("SELECT COUNT(*) FROM SlidesTableDeatils")
-     int TotalSlidecount();
+    int TotalSlidecount();
+
     @Query("SELECT SlideId FROM SlidesTableDeatils")
     List<String> getAllSlideIds();
+
     @Query("DELETE FROM SlidesTableDeatils WHERE SlideId = :slideId")
     void deleteSlideById(String slideId);
 
-
-      @Query("Update SlidesTableDeatils set `Background task`=:New WHERE `Background task` = :old")
-     void Changestatus(String New,String old);
+    @Query("Update SlidesTableDeatils set `Background task`=:New WHERE `Background task` = :old")
+    void Changestatus(String New, String old);
 
     @Query("SELECT SlideName FROM SlidesTableDeatils WHERE `SlideId` = :slideId")
     String getSlideName(String slideId);
 
     default ArrayList<SlidesTableDeatils> cursorToArrayList() {
-          Cursor cursor=getAllSlides();
+        Cursor cursor = getAllSlides();
         ArrayList<SlidesTableDeatils> slides = new ArrayList<>();
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -71,13 +76,12 @@ public interface SlidesDao {
                 @SuppressLint("Range") String Progress = cursor.getString(cursor.getColumnIndex("Progress"));
                 @SuppressLint("Range") String Backgroundtask = cursor.getString(cursor.getColumnIndex("Background task"));
                 @SuppressLint("Range") String FilePosition = cursor.getString(cursor.getColumnIndex("FilePosition"));
-                SlidesTableDeatils slide = new SlidesTableDeatils(slideId, slideName, slideSize, downloadingStatus,Progress,Backgroundtask,FilePosition);
+                SlidesTableDeatils slide = new SlidesTableDeatils(slideId, slideName, slideSize, downloadingStatus, Progress, Backgroundtask, FilePosition);
                 slides.add(slide);
             } while (cursor.moveToNext());
             cursor.close();
         }
         return slides;
     }
-
 
 }

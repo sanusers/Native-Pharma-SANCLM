@@ -7,6 +7,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
@@ -53,8 +54,11 @@ public class WelcomeSlideService extends Service {
                             OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(WelcomeSlideDownloadWorker.class)
                                     .setInputData(inputData)
                                     .build();
-                            WorkManager workManager = WorkManager.getInstance(this);
-                            workManager.enqueue(fileDownloadRequest);
+                            WorkManager.getInstance(this).enqueueUniqueWork(
+                                    "slide_download_" + mList.getName(),
+                                    ExistingWorkPolicy.REPLACE,
+                                    fileDownloadRequest
+                            );
                             MasterSyncActivity.welcomeSlideNames.add(mList.getName());
                             break;
                         }

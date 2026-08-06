@@ -2734,7 +2734,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.should_have_a_call), true);
             } else if (isFromTP) {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_work_plan), true);
-            } else if ((mFwFlg1.equalsIgnoreCase("L") || mFwFlg2.equalsIgnoreCase("L")) && !rejectedReason.isEmpty()) {
+            } else if ((mFwFlg1.equalsIgnoreCase("L") || mFwFlg2.equalsIgnoreCase("L")) && (!rejectedReason.isEmpty() || dayStatus.equalsIgnoreCase("2") || dayStatus.equalsIgnoreCase("3"))) {
                 String leaveName = findWTName("L");
                 if (leaveName.isEmpty()) {
                     leaveName = "Leave";

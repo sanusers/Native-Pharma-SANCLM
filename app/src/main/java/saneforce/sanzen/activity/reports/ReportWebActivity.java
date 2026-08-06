@@ -1,5 +1,7 @@
 package saneforce.sanzen.activity.reports;
 
+import static java.util.Collections.synchronizedSet;
+
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.Notification;
@@ -49,8 +51,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -77,10 +82,16 @@ public class ReportWebActivity extends AppCompatActivity {
 
     private String url;
     private String lastPostData = null;
-    private String lastPostDataAction = null;
+//    private String lastPostDataAction = null;
     private CommonUtilsMethods commonUtilsMethods;
     private static ValueCallback<Uri[]> mUploadMessage;
     private boolean isDownloadInProgress = false;
+    private static final long BLOCKER_CLICK_TIMEOUT_MS = 4000;
+    private static final long BLOCKER_DOWNLOAD_TIMEOUT_MS = 150000;
+    private final Runnable blockerAutoDismissRunnable = this::hideDownloadBlocker;
+
+//    private final ConcurrentLinkedQueue<String> postDataQueue = new ConcurrentLinkedQueue<>();
+//    private final Set<String> activeDownloadKeys = synchronizedSet(new HashSet<>());
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -304,9 +315,14 @@ public class ReportWebActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 progressDialog.dismiss();
 
+                if (!isDownloadInProgress) {
+                    hideDownloadBlocker();
+                }
                 isDownloadInProgress = false;
                 lastPostData = null;
-                lastPostDataAction = null;
+
+//                lastPostDataAction = null;
+//                postDataQueue.clear();
 
                 String js = "(function() {"
                         + "  if (window.__downloadListenerAttached) return;"
@@ -375,30 +391,42 @@ public class ReportWebActivity extends AppCompatActivity {
 //                    } else {
 //                        downloadUsingDownloadManager(downloadUrl, userAgent, contentDisposition, mimeType);
 //                    }
-                    } else if (!isDownloadInProgress) {
-                        isDownloadInProgress = true;
+
+//                    } else if (!isDownloadInProgress) {
+//                        isDownloadInProgress = true;
+//                        CookieManager.getInstance().flush();
+//                        String cookies = CookieManager.getInstance().getCookie(downloadUrl);
+//                        if (lastPostData != null) {
+//                            downloadViaPost(downloadUrl, lastPostData, cookies);
+//                        } else {
+//                            downloadUsingDownloadManager(downloadUrl, userAgent, contentDisposition, mimeType);
+//                        }
+                    } else {
+                        String postData = lastPostData;
+                        lastPostData = null;
+
                         CookieManager.getInstance().flush();
                         String cookies = CookieManager.getInstance().getCookie(downloadUrl);
-                        if (lastPostData != null) {
-                            downloadViaPost(downloadUrl, lastPostData, cookies);
+
+                        if (postData != null) {
+                            downloadViaPost(downloadUrl, postData, cookies);
                         } else {
                             downloadUsingDownloadManager(downloadUrl, userAgent, contentDisposition, mimeType);
+                            hideDownloadBlocker();
                         }
-                    } else {
-                        Log.e(TAG, "DownloadListener skipped — download already in progress");
                     }
                 }
         );
 
         binding.webView.addJavascriptInterface(
                 new Object() {
-
                     @JavascriptInterface
                     public void onCapturePostData(String formAction, String formData) {
                         Log.e(TAG, "onCapturePostData action: " + formAction);
                         Log.e(TAG, "onCapturePostData length: " + formData.length());
                         lastPostData = formData;
-                        lastPostDataAction = formAction;
+//                        lastPostDataAction = formAction;
+//                        showDownloadBlocker("Please wait...", BLOCKER_CLICK_TIMEOUT_MS);
                     }
 
                     @JavascriptInterface
@@ -424,7 +452,7 @@ public class ReportWebActivity extends AppCompatActivity {
                                 binding.downloadProgress.setVisibility(View.GONE);
                                 CommonUtilsMethods.showToastMessage(ReportWebActivity.this, "Download failed", true);
                             } else {
-                                binding.downloadProgress.setVisibility(View.VISIBLE);
+//                                binding.downloadProgress.setVisibility(View.VISIBLE);
                                 binding.downloadProgress.setProgress(percent);
                             }
                         });
@@ -434,6 +462,22 @@ public class ReportWebActivity extends AppCompatActivity {
         );
 
         binding.webView.loadUrl(url);
+    }
+
+    private void showDownloadBlocker(String message, long timeoutMs) {
+        runOnUiThread(() -> {
+            binding.downloadBlockerText.setText(message);
+            binding.downloadBlockerOverlay.setVisibility(View.VISIBLE);
+            binding.downloadBlockerOverlay.removeCallbacks(blockerAutoDismissRunnable);
+            binding.downloadBlockerOverlay.postDelayed(blockerAutoDismissRunnable, timeoutMs);
+        });
+    }
+
+    private void hideDownloadBlocker() {
+        runOnUiThread(() -> {
+            binding.downloadBlockerOverlay.removeCallbacks(blockerAutoDismissRunnable);
+            binding.downloadBlockerOverlay.setVisibility(View.GONE);
+        });
     }
 
     private void fetchBlobViaJs(String inputUrl, String mimeType) {
@@ -477,6 +521,7 @@ public class ReportWebActivity extends AppCompatActivity {
             try {
                 Log.e(TAG, "downloadViaPost url: " + postUrl);
                 Log.e(TAG, "downloadViaPost cookies: " + cookies);
+//                showDownloadBlocker("Downloading...");
 
                 OkHttpClient client = new OkHttpClient.Builder()
                         .connectTimeout(30, TimeUnit.SECONDS)
@@ -508,18 +553,22 @@ public class ReportWebActivity extends AppCompatActivity {
 
                 if (contentType.contains("text/html") || !contentDisposition.toLowerCase().contains("attachment")) {
                     response.body().close();
-                    runOnUiThread(() -> isDownloadInProgress = false);
+                    hideDownloadBlocker();
+                    isDownloadInProgress = false;
                     return;
                 }
+
+                isDownloadInProgress = true;
+                showDownloadBlocker("Downloading...", BLOCKER_DOWNLOAD_TIMEOUT_MS);
 
                 String fileName = extractFileName(contentDisposition, formData, contentType);
                 Log.e(TAG, "Saving as: " + fileName);
 
-                runOnUiThread(() -> {
-                    binding.downloadProgress.setProgress(0);
-                    binding.downloadProgress.setVisibility(View.VISIBLE);
-                    CommonUtilsMethods.showToastMessage(ReportWebActivity.this, getString(R.string.downloading), true);
-                });
+//                runOnUiThread(() -> {
+//                    binding.downloadProgress.setProgress(0);
+////                    binding.downloadProgress.setVisibility(View.VISIBLE);
+//                    CommonUtilsMethods.showToastMessage(ReportWebActivity.this, getString(R.string.downloading), true);
+//                });
 
                 Uri savedUri = streamToDownloads(response.body().byteStream(), fileName, contentType, contentLength);
                 response.body().close();
@@ -529,8 +578,9 @@ public class ReportWebActivity extends AppCompatActivity {
                 final String finalFileName = fileName;
                 runOnUiThread(() -> {
                     isDownloadInProgress = false;
-                    binding.downloadProgress.setProgress(100);
-                    binding.downloadProgress.setVisibility(View.GONE);
+//                    binding.downloadProgress.setProgress(100);
+//                    binding.downloadProgress.setVisibility(View.GONE);
+                    hideDownloadBlocker();
                     showFileDownloadNotification(finalUri, finalMime, finalFileName);
                 });
 
@@ -538,7 +588,8 @@ public class ReportWebActivity extends AppCompatActivity {
                 e.printStackTrace();
                 runOnUiThread(() -> {
                     isDownloadInProgress = false;
-                    binding.downloadProgress.setVisibility(View.GONE);
+//                    binding.downloadProgress.setVisibility(View.GONE);
+                    hideDownloadBlocker();
                     CommonUtilsMethods.showToastMessage(ReportWebActivity.this, "Download failed: " + e.getMessage(), true);
                 });
             }
@@ -574,7 +625,7 @@ public class ReportWebActivity extends AppCompatActivity {
                 downloaded += bytesRead;
                 if (contentLength > 0) {
                     int progress = (int) ((downloaded * 100L) / contentLength);
-                    runOnUiThread(() -> binding.downloadProgress.setProgress(progress));
+//                    runOnUiThread(() -> binding.downloadProgress.setProgress(progress));
                 }
             }
             outputStream.flush();
@@ -589,7 +640,7 @@ public class ReportWebActivity extends AppCompatActivity {
     private void handleBase64File(String dataUrl, String mimeType) {
         ProgressBar progressBar = binding.downloadProgress;
         progressBar.setProgress(0);
-        progressBar.setVisibility(View.VISIBLE);
+//        progressBar.setVisibility(View.VISIBLE);
 
         Executors.newSingleThreadExecutor().execute(() -> {
             try {

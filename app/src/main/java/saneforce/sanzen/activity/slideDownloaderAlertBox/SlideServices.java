@@ -7,6 +7,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
@@ -19,10 +20,7 @@ import saneforce.sanzen.roomdatabase.SlideTable.SlidesTableDeatils;
 import saneforce.sanzen.storage.SharedPref;
 
 public class SlideServices extends Service {
-
-
     private static boolean isServiceRunning = false;
-
     RoomDB roomDB;
     SlidesDao SlidesDao;
     @Nullable
@@ -30,7 +28,6 @@ public class SlideServices extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
-
 
     @Override
     public void onCreate() {
@@ -41,14 +38,12 @@ public class SlideServices extends Service {
         roomDB = RoomDB.getDatabase(getApplicationContext());
         SlidesDao = roomDB.slidesDao();
 
-
         if(SlidesDao.getInProcessCount()==0){
             ArrayList<SlidesTableDeatils> List= SlidesDao.cursorToArrayList();
             for (SlidesTableDeatils mList:List){
                 if(mList.getBackgroundtask().equalsIgnoreCase("1")){
                     if (mList.getDownloadingStaus().equalsIgnoreCase("1")){
                         if(!MasterSyncActivity.SlideIds.contains(mList.getSlideId())) {
-
                             String url = "https://" + SharedPref.getBaseUrl(getApplicationContext()) + "/" + SharedPref.getSlideUrl(getApplicationContext()) + mList.getSlideName();
                             Data inputData = new Data.Builder()
                                     .putString("Flag", "1")
@@ -61,8 +56,11 @@ public class SlideServices extends Service {
                             OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(FileDownloadWorker.class)
                                     .setInputData(inputData)
                                     .build();
-                            WorkManager workManager = WorkManager.getInstance(this);
-                            workManager.enqueue(fileDownloadRequest);
+                            WorkManager.getInstance(this).enqueueUniqueWork(
+                                    "slide_download_" + mList.getSlideId(),
+                                    ExistingWorkPolicy.REPLACE,
+                                    fileDownloadRequest
+                            );
                             MasterSyncActivity.SlideIds.add(mList.getSlideId());
                             break;
                         }
@@ -71,13 +69,8 @@ public class SlideServices extends Service {
                     stopSelf();
                 }
             }
-
         }
-
-
-
     }
-
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

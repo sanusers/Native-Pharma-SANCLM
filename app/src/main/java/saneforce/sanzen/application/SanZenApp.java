@@ -17,6 +17,8 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.work.Configuration;
+import androidx.work.WorkManager;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
@@ -24,6 +26,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.concurrent.Executors;
 
 import saneforce.sanzen.activity.call.adapter.detailing.PlaySlideDetailing;
 import saneforce.sanzen.activity.camera.CameraActivity;
@@ -47,7 +50,13 @@ public class SanZenApp extends Application {
 //                .detectNetwork()
 //                .penaltyLog()
 //                .build());
-
+        try {
+            WorkManager.initialize(this, new Configuration.Builder()
+                    .setExecutor(Executors.newFixedThreadPool(8))
+                    .build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         AppActivityTracker.init(this);
 
 //        if (BuildConfig.DEBUG) {

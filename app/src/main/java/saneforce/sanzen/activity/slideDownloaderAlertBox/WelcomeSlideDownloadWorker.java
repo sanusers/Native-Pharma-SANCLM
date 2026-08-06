@@ -20,12 +20,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import saneforce.sanzen.activity.presentation.SupportClass;
 import saneforce.sanzen.roomdatabase.RoomDB;
+import saneforce.sanzen.roomdatabase.SlideTable.SlidesTableDeatils;
 import saneforce.sanzen.roomdatabase.SlideTable.WelcomeSlidesDao;
 import saneforce.sanzen.roomdatabase.SlideTable.WelcomeSlidesDataTable;
 
@@ -65,6 +67,8 @@ public class WelcomeSlideDownloadWorker extends Worker {
             URL url = new URL(url1);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
+            connection.setConnectTimeout(30000);
+            connection.setReadTimeout(30000);
             connection.connect();
 
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
@@ -138,12 +142,26 @@ public class WelcomeSlideDownloadWorker extends Worker {
 
             fos.close();
             is.close();
+            connection.disconnect();
             createThumbnail(fileName);
             if (Flag != null && Flag.equalsIgnoreCase("1")) {
                 servicesRestartMethod();
             }
 
             return Result.success();
+        } catch (UnknownHostException e) {
+            Log.e(TAG, "DNS failed", e);
+
+            welcomeSlidesDao.saveWelcomeSlideData(
+                    new WelcomeSlidesDataTable(
+                            downloadFileName,
+                            "No Internet Connection",
+                            "0",
+                            "0",
+                            "1",
+                            FilePosition));
+
+            return Result.failure();
         } catch (Exception e) {
             e.printStackTrace();
             welcomeSlidesDao.saveWelcomeSlideData(new WelcomeSlidesDataTable(downloadFileName, "Downloading Failure", "0", "0", "1", FilePosition));

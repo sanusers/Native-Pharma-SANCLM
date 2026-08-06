@@ -2877,8 +2877,14 @@ public class ActivityFragment extends Fragment {
             fragmentActivityBinding.slideScreen.txtClDone.setVisibility(View.GONE);
         }
 
-        List<String> mListName = new ArrayList<>();
-        List<String> mListId = new ArrayList<>();
+        Set<String> mListName = new HashSet<>();
+        Set<String> mListId = new HashSet<>();
+        for (ActivityModelClass item : List) {
+            if (item.getIscheck()) {
+                mListName.add(item.getName());
+                mListId.add(item.getCode());
+            }
+        }
         fragmentActivityBinding.mainLayout.openDrawer(Gravity.RIGHT);
         fragmentActivityBinding.slideScreen.etSearch.setText("");
         fragmentActivityBinding.slideScreen.tvSearchheader.setText("Select " + name);
@@ -2926,12 +2932,12 @@ public class ActivityFragment extends Fragment {
             @Override
             public void onSafeClick(View view) {
                 if (isMultipleCheck) {
-                    String lids = "";
-                    for (int i = 0; i < mListId.size(); i++) {
-                        lids = lids + mListId.get(i) + ",";
+                    StringBuilder lids = new StringBuilder();
+                    for (String id: mListId) {
+                        lids.append(id).append(",");
                     }
                     NameView.setText(mListName.toString().replaceAll("[\\[\\]]", ""));
-                    IdView.setText(lids);
+                    IdView.setText(lids.toString());
                     fragmentActivityBinding.mainLayout.closeDrawer(Gravity.RIGHT);
                 }
             }
