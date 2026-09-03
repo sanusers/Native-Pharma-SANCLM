@@ -130,7 +130,7 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
                 if (UtilityClass.isNetworkAvailable(activity)) {
                     MasterSyncActivity.isSingleSlideDowloaingStaus = true;
                     text_download_size.setText(itemView.getContext().getString(R.string.downloading));
-                    String url = "https://" + SharedPref.getBaseUrl(activity) + "/" + SharedPref.getSlideUrl(activity) + list.get(position).getSlideName();
+                    String url = "https://" + SharedPref.getBaseUrlWithoutProtocol(activity) + "/" + SharedPref.getSlideUrl(activity) + list.get(position).getSlideName();
                     Log.e("DownloadingAPI", "" + url);
                     Data inputData = new Data.Builder()
                             .putString("Flag", "2")

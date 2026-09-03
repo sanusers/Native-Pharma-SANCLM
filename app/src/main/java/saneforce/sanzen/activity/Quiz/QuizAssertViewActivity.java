@@ -133,7 +133,7 @@ public class QuizAssertViewActivity extends AppCompatActivity {
                     String encodedUrl = URLEncoder.encode(file.toURI().toURL().toString(), "UTF-8");
                     Log.d("Quiz Asserts", "file path: " + file.getAbsolutePath());
                     Log.d("Quiz Asserts", "encoded url: " + encodedUrl);
-                    String url = SharedPref.getBaseUrl(getApplicationContext()) + "/" + SharedPref.getOptionFilesUrl(getApplicationContext()) + fileName;
+                    String url = SharedPref.getBaseUrlWithoutProtocol(getApplicationContext()) + "/" + SharedPref.getOptionFilesUrl(getApplicationContext()) + fileName;
 //                    String docUrl = "https://drive.google.com/viewerng/viewer?embedded=true&url=" + url;
                     String docUrl = "https://docs.google.com/gview?embedded=true&url=" + url;
                     Log.v("Quiz Asserts", " --2222-- " + docUrl);

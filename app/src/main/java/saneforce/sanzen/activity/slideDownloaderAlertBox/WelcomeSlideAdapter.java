@@ -134,7 +134,7 @@ public class WelcomeSlideAdapter extends RecyclerView.Adapter<WelcomeSlideAdapte
                     if (UtilityClass.isNetworkAvailable(activity)) {
                         MasterSyncActivity.isSingleWelcomeSlideDownloadingStatus = true;
                         text_download_size.setText(itemView.getContext().getString(R.string.downloading));
-                        String url = "https://" + SharedPref.getBaseUrl(activity) + "/" + SharedPref.getWelcomeSlideUrl(activity) + list.get(position).getName();
+                        String url = "https://" + SharedPref.getBaseUrlWithoutProtocol(activity) + "/" + SharedPref.getWelcomeSlideUrl(activity) + list.get(position).getName();
                         Log.e("DownloadingAPI", url);
                         Data inputData = new Data.Builder()
                                 .putString("Flag", "2")

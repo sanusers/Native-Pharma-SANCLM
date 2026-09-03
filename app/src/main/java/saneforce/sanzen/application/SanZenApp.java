@@ -1,9 +1,15 @@
 package saneforce.sanzen.application;
 
+import static saneforce.sanzen.storage.SharedPref.LOGO_URL;
+import static saneforce.sanzen.storage.SharedPref.OPTION_FILES_URL;
+import static saneforce.sanzen.storage.SharedPref.PREF_OPTION_URL_MIGRATED;
+import static saneforce.sanzen.storage.SharedPref.SP_NAME;
+
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -50,6 +56,13 @@ public class SanZenApp extends Application {
 //                .detectNetwork()
 //                .penaltyLog()
 //                .build());
+
+        try {
+            migrateOptionFilesUrl(getSharedPreferences(SP_NAME, MODE_PRIVATE));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         try {
             WorkManager.initialize(this, new Configuration.Builder()
                     .setExecutor(Executors.newFixedThreadPool(8))
@@ -259,4 +272,22 @@ public class SanZenApp extends Application {
             return "N/A";
         }
     }
+
+    private void migrateOptionFilesUrl(SharedPreferences preferences) {
+        boolean migrated = preferences.getBoolean(PREF_OPTION_URL_MIGRATED, false);
+        if (migrated) {
+            return;
+        }
+        String existingOptionUrl = preferences.getString(OPTION_FILES_URL, null);
+        String oldDuplicateValue = preferences.getString(LOGO_URL, null);
+        SharedPreferences.Editor editor = preferences.edit();
+        if (existingOptionUrl == null || existingOptionUrl.isEmpty()) {
+            if (oldDuplicateValue != null && !oldDuplicateValue.isEmpty()) {
+                editor.putString(OPTION_FILES_URL, oldDuplicateValue);
+            }
+        }
+        editor.putBoolean(PREF_OPTION_URL_MIGRATED, true);
+        editor.apply();
+    }
+
 }

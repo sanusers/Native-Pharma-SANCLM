@@ -44,7 +44,7 @@ public class SlideServices extends Service {
                 if(mList.getBackgroundtask().equalsIgnoreCase("1")){
                     if (mList.getDownloadingStaus().equalsIgnoreCase("1")){
                         if(!MasterSyncActivity.SlideIds.contains(mList.getSlideId())) {
-                            String url = "https://" + SharedPref.getBaseUrl(getApplicationContext()) + "/" + SharedPref.getSlideUrl(getApplicationContext()) + mList.getSlideName();
+                            String url = "https://" + SharedPref.getBaseUrlWithoutProtocol(getApplicationContext()) + "/" + SharedPref.getSlideUrl(getApplicationContext()) + mList.getSlideName();
                             Data inputData = new Data.Builder()
                                     .putString("Flag", "1")
                                     .putString("file_url", url)

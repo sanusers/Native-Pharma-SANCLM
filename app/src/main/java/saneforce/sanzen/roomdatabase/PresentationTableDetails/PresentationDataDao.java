@@ -30,6 +30,9 @@ public interface PresentationDataDao {
     @Query("DELETE FROM `PRESENTATION_TABLE`")
     void deleteAllData();
 
+    @Query("SELECT EXISTS(SELECT 1 FROM PRESENTATION_TABLE)")
+    boolean isPresentationAvailable();
+
     @Query("SELECT `PRESENTATION_DATA` FROM `PRESENTATION_TABLE`")
     List<String> getAllPresentationData();
 

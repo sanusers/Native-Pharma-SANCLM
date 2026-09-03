@@ -231,14 +231,28 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+//        binding.clearData.setOnClickListener(new SafeClickListener() {
+//            @Override
+//            public void onSafeClick(View view) {
+//                checkPresentationData();
+//                if (outboxUtil.isOutBoxDataAvailable()) {
+//                    new AlertDialog.Builder(LoginActivity.this)
+//                            .setTitle(getString(R.string.warning_label))
+//                            .setIcon(getDrawable(R.drawable.icon_sync_failed))
+//                            .setMessage(getString(R.string.outbox_data_calls_will_be_deleted_do_you_want_to_continue))
+//                            .setIcon(android.R.drawable.ic_dialog_alert)
+//                            .setPositiveButton(getString(R.string.yes), (dialog, whichButton) -> deleteAllFiles())
+//                            .setNegativeButton(getString(R.string.no), null)
+//                            .show();
+//                } else {
+//                    deleteAllFiles();
+//                }
+//            }
+//        });
         binding.clearData.setOnClickListener(new SafeClickListener() {
             @Override
             public void onSafeClick(View view) {
-                if (outboxUtil.isOutBoxDataAvailable()) {
-                    new AlertDialog.Builder(LoginActivity.this).setTitle(getString(R.string.warning_label)).setIcon(getDrawable(R.drawable.icon_sync_failed)).setMessage(getString(R.string.outbox_data_calls_will_be_deleted_do_you_want_to_continue)).setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.yes, (dialog, whichButton) -> DeleteAllFiles()).setNegativeButton(android.R.string.no, null).show();
-                } else {
-                    DeleteAllFiles();
-                }
+                checkPresentationData();
             }
         });
 
@@ -272,6 +286,45 @@ public class LoginActivity extends AppCompatActivity {
             });
             loginConfirmation.show();
         }
+    }
+
+    private void checkPresentationData() {
+        if (roomDB.presentationDataDao().isPresentationAvailable()) {
+            new AlertDialog.Builder(LoginActivity.this)
+                    .setTitle(getString(R.string.warning_label))
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setMessage(getString(R.string.created_presentations_are_available_do_you_want_to_clear))
+                    .setPositiveButton(getString(R.string.yes), (dialog, whichButton) -> {
+                        deleteCreatedPresentations();
+                        checkOutboxData();
+                    })
+                    .setNegativeButton(getString(R.string.no), (dialog, whichButton) -> {
+                        dialog.dismiss();
+                        checkOutboxData();
+                    })
+                    .show();
+        } else {
+            checkOutboxData();
+        }
+    }
+
+    private void checkOutboxData() {
+        if (outboxUtil.isOutBoxDataAvailable()) {
+            new AlertDialog.Builder(LoginActivity.this)
+                    .setTitle(getString(R.string.warning_label))
+                    .setIcon(getDrawable(R.drawable.icon_sync_failed))
+                    .setMessage(getString(R.string.outbox_data_calls_will_be_deleted_do_you_want_to_continue))
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(getString(R.string.yes), (dialog, whichButton) -> deleteAllFiles())
+                    .setNegativeButton(getString(R.string.no), null)
+                    .show();
+        } else {
+            deleteAllFiles();
+        }
+    }
+
+    private void deleteCreatedPresentations() {
+        roomDB.presentationDataDao().deleteAllData();
     }
 
     private void loginFailed() {
@@ -362,7 +415,7 @@ public class LoginActivity extends AppCompatActivity {
         binding.tvclearData.setText(getString(R.string.clear_data));
     }
 
-    private void DeleteAllFiles() {
+    private void deleteAllFiles() {
         roomDB.loginDataDao().deleteAllData();
         roomDB.masterDataDao().deleteAllMasterData();
         roomDB.callTableDao().deleteAllData();
@@ -372,7 +425,7 @@ public class LoginActivity extends AppCompatActivity {
         roomDB.callOfflineWorkTypeDataDao().deleteAllData();
         roomDB.offlineCheckInOutDataDao().deleteAllData();
         roomDB.dcrDocDataDao().deleteAllData();
-        roomDB.presentationDataDao().deleteAllData();
+//        roomDB.presentationDataDao().deleteAllData(); commented for not clearing created presentation slides
         roomDB.tourPlanOfflineDataDao().deleteAllData();
         roomDB.tourPlanOnlineDataDao().deleteAllData();
         roomDB.callOfflineWorkTypeDataDao().deleteAllData();
@@ -398,7 +451,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         String baseUrl = SharedPref.getBaseUrl(LoginActivity.this);
         try {
-            String host = new URI(baseUrl).getHost();
+            String host = new URI("https://" + baseUrl).getHost();
             String[] parts1 = host.split("\\.");
             String rootDomain1 = parts1[parts1.length - 2] + "." + parts1[parts1.length - 1];
             if (rootDomain1.equalsIgnoreCase("saneforce.com")) {
@@ -544,7 +597,7 @@ public class LoginActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        String fileDirectory = packageInfo.applicationInfo.dataDir;
+        String fileDirectory = getFilesDir().getAbsolutePath();
         Log.e("test", "filepath name : " + fileDirectory + "/" + imageName);
         if (ImageStorage.checkIfImageExists(fileDirectory, imageName)) {
             File file = ImageStorage.getImage(fileDirectory + "/images/", imageName);

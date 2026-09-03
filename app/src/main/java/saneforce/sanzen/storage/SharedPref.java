@@ -33,7 +33,7 @@ public class SharedPref {
     public static final String WELCOME_SLIDES_PATH = "WELCOME_SLIDES_PATH";
     public static final String LOGO_URL = "logo_url";
     public static final String S3_LOGO_URL = "aws_bucket_url";
-    public static final String OPTION_FILES_URL = "logo_url";
+    public static final String OPTION_FILES_URL = "option_files_url";
     public static final String CALL_API_URL = "call_api_url";
     public static final String LOGI_SITE = "log_site";
     public static final String SAVE_URL_SETTING = "save_url_setting";
@@ -559,6 +559,7 @@ public class SharedPref {
     public static final String PAST_DATE_OTP_NEED = "Pastdate_otp_need";
 
     public static final String AUTO_SUBMIT_TIME  = "Auto_Submit_Time";
+    public static final String PREF_OPTION_URL_MIGRATED = "pref_option_url_migrated";
 
 
     // Get last popup shown date
@@ -2284,6 +2285,11 @@ public class SharedPref {
 
     public static String getBaseUrl(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(BASE_URL, "");
+    }
+
+    public static String getBaseUrlWithoutProtocol(Context context) {
+        String url = getBaseUrl(context);
+        return url.replaceFirst("^https?://", "");
     }
 
     public static String getLicenseKey(Context context) {

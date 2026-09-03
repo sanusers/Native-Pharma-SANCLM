@@ -41,6 +41,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.PrivacyPolicyActvity.PrivacyPolicyActivity;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.ConfigEncryptDecrypt;
 import saneforce.sanzen.commonClasses.Constants;
@@ -627,7 +628,7 @@ public class SettingsActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        String fileDirectory = packageInfo.applicationInfo.dataDir;
+        String fileDirectory = getFilesDir().getAbsolutePath();
         Log.e("test", "filepath name : " + fileDirectory + "/" + imageName);
 
         asyncInterface = status -> {
@@ -645,14 +646,13 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
     public void downloadImageS3(String url) {
-
         try {
             packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             return;
         }
-        String fileDirectory = packageInfo.applicationInfo.dataDir;
+        String fileDirectory = getFilesDir().getAbsolutePath();
         String imageName = url.substring(url.lastIndexOf('/') + 1);
         Log.e("test", "filepath name : " + fileDirectory + "/" + imageName);
         asyncInterface = status -> {
@@ -668,13 +668,20 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void navigate() {
-
         runOnUiThread(() -> {
             binding.configurationPB.setVisibility(View.GONE);
             binding.btnSaveSettings.setEnabled(false);
             commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.configure_success), true);
         });
+
         Intent intent = new Intent(SettingsActivity.this, PrivacyPolicyActivity.class);
+
+        Bundle bundle= getIntent().getExtras();
+        if (bundle != null) {
+            boolean isResetConfig = bundle.getBoolean("reset_config", false);
+            if (isResetConfig) intent = new Intent(SettingsActivity.this, HomeDashBoard.class);
+        }
+
         intent.putExtra(Constants.NAVIGATE_FROM, "Setting");
         startActivity(intent);
         finish();

@@ -54,6 +54,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
+import saneforce.sanzen.activity.setting.SettingsActivity;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.SlideServices;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.Slide_adapter;
 import saneforce.sanzen.activity.slideDownloaderAlertBox.SlidesViewModel;
@@ -157,6 +158,8 @@ public class MasterSyncActivity extends AppCompatActivity {
     private Dialog slideDialog, welcomeSlideDialog;
     JsonObject jbonj = new JsonObject();
     String isFrom = "";
+    private int titleClickCount = 0;
+    private static final int REQUIRED_CLICKS = 3;
 
     public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
         return new ModelClass.SessionList("", true, remarks, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
@@ -213,6 +216,8 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Initializing all the data array
         uiInitialization();
+        setupToolbarClicks();
+
         arrayForAdapter.clear();
         if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
             binding.listedDr.setSelected(true);
@@ -698,6 +703,29 @@ public class MasterSyncActivity extends AppCompatActivity {
                 new Handler().postDelayed(() -> binding.masterSyncAll.setEnabled(true), 3000);
             }
         });
+    }
+
+    private void setupToolbarClicks() {
+        binding.title.setOnClickListener(v -> {
+            titleClickCount++;
+            if (titleClickCount >= REQUIRED_CLICKS) {
+                binding.imgResetConfig.setVisibility(View.VISIBLE);
+            }
+        });
+
+        binding.imgResetConfig.setOnClickListener(v ->
+                new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.warning_label))
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setMessage(getString(R.string.reset_config_confirmation))
+                    .setPositiveButton(getString(R.string.yes), (dialog, whichButton) -> {
+                        Intent intent = new Intent(this, SettingsActivity.class);
+                        intent.putExtra("reset_config", true);
+                        startActivity(intent);
+                    })
+                    .setNegativeButton(getString(R.string.no), null)
+                    .show()
+        );
     }
 
     public void uiInitialization() {

@@ -43,7 +43,7 @@ public class WelcomeSlideService extends Service {
                 if (mList.getBackgroundTask().equalsIgnoreCase("1")) {
                     if (mList.getDownloadingStatus().equalsIgnoreCase("1")) {
                         if (!MasterSyncActivity.welcomeSlideNames.contains(mList.getName())) {
-                            String url = "https://" + SharedPref.getBaseUrl(getApplicationContext()) + "/" + SharedPref.getWelcomeSlideUrl(getApplicationContext()) + mList.getName();
+                            String url = "https://" + SharedPref.getBaseUrlWithoutProtocol(getApplicationContext()) + "/" + SharedPref.getWelcomeSlideUrl(getApplicationContext()) + mList.getName();
                             Data inputData = new Data.Builder()
                                     .putString("Flag", "1")
                                     .putString("file_url", url)
