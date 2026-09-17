@@ -14,7 +14,7 @@ android {
         applicationId "saneforce.sanzen"
         minSdk 23
         targetSdk 36
-        versionCode 95
+        versionCode 97
         versionName "1.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -24,7 +24,6 @@ android {
             props.load(new FileInputStream(localPropertiesFile))
         } else {
             throw new GradleException("local.properties not found!")
-
         }
         def aesKey = props.getProperty("AES_KEY") ?: ""
         def aesIv = props.getProperty("AES_IV") ?: ""
@@ -35,31 +34,16 @@ android {
 
         buildConfigField "String", "AES_KEY", "\"${aesKey}\""
         buildConfigField "String", "AES_IV", "\"${aesIv}\""
-        //To use java Local(Date) library below api level 26
         multiDexEnabled = true
-//        multiDexKeepProguard file('multidex-config.pro')
     }
     buildTypes {
         release {
-            // Enables code shrinking, obfuscation, and optimization for only
-            // your project's release build type.
-            minifyEnabled false
-
-            // Enables resource shrinking, which is performed by the
-            // Android Gradle plugin.
-            shrinkResources false
-
+            minifyEnabled true
+            shrinkResources true
             ndk {
-                // SYMBOL_TABLE is faster and usually sufficient for function names
-                // FULL provides full line-level debugging info but is much larger
                 debugSymbolLevel = 'SYMBOL_TABLE'
             }
-
-            // Includes the default ProGuard rules files that are packaged with
-            // the Android Gradle plugin. To learn more, go to the section about
-            // R8 configuration files.
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
         }
     }
     compileOptions {

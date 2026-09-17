@@ -740,6 +740,7 @@ public class Leave_Application extends AppCompatActivity {
 //                                Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
 //                                l_details.notifyDataSetChanged();
 //                            } else {
+                            leavebinding.submitLeave.setEnabled(false);
                             leave_avalabledetails();
 //                            }
 
@@ -788,7 +789,7 @@ public class Leave_Application extends AppCompatActivity {
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-
+                        leavebinding.submitLeave.setEnabled(true);
                         if (response.isSuccessful()) {
                             Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
                             try {
@@ -835,6 +836,7 @@ public class Leave_Application extends AppCompatActivity {
 
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                        leavebinding.submitLeave.setEnabled(true);
                         List_LeaveDates.clear();
                         leavebinding.etFromDate.setText("");
                         leavebinding.etToDate.setText("");
@@ -856,6 +858,7 @@ public class Leave_Application extends AppCompatActivity {
             }
 
         } catch (Exception e) {
+            leavebinding.submitLeave.setEnabled(true);
             e.printStackTrace();
         }
     }

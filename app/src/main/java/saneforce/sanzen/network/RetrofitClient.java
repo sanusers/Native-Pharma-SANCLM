@@ -397,27 +397,32 @@ public class RetrofitClient {
                     .addInterceptor(chain -> {
                         Request original = chain.request();
                         RequestBody body = original.body();
-                        if (body != null) {
+
+                        if (body != null && body.contentType() != null) {
+                            String type = body.contentType().toString();
+                            boolean isBinary = type.contains("multipart/form-data")
+                                    || type.contains("image/")
+                                    || type.contains("application/octet-stream");
+
+                            if (isBinary) {
+                                Log.d(TAG, "Skipping sanitization for multipart/binary body");
+                                return chain.proceed(original);
+                            }
+
                             try {
-                                // Read body into buffer
-                                // (RequestBody has no direct getString() method)
                                 Buffer buffer = new Buffer();
                                 body.writeTo(buffer);
                                 String bodyString = buffer.readUtf8();
-                                // Pass contentType to detect and skip multipart/binary
                                 String sanitized = sanitizeBody(bodyString, body.contentType());
                                 Log.d(TAG, "Sanitized request body: " + sanitized);
-                                // Rebuild request with sanitized body
                                 RequestBody newBody = RequestBody.create(sanitized, body.contentType());
                                 Request newRequest = original.newBuilder().post(newBody).build();
                                 return chain.proceed(newRequest);
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                // Fail-safe: send original request if sanitization fails
                                 return chain.proceed(original);
                             }
                         }
-                        // GET requests or empty body — pass through unchanged
                         return chain.proceed(original);
                     });
             // Apply SSL bypass settings
